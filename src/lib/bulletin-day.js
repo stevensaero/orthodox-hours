@@ -18,7 +18,6 @@ import { shown } from "../data/menaion_v2/adapter.js";
 import { readingsForDay } from "./readings.js";
 
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-const rankWords = (rank) => (rank ? String(rank).replace(/_/g, "-").replace(/\b\w/g, (c) => c.toUpperCase()) : null);
 const isText = (n) => !!n && typeof n.text === "string";
 
 /**
@@ -32,7 +31,7 @@ const isText = (n) => !!n && typeof n.text === "string";
  * @param args.feastReading    { e, g } (legacy path only)
  * @param args.sources         { resTroparion(tone), sunKontakion(tone), hymnText(node),
  *                               dismissalTheotokion(tone): the resurrectional dismissal theotokion of ANY tone }
- * @returns { saint, secondSaint, rankLabel, readings, troparia, kontakia, extras }
+ * @returns { saint, secondSaint, readings, troparia, kontakia, extras }
  */
 export function buildBulletinDay({ liturgicalData: ld = {}, service = null, entrance = null, liturgy = null, otherName = null,
   legacy = null, dailyReading = null, feastReading = null, sources = {} }) {
@@ -46,7 +45,11 @@ export function buildBulletinDay({ liturgicalData: ld = {}, service = null, entr
     const c = service.c;
     const of = (sl) => (sl.source === "oca" ? "OCA text" : sl.source === "general" ? "General Menaion" : null);
     const hymn = (sl, label) => ({ label: label + (of(sl) ? " (" + of(sl) + ")" : ""), tone: sl.node.tone ?? null, text: shown(sl.node) });
-    const who = (sl, i, n) => (sl.node.saint && sl.source === "menaion" ? "Of " + sl.node.saint : entrance.name ? "Of " + entrance.name : n > 1 ? "Of the commemoration (" + (i + 1) + ")" : "Of the commemoration");
+    // A single hymn of the commemoration is labelled "Of the commemoration": the
+    // sheet's heading already names the saints, and their names set in each label
+    // cost a second line every time. Where the service prints more than one, each
+    // is named so they can be told apart.
+    const who = (sl, i, n) => (n <= 1 ? "Of the commemoration" : sl.node.saint && sl.source === "menaion" ? "Of " + sl.node.saint : entrance.name ? "Of " + entrance.name + " (" + (i + 1) + ")" : "Of the commemoration (" + (i + 1) + ")");
     const ownFeast = entrance.kind === "feast";
     res(troparia, sources.resTroparion, "Of the Resurrection");
     if (entrance.feast.troparion) troparia.push(hymn(entrance.feast.troparion, "Of the feast"));
@@ -79,7 +82,6 @@ export function buildBulletinDay({ liturgicalData: ld = {}, service = null, entr
     return {
       saint: entrance.name ? cap(entrance.name) : entrance.saintName,
       secondSaint: otherName ? cap(otherName) : null,
-      rankLabel: [rankWords(c.rank), c.fekula_section ? "Fekula §" + c.fekula_section : null].filter(Boolean).join(" · ") || null,
       readings, troparia, kontakia, extras,
     };
   }
@@ -102,7 +104,6 @@ export function buildBulletinDay({ liturgicalData: ld = {}, service = null, entr
   return {
     saint: saintRaw || "No commemoration encoded for this date",
     secondSaint: null,
-    rankLabel: [rankWords(entry && entry.rank), entry && entry.fekula_section ? "Fekula §" + entry.fekula_section : null].filter(Boolean).join(" · ") || null,
     readings: readingsForDay({ liturgicalData: ld, menaionEntry: entry, dailyReading, feastReading }),
     troparia, kontakia, extras,
   };

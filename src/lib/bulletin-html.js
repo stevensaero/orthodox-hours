@@ -67,13 +67,12 @@ export function renderBlock(block) {
   }
 }
 
-export function renderMasthead({ eyebrow, title, sub, chip }) {
+export function renderMasthead({ eyebrow, title, sub }) {
   return `
   <div class="oh-masthead">
     <div class="oh-eyebrow">${esc(eyebrow)}</div>
     <div class="oh-date">${esc(title)}</div>
     ${sub ? `<div class="oh-layer">${esc(sub)}</div>` : ""}
-    ${chip ? `<div class="oh-chip">${esc(chip)}</div>` : ""}
   </div>`;
 }
 

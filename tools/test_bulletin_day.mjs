@@ -119,7 +119,6 @@ check("dismissal theotokion follows the last troparion's tone", day.troparia[2].
 checkTruthy("dismissal theotokion is the Tone 4 one", day.troparia[2].text && day.troparia[2].text !== hymnText(OctoV2.getV2ResDismissalTheotokion(5)));
 check("the commemoration is named by its short name, not the printed title",
       day.saint, "The holy Archangel Michael and the holy Martyr Eudoxius and those with him");
-check("rank line", day.rankLabel, "Six-Stichera · Fekula §2C");
 
 // A polyeleos weekday (16 Nov, Apostle Matthew): Fekula §2E reads the day's and the
 // Menaion's; the sheet follows the same rule as the Liturgy.
@@ -140,7 +139,7 @@ check("rank line", day.rankLabel, "Six-Stichera · Fekula §2C");
     entrance: entrancePlan(s25.c, s25.path, { order: ods3OrderFor(s25.path, 3) }), liturgy: liturgyPlan(s25.c, s25.path),
     dailyReading: { e: "2 Thessalonians 2:1-12", g: "Luke 12:48-59" }, sources: { hymnText } });
   check("25 Nov epistles (ODS vol. III: day, feast, hieromartyrs)", d25.readings.groups[0].items.length, 3);
-  check("25 Nov troparia: the feast's, then the saints'", d25.troparia.map((x) => x.label.slice(0, 12)).join(" | "), "Of the feast | Of Clement a");
+  check("25 Nov troparia: the feast's, then the saints'", d25.troparia.map((x) => x.label.slice(0, 12)).join(" | "), "Of the feast | Of the comme");
 }
 
 // ─── The counter-case: same rank, no Menaion readings ──────────────────────

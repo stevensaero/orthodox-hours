@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.53.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.53.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,49 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.53.2 — the bulletin's fit check was dead; footer on a sheet of its own (15 Nov 2026)
+
+Bill: page 1 of the 15 Nov bulletin over-ran slightly and printed its footer on
+an extra sheet. MEASURED ON HIS MACHINE (built-in browser, live site, real
+Georgia): the page holds 586.06pt of column; the columns were 604.43 / 602.52.
+
+Three causes, all fixed:
+1. **The verification pass never ran to the end** (`bulletin.jsx`). The reset
+   effect keyed on `contentKey` also fired on mount, AFTER the first layout
+   effect, and put budget/pass/settled back to their initial values. No state
+   changed, nothing re-rendered, the measuring effect never ran again: "checking
+   the fit…" for good, first guess printed. Present since v0.46.3. The reset now
+   fires only when the key CHANGES (a ref holds the last key).
+   Also: the first measurement only installs the measured page (an overrun then
+   belongs to the baked geometry, not the model); later passes take any remaining
+   overrun off `chromeBudgetPt`, the figure `paginateBest` actually reads. It
+   used to shrink `columnHeightPt`, which `paginateBest` overwrites, so the
+   correction was discarded even when it ran. `reconcileBudget` no longer
+   subtracts SLACK_PT (slack is `paginateBest`'s negotiation).
+2. **Two wrong heights in the model.** `PAGE.mastheadPt` was 94.16 against a
+   real 108.19; and a heading's padding (3pt) and rule (0.5pt, drawn 0.75pt on
+   screen) were not budgeted: `STYLES.heading.boxPt = 3.75`. With both, the
+   model predicts his 15 Nov columns at 604.65 / 602.69 against 604.43 / 602.52
+   measured. Hymn text was already exact (within 0.03pt). The layout gate now
+   checks the heading's box against the stylesheet and that no other column
+   block carries padding or a rule the model does not know.
+3. **Two trims (Bill agreed):** the masthead's boxed line (tone · rank · Fekula
+   section) is removed (23pt; on a Sunday it showed the weekday section beside
+   "§1A or §1B rules apply"); a single hymn of the commemoration is labelled
+   "Of the commemoration" (11.4pt a column), names kept where a service prints
+   more than one. `PAGE`: masthead 84.97, footer 25.75, chrome 609.28.
+
+Result: 15 Nov is one page (columns about 593 / 591 of 609). 6 Sept still needs
+two (623pt wanted). Checked in headless Chrome for 15 Nov, 6 Sept, 22 Nov, 18
+Nov: the check completes, no column exceeds the page, printed PDF pages equal
+sheets. That Chrome has no Georgia, so the figures that matter are the ones
+from Bill's machine.
+HOW TO MEASURE AGAIN: open the bulletin, then in the console compare each
+`.oh-col` height (px × 0.75) with 792 − sheet padding − masthead − footer.
+NOT DONE: no automated gate mounts the bulletin in a real browser (jsdom has no
+layout). `bulletin_layout_spec.md` still describes the old reconcile semantics
+in places; read it with this entry.
 
 ### v0.53.1 — the Menaion and Octoechos browsers tightened for desktop (15 Nov 2026)
 

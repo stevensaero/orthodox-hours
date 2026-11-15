@@ -8534,6 +8534,29 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.53.2",
+    date: "November 2026",
+    summary: "fix: the bulletin could print its footer on a sheet of its own; the fit check never finished",
+    items: [
+      "FIXED: the bulletin for 15 November printed 18 points too deep, which pushed the footer " +
+      "onto an extra sheet. The bulletin measures itself after it is drawn and re-breaks the page " +
+      "if anything runs over, but on opening a reset step cancelled the first measurement, so it " +
+      "stayed on 'checking the fit…' and printed its first guess. The check now runs to the end.",
+      "The first guess is now right as well. It had budgeted for a masthead 14 points shorter " +
+      "than the real one, and left out the padding and rule under each section heading (3.75 " +
+      "points, five times on a sheet). On a day with room to spare this never showed; on a full " +
+      "day it did.",
+      "The boxed line under the date ('Tone 7 · Simple · Fekula §2A') is removed from the " +
+      "masthead. It took a line and a half of the page, and on a Sunday it named the weekday " +
+      "section beside a line saying the Sunday rules apply. Each hymn still shows its tone.",
+      "A single hymn of the day's commemoration is labelled 'Of the commemoration', as the " +
+      "readings already are; the heading at the top of the sheet names the saints. Where a " +
+      "service prints hymns for more than one, each is still named.",
+      "With these, 15 November fits one page with room to spare. 6 September still needs two: " +
+      "its hymns are 14 points more than one page holds.",
+    ],
+  },
+  {
     version: "v0.53.1",
     date: "November 2026",
     summary: "The Menaion and the Octoechos sit in one centred column on a desktop screen, the rail beside the page",
@@ -16006,7 +16029,6 @@ export default function App() {
       layer: (liturgicalData.namedDay && liturgicalData.namedDay.name)
         || (liturgicalData.pentecostWeekInfo && liturgicalData.pentecostWeekInfo.sundayLabel)
         || liturgicalData.seasonNote || liturgicalData.dayName,
-      toneLabel: liturgicalData.tone ? `Tone ${liturgicalData.tone}` : null,
       ...day,
       version: RELEASE_NOTES[0].version,
     };

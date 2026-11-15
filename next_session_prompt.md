@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.53.1 and after)
+# Next-session kickoff — encoding the Menaion (v0.53.2 and after)
 
-State at handoff: **v0.53.1**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.53.2**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -50,7 +50,7 @@ the logic.
 
 **Also owed (ask Bill which first):**
 - His read of the 29 dismissal names; open questions Q-0008 and Q-0009.
-- The 6 September bulletin now runs to 2 pages: tighten, or accept.
+- The 6 September bulletin runs to 2 pages (14pt over one page): accept, or trim.
 - The dev-only in-context editor has no screen using it: keep or delete.
 - Festal antiphons for feasts of the Lord; the remaining 73 vol. III orders;
   Matins (and with it a "Vigil is served tonight" switch); the Pentecostarion's

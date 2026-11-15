@@ -59,12 +59,12 @@ const SLACK_LADDER = [33, 22, 16.5, 10, 6, 0];
 
 export const PAGE = {
   pageHeightPt: 792,           // 11in
-  chromeBudgetPt: 601.7,       // 11in less padding, masthead and footer
-  columnHeightPt: 601.7 - SLACK_PT,
+  chromeBudgetPt: 609.28,      // 11in less padding (72), masthead and footer
+  columnHeightPt: 609.28 - SLACK_PT,
   columnWidthIn: 3.43,
   columnsPerPage: 2,
-  mastheadPt: 94.16,
-  footerPt: 24.14,
+  mastheadPt: 84.97,           // eyebrow, date, one line beneath, rule, margin (measured, Georgia)
+  footerPt: 25.75,
 };
 
 const MIN_LINES_EITHER_SIDE = 2;
@@ -518,9 +518,10 @@ const DRIFT_TOLERANCE_PT = 0.5;   // below this, rounding rather than real drift
  * @returns {{ budgetPt, settled, floored }}
  */
 export function reconcileBudget({ chromeBudgetPt, currentBudgetPt, measuredDriftPt, pass }) {
-  // SLACK_PT is held back before anything else: the measured chrome height is
-  // what the page can physically hold, not what we are willing to fill.
-  const target = chromeBudgetPt - SLACK_PT;
+  // The budget here is the PHYSICAL one: what a column can hold. How much of it
+  // to leave unfilled is paginateBest's negotiation, not this function's; it
+  // used to subtract SLACK_PT here, into a figure paginateBest never read.
+  const target = chromeBudgetPt;
   const floor = target * BUDGET_FLOOR_RATIO;
   const current = currentBudgetPt ?? target;
 

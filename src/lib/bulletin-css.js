@@ -103,12 +103,6 @@ export const BULLETIN_CSS = `
       }
       .oh-date { font-size: 19pt; margin: 6pt 0 2pt; color: ${C.ink}; }
       .oh-layer { font-size: 11.5pt; color: ${C.inkMid}; font-style: italic; }
-      .oh-chip {
-        display: inline-block; margin-top: 6pt; padding: 1.5pt 8pt;
-        border: 0.75pt solid ${C.accent}; border-radius: 2pt;
-        font-size: 8.5pt; letter-spacing: 0.13em; text-transform: uppercase;
-        color: ${C.accent};
-      }
 
       /* Explicit columns, not CSS multicol. src/lib/bulletin-layout.js decides
          what goes in each one: multicol breaks wherever it lands — mid-hymn,

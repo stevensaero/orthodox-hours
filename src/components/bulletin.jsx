@@ -188,13 +188,12 @@ function Block({ block }) {
   }
 }
 
-function Masthead({ eyebrow, title, sub, chip }) {
+function Masthead({ eyebrow, title, sub }) {
   return (
     <div className="oh-masthead">
       <div className="oh-eyebrow">{eyebrow}</div>
       <div className="oh-date">{title}</div>
       {sub && <div className="oh-layer">{sub}</div>}
-      {chip && <div className="oh-chip">{chip}</div>}
     </div>
   );
 }
@@ -264,7 +263,19 @@ export default function Bulletin({ day, onClose }) {
   // header. useLayoutEffect runs the passes BEFORE paint, so settling is not
   // something the reader watches happen.
   const contentKey = `${day.dateLabel}|${withReadings}|${resolved ? resolved.length : 0}`;
-  useEffect(() => { setBudget(null); setPass(0); setSettled(false); }, [contentKey]);
+  // The reset is for a CHANGE of content, never for the first appearance. Run on
+  // mount, it landed after the first measurement and put budget, pass and settled
+  // back to exactly their initial values: no state had changed, so nothing
+  // re-rendered, the measuring effect never ran again, and the sheet stayed on
+  // its unverified first guess with "checking the fit…" showing for good. That
+  // is how 15 November 2026 printed 18pt too deep, with its footer on a sheet
+  // of its own.
+  const laidOutFor = useRef(contentKey);
+  useEffect(() => {
+    if (laidOutFor.current === contentKey) return;
+    laidOutFor.current = contentKey;
+    setBudget(null); setPass(0); setSettled(false);
+  }, [contentKey]);
 
   useLayoutEffect(() => {
     if (settled) return;
@@ -297,23 +308,32 @@ export default function Bulletin({ day, onClose }) {
               + parseFloat(getComputedStyle(foot).marginTop));
     const columnWidthIn = col.getBoundingClientRect().width / 96;
 
-    const currentBudgetPt = budget ? budget.columnHeightPt : chromeBudgetPt;
-    // Drift is measured against the budget the columns were actually laid out
-    // with, which paginateBest may have reduced by its chosen slack.
+    // FIRST MEASUREMENT: the sheet on screen was laid out from the baked
+    // geometry. Re-lay it against the page as it really is before judging it;
+    // an overrun seen now belongs to the baked numbers, not to the model.
+    if (!budget) {
+      setBudget({ ...PAGE, chromeBudgetPt, measuredChromePt: chromeBudgetPt, columnWidthIn });
+      setPass((p) => p + 1);
+      return;
+    }
+
+    // Overrun is judged against what the page can PHYSICALLY hold. Any that
+    // remains is taken off the budget paginateBest negotiates its slack from
+    // (`chromeBudgetPt`), which is the number it actually reads; the reduced
+    // column height this used to hand back was never consulted.
     let drift = 0;
     for (const el of document.querySelectorAll(".oh-col")) {
-      const d = px2pt(el.getBoundingClientRect().height) - currentBudgetPt;
+      const d = px2pt(el.getBoundingClientRect().height) - chromeBudgetPt;
       if (d > drift) drift = d;
     }
 
     const next = reconcileBudget({
-      chromeBudgetPt, currentBudgetPt, measuredDriftPt: drift, pass,
+      chromeBudgetPt, currentBudgetPt: budget.chromeBudgetPt, measuredDriftPt: drift, pass,
     });
-    const moved = !budget
-      || Math.abs(next.budgetPt - budget.columnHeightPt) > 0.5
+    const moved = Math.abs(next.budgetPt - budget.chromeBudgetPt) > 0.5
       || Math.abs(columnWidthIn - budget.columnWidthIn) > 0.01;
     if (moved) {
-      setBudget({ ...PAGE, chromeBudgetPt, columnHeightPt: next.budgetPt, columnWidthIn });
+      setBudget({ ...PAGE, chromeBudgetPt: next.budgetPt, measuredChromePt: chromeBudgetPt, columnWidthIn });
     }
     setPass((p) => p + 1);
     if (next.settled) setSettled(true);
@@ -334,11 +354,10 @@ export default function Bulletin({ day, onClose }) {
 
   const propersMast = {
     eyebrow: MASTHEAD, title: day.dateLabel, sub: day.layer,
-    chip: [day.toneLabel, day.rankLabel].filter(Boolean).join(" · "),
   };
   const readingsMast = {
     eyebrow: MASTHEAD, title: "The Readings",
-    sub: `${day.dateLabel} · ${day.layer}`, chip: null,
+    sub: `${day.dateLabel} · ${day.layer}`,
   };
 
   return createPortal(

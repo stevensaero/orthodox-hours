@@ -65,6 +65,18 @@ const CSS_CHECK = [
   ["heading", ".oh-h", 10, null],
   ["commemoration", ".oh-comm", 13, 1.32],
 ];
+// The heading's own box: padding and the rule under it are height too. The rule
+// is budgeted at one device pixel (0.75pt), which is how a screen draws 0.5pt.
+{
+  const block = css.slice(css.indexOf(".oh-h {")); const decl = block.slice(0, block.indexOf("}"));
+  const pad = parseFloat((/padding-bottom:\s*([0-9.]+)pt/.exec(decl) || [])[1]);
+  const rule = parseFloat((/border-bottom:\s*([0-9.]+)pt/.exec(decl) || [])[1]);
+  check(".oh-h padding and rule are in the budget", STYLES.heading.boxPt, pad + Math.max(rule, 0.75));
+  // Nothing else in a column may carry vertical padding or a horizontal rule the model does not know.
+  const others = [...css.matchAll(/\.(oh-(?:comm2?|slot|slot-label|reading-row|reading-ref|reading-of|cite|hymn|hymn-label|hymn-text|lection|lection-ref|lection-intro|lection-body))\s*\{([^}]*)\}/g)]
+    .filter(([, , d]) => /padding(-top|-bottom)?:\s*[1-9]|border(-top|-bottom)?:\s*[0-9.]+pt/.test(d.replace(/padding-left[^;]*;|border-left[^;]*;/g, ""))).map(([, c]) => c);
+  check("no other column block has unbudgeted padding or rules", others.join(","), "");
+}
 for (const [key, selector, pt, leading] of CSS_CHECK) {
   const block = css.slice(css.indexOf(selector));
   const decl = block.slice(0, block.indexOf("}"));
@@ -92,13 +104,10 @@ const day = buildBulletinDay({
              dismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t), hymnText },
 });
 const readings = day.readings;
-// The sheet as built today runs onto a second page. Under the summarized data
-// it filled one page to 99% / 97%; the dismissal theotokion is now the one in
-// the tone of the last troparion (Fekula ch. 6), a line longer, and the hymns
-// are labelled with the saints' names, two lines more. A hymn is never split, so
-// the last items move to page 2. Recorded as it is; whether to tighten the sheet
-// is a layout decision, not this gate's. (Slack negotiation is proved in its own
-// section below.)
+// 6 September needs 623pt of column and the page holds 609pt, so the sheet runs
+// onto a second page. (Under the summarized data it fitted one page at 99% / 97%,
+// but only on paper: the model then left out the box under each heading and the
+// page it budgeted for was 15pt taller than the real one.) Recorded as it is.
 const propers = paginateBest(buildPropersFlow(day));
 check("propers pages", propers.totalPages, 2);
 check("nothing overflows a column", propers.overflow.length, 0);
@@ -244,7 +253,7 @@ console.log(`  budgets: ${history.join(" → ")} (settled after ${pass} pass${pa
 const clean = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,
                                 measuredDriftPt: 0, pass: 0 });
 check("no drift settles at once", clean.settled, true);
-check("and holds back the slack", clean.budgetPt, chrome - SLACK_PT);
+check("and keeps the whole measured column (slack is paginateBest's)", clean.budgetPt, chrome);
 
 // Rounding noise is not drift.
 const noise = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,

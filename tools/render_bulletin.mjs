@@ -65,7 +65,7 @@ const built = buildBulletinDay({
   sources: { resTroparion: (t) => OctoV2.getV2Troparion(t), sunKontakion: (t) => OctoV2.getV2Kontakion(t),
              dismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t), hymnText },
 });
-const { readings, rankLabel } = built;
+const { readings } = built;
 
 const dateLabel = date.toLocaleDateString("en-US",
   { weekday: "long", year: "numeric", month: "long", day: "numeric" });
@@ -108,10 +108,9 @@ for (const o of [...propers.overflow, ...readingPages.overflow]) {
 
 const propersMast = renderMasthead({
   eyebrow: MASTHEAD, title: dateLabel, sub: layer,
-  chip: [tone ? `Tone ${tone}` : null, rankLabel].filter(Boolean).join(" · "),
 });
 const readingsMast = renderMasthead({
-  eyebrow: MASTHEAD, title: "The Readings", sub: `${dateLabel} · ${layer}`, chip: null,
+  eyebrow: MASTHEAD, title: "The Readings", sub: `${dateLabel} · ${layer}`,
 });
 
 const sheets = [

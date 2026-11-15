@@ -323,8 +323,14 @@ export function wrapLines(text, fontPt, usableIn, italic = false) {
 //
 // spaceBefore / spaceAfter are the CSS margins in points. keepWithNext marks a
 // heading, which must never be the last thing in a column.
+//
+// boxPt is height the element's own box adds under its type: for a heading, 3pt
+// of padding and the rule beneath it. The rule is 0.5pt in the stylesheet but a
+// screen draws it one device pixel deep (0.75pt), and the sheet is measured on
+// screen, so the larger is budgeted. Left out, every heading set 3.75pt deeper
+// than predicted: five on a propers sheet, 18.75pt, more than a line.
 export const STYLES = {
-  heading:      { pt: 10,   leading: 1.25, spaceBefore: 12, spaceAfter: 4,  keepWithNext: true,  caps: true },
+  heading:      { pt: 10,   leading: 1.25, spaceBefore: 12, spaceAfter: 4,  keepWithNext: true,  caps: true, boxPt: 3.75 },
   commemoration:{ pt: 13,   leading: 1.32, spaceBefore: 0,  spaceAfter: 3 },
   commemoration2:{ pt: 11,  leading: 1.3,  spaceBefore: 0,  spaceAfter: 0,  italic: true },
   slotLabel:    { pt: 9.5,  leading: 1.2,  spaceBefore: 4,  spaceAfter: 2,  keepWithNext: true,  caps: true },
@@ -361,7 +367,7 @@ export function blockHeightPt(text, styleKey, usableIn) {
   return {
     lines,
     linePt: style.pt * style.leading,
-    textPt: lines * style.pt * style.leading,
-    totalPt: style.spaceBefore + lines * style.pt * style.leading + style.spaceAfter,
+    textPt: lines * style.pt * style.leading + (style.boxPt || 0),
+    totalPt: style.spaceBefore + lines * style.pt * style.leading + (style.boxPt || 0) + style.spaceAfter,
   };
 }
