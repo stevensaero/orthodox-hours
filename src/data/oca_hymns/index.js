@@ -51,6 +51,7 @@ export async function ocaHymn(key, slot) {
   return {
     text: hit.text, tier: hit.pointed ? 3 : (hit.n > 1 ? 2 : 1), tone: hit.tone, director: !!hit.pointed,
     type: slot, source: 'oca', sourceLabel: 'OCA', subject: hit.subject,
+    ...(ref.replaces ? { replaces: ref.replaces } : {}),
     ...(hit.repeat ? { repeat: hit.repeat } : {}), ...(hit.underlined ? { underlined: hit.underlined } : {}),
     src: { file: doc.file, locus: `paragraphs ${hit.p[0]}-${hit.p[1]}` },
   };
