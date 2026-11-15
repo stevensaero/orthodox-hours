@@ -273,6 +273,12 @@ for (const [key, tone] of Object.entries(data)) {
   if (!key.startsWith('tone')) continue;
   const T = key;
 
+  // The file's own `tone` must be the tone it is the chapter of. tone7.js and
+  // tone8.js both said 6 from July to November 2026 (carried over from the
+  // generator they were adapted from) and nothing noticed, because nothing read
+  // the field until the OCA matcher did.
+  if (tone.tone !== Number(key.slice(4))) fail(`${T}: the file's tone field is ${tone.tone}.`);
+
   // vocabulary + claims
   for (const k of Object.keys(tone)) {
     if (!S.TONE_TOP.known.includes(k)) fail(`${T}: unknown top-level key "${k}".`);
