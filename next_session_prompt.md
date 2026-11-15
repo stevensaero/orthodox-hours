@@ -49,8 +49,12 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   composed Litiya of Fekula 1F1. Vespers reads V2 throughout outside the Pentecostarion.
   The Typica and Liturgy take their Menaion propers and readings from `liturgyPlan`.
   Ruled: the full order is always rendered and each Liturgy item is marked "OCA: sung" or
-  "OCA: likely omitted" where an OCA text exists for the day (built). NEXT: the entrance
-  troparia and kontakia, the Beatitudes, the dismissal and the bulletin.
+  "OCA: likely omitted" where an OCA text exists for the day (built). The Liturgy's
+  entrance troparia and kontakia and the Beatitudes read `entrancePlan` (built; gate
+  `tools/test_menaion_v2_liturgy.mjs`, order agrees with the OCA on all 12 dates; five
+  interpretive choices are on record in project_notes.md for Bill). NEXT: the dismissal
+  `name`, the bulletin, the Prefer OCA toggle and service chooser, the How-It-Works pass.
+  Vespers is done, so RAISE NOW: reading ODS vol. III's date-specific orders as a layer.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable

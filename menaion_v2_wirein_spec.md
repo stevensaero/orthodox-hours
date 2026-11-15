@@ -338,7 +338,8 @@ Done on branch `v2-wirein`: the Hours (`hoursPlan`, `src/lib/hours-propers.js`).
 |---|---|---|
 | Hours | 628 | ~130 — DONE |
 | Vespers | 1,920 | ~1,400: Lord I call ~500, Litiya ~190, Aposticha ~330, troparia ~200, rule helpers ~175 |
-| Typica + `liturgy-propers.js` | 472 + 257 | ~100 |
+| Typica + `liturgy-propers.js` | 472 + 257 | ~100 — DONE |
+| `liturgy-entrance.js` (Little Entrance, Beatitudes) | 493 | ~150 — DONE (`entrancePlan`; the tables by temple unchanged) |
 | Dismissal | ~130 | ~30 (needs the short `name`) |
 | Bulletin, audit, explainers, library | — | ~80 lines of field reads |
 
@@ -353,6 +354,11 @@ the Sunday kontakion wrong at every rank in V1; 11-23 feast troparion printed
 with no tone; 11-24 three troparia of saints; 11-29 needs the General Menaion).
 
 ## 7. Gates — status
+
+- BUILT `tools/test_menaion_v2_liturgy.mjs`: the Little Entrance order from the
+  tool's own code against what the OCA prints "(at the Divine Liturgy)" on every
+  shared date, with Prefer OCA on and off; every Beatitudes rubric read and its
+  count checked against the troparia printed. KNOWN list with reasons.
 
 - BUILT `tools/test_menaion_v2_hours.mjs`: every encoded service yields the
   Hours plan with and without the OCA layer; `--table` prints the per-date
