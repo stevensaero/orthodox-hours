@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.55.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.55.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,20 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.55.1 — the match review joins "Help improve the tool" (15 Nov 2026)
+
+Bill: reach the review page from the same place the other feedback is given.
+`/questions` has a third card, "Match the OCA's hymns to the Menaion's" →
+"Review OCA matches". On the review page, after Copy decisions, an "E-mail them"
+link (`matchDecisionsMailto()` in `open_questions.js`): a plain mailto to
+`CONTACT_EMAIL`, subject **"OCA match decisions"**, body one short line (the
+decisions are pasted in by the sender; a pre-filled body that long is cut off by
+iOS Mail). AT SESSION START, with the question answers and feedback: search the
+mailbox for that subject, save each body to a file, and run
+`node tools/apply_match_decisions.mjs <file>` (it finds the JSON inside a whole
+e-mail), then the matcher and validator. A respondent is recorded by what they
+decided, not by name.
 
 ### v0.55.0 — the review page for OCA matches (15 Nov 2026)
 

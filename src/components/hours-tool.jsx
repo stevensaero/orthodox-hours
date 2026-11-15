@@ -8534,6 +8534,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.55.1",
+    date: "November 2026",
+    summary: "The OCA match review is now on the 'Help improve the tool' page, and decisions can be e-mailed",
+    items: [
+      "'Help improve the tool' has a third way to help, 'Review OCA matches', beside answering " +
+      "an open question and sending a bug or a suggestion.",
+      "On the review page, after 'Copy decisions' there is an 'E-mail them' button. It opens a " +
+      "message to the same address the other feedback goes to; paste the copied text into it. " +
+      "(The text is too long to be filled in for you: a phone's mail app would cut it short.)",
+    ],
+  },
+  {
     version: "v0.55.0",
     date: "November 2026",
     summary: "A review page for OCA matches the tool was not sure of",

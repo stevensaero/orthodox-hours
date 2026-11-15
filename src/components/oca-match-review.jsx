@@ -11,6 +11,7 @@
 // repository changes only by a reviewed commit.
 import React, { useEffect, useMemo, useState } from 'react';
 import { Pointed } from './oca-doc-view.jsx';
+import { matchDecisionsMailto } from '../data/open_questions.js';
 
 const C = { ink: "#1C1008", inkMid: "#3D3020", inkLight: "#9A8A70", gold: "#8B6914", border: "#E8DEC8",
             parchment: "#FBF7EE", green: "#2E6B3A", red: "#A03030", amber: "#A0650A", faint: "rgba(139,105,20,0.06)" };
@@ -117,6 +118,7 @@ export default function OcaMatchReview() {
     }
     return { ...base, decision: 'reject' };
   }), null, 1);
+  const mail = matchDecisionsMailto();
   const copy = async () => { const t = exportText(); setOut(t); try { await navigator.clipboard.writeText(t); } catch { /* the text is shown below to copy by hand */ } };
 
   const pill = (on) => ({ fontFamily: SERIF, fontSize: "0.78rem", cursor: "pointer", padding: "3px 10px", borderRadius: "12px",
@@ -132,8 +134,9 @@ export default function OcaMatchReview() {
           or <em>It has no mate in our books</em>.
         </div>
         <div style={{ fontSize: "0.78rem", color: C.inkLight, lineHeight: 1.5, margin: "6px 0 10px" }}>
-          Your choices are kept in this browser only. When you are done, press <strong>Copy decisions</strong> and send the copied text to
-          whoever maintains the tool; nothing changes until it is applied there.
+          Your choices are kept in this browser only. When you are done, press <strong>Copy decisions</strong>, then
+          <strong> E-mail them</strong> and paste the copied text into the message. Nothing in the tool changes until they are applied.
+          {' '}<a href="/orthodox-hours/questions?from=tool" style={{ color: C.gold }}>Other ways to help</a>
         </div>
         {!review ? <div style={{ color: C.inkLight, fontStyle: "italic" }}>loading…</div> : (
           <>
@@ -153,6 +156,8 @@ export default function OcaMatchReview() {
               <div style={{ margin: "10px 0", border: `1px solid ${C.gold}`, borderRadius: "6px", background: "#fff", padding: "10px 12px" }}>
                 <div style={{ fontSize: "0.8rem", color: C.inkMid, marginBottom: "6px" }}>
                   Copied. If it did not reach your clipboard, select the text below and copy it. Send it as it is.
+                  {mail && <>{' '}<a href={mail} style={{ display: "inline-block", fontFamily: SERIF, fontSize: "0.8rem", fontWeight: 700, color: C.gold, border: `1px solid ${C.gold}`,
+                                                       borderRadius: "4px", padding: "2px 10px", textDecoration: "none", background: "#fff" }}>E-mail them</a></>}
                   {' '}<span role="button" onClick={() => setOut(null)} style={{ color: C.gold, cursor: "pointer" }}>hide</span>
                   {' · '}<span role="button" onClick={() => { if (window.confirm('Forget every decision made in this browser?')) { setDec({}); setOut(null); } }} style={{ color: C.red, cursor: "pointer" }}>clear my decisions</span>
                 </div>

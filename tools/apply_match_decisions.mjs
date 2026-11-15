@@ -17,7 +17,10 @@ if (!arg) { console.log('usage: node tools/apply_match_decisions.mjs <decisions.
 const reg = { ...OCA_MATCHES_HUMAN };
 let n = { confirm: 0, none: 0, reject: 0 };
 if (arg !== '--rewrite') {
-  const list = JSON.parse(fs.readFileSync(arg, 'utf8'));
+  // The file may be the copied text alone or a whole e-mail around it: take the JSON array out of it.
+  const raw = fs.readFileSync(arg, 'utf8'); const a = raw.indexOf('['), z = raw.lastIndexOf(']');
+  if (a < 0 || z < a) throw new Error('no decisions found in that file');
+  const list = JSON.parse(raw.slice(a, z + 1));
   if (!Array.isArray(list)) throw new Error('expected a JSON array of decisions');
   for (const d of list) {
     if (!/^o[0-9a-f]{10}$/.test(d.id || '')) throw new Error(`bad id: ${JSON.stringify(d).slice(0, 80)}`);

@@ -157,6 +157,23 @@ export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_E
             )) : <span style={{ color: C.amber, fontStyle: "italic", fontSize: "0.82rem" }}>An address for this has not been set yet.</span>}
           </div>
         </div>
+        {/* A third way to help: deciding whether two translations are one hymn. */}
+        <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 16px", margin: "0 0 12px" }}>
+          <div style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: C.gold, textTransform: "uppercase", marginBottom: "4px" }}>
+            Match the OCA’s hymns to the Menaion’s
+          </div>
+          <div style={{ fontSize: "0.9rem", color: C.ink, lineHeight: 1.6 }}>
+            The OCA’s service texts and the St. Sergius books give the same hymns in two translations. The tool pairs
+            them where it is sure. Where it is not, it sets the two side by side and asks a person: is this the same
+            hymn? No special knowledge is needed beyond reading both carefully.
+          </div>
+          <div style={{ marginTop: "9px" }}>
+            <a href="/orthodox-hours/oca-matches?from=tool"
+               style={{ display: "inline-block", fontFamily: SERIF, fontSize: "0.85rem", fontWeight: 700, color: C.gold,
+                        background: "#fff", border: `1px solid ${C.gold}`, textDecoration: "none", padding: "6px 14px",
+                        borderRadius: "4px" }}>Review OCA matches</a>
+          </div>
+        </div>
         {!email && (
           <p style={{ fontSize: "0.82rem", color: C.amber, fontStyle: "italic", margin: "0 0 10px" }}>
             An address for answers has not been set yet, so no e-mail button is shown.

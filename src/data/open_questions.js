@@ -122,6 +122,13 @@ export const FEEDBACK = {
   suggestion: { label: 'I have a suggestion', subject: 'Orthodox Hours suggestion',
                 body: 'My suggestion, and any source for it:\n\n' },
 };
+// Sending decisions from the OCA match review page. The decisions themselves are
+// far too long for a pre-filled body (iOS Mail silently truncates one past about
+// 100 characters), so the body only says to paste them.
+export function matchDecisionsMailto(email = CONTACT_EMAIL) {
+  if (!email) return null;
+  return `mailto:${email}?subject=${encodeURIComponent('OCA match decisions')}&body=${encodeURIComponent('Paste the copied decisions below this line.')}`;
+}
 export function feedbackMailto(kind, email = CONTACT_EMAIL) {
   const f = FEEDBACK[kind];
   if (!email || !f) return null;
