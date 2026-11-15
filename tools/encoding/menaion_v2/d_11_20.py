@@ -193,6 +193,10 @@ def build():
     entry = {
         'kind': 'forefeast',
         'feast_ref': 'entrance_theotokos',
+        # Hand-entered: how the dismissal names the day's saints ("and of ..., whose memory we
+        # celebrate"). From the title line; the OCA title where there is one. None on a feast
+        # of the Theotokos or of an icon, where no saint is added.
+        'name': 'our venerable father Gregory the Decapolite and our father among the saints Proclus, Archbishop of Constantinople',
         'title': s.node(s.raw(3, 6), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'six_stichera',
         'fekula_section': '2G1',

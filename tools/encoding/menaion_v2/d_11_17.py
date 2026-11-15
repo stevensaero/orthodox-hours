@@ -99,6 +99,10 @@ def build():
 
     entry = {
         'kind': 'saint',
+        # Hand-entered: how the dismissal names the day's saints ("and of ..., whose memory we
+        # celebrate"). From the title line; the OCA title where there is one. None on a feast
+        # of the Theotokos or of an icon, where no saint is added.
+        'name': 'our father among the saints Gregory the Wonderworker, Bishop of Neocaesarea',
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'six_stichera',
         'fekula_section': '2C',

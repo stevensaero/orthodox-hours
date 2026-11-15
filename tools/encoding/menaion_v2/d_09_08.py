@@ -216,6 +216,10 @@ def build():
     entry = {
         'kind': 'feast',
         'feast_ref': 'nativity_theotokos',
+        # Hand-entered: how the dismissal names the day's saints ("and of ..., whose memory we
+        # celebrate"). From the title line; the OCA title where there is one. None on a feast
+        # of the Theotokos or of an icon, where no saint is added.
+        'name': None,
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'great_feast',
         'fekula_section': '2F',

@@ -20,6 +20,7 @@ const SEPTEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Prophet Zacharias",
     "title": {
      "text": "COMMEMORATION OF THE HOLY PROPHET ZACHARIAS THE FATHER OF THE HONORABLE FORERUNNER JOHN THE BAPTIST",
      "tier": 1,
@@ -894,6 +895,7 @@ const SEPTEMBER = {
    },
    {
     "kind": "saint",
+    "name": "the holy Prophet Zacharias and the holy and righteous Elizabeth",
     "title": {
      "text": "COMMEMORATION OF THE HOLY PROPHET ZACHARIAS & THE HOLY & RIGHTEOUS ELIZABETH, THE PARENTS OF THE HONORABLE FORERUNNER JOHN THE BAPTIST",
      "tier": 1,
@@ -2752,6 +2754,7 @@ const SEPTEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Archangel Michael and the holy Martyr Eudoxius and those with him",
     "title": {
      "text": "COMMEMORATION OF THE MIRACLE PERFORMED BY THE ARCHANGEL MICHAEL AT COLOSSAE, WHICH IS ALSO KNOWN AS CHONAE. COMMEMORATION OF THE MARTYR EUDOXIUS AND THOSE WITH HIM.",
      "tier": 1,
@@ -4278,6 +4281,7 @@ const SEPTEMBER = {
    {
     "kind": "forefeast",
     "feast_ref": "nativity_theotokos",
+    "name": "the holy Martyr Sozon",
     "title": {
      "text": "FOREFEAST OF THE NATIVITY OF THE MOST HOLY THEOTOKOS COMMEMORATION OF THE HOLY MARTYR SOZON",
      "tier": 1,
@@ -5894,6 +5898,7 @@ const SEPTEMBER = {
    {
     "kind": "feast",
     "feast_ref": "nativity_theotokos",
+    "name": null,
     "title": {
      "text": "THE NATIVITY OF OUR MOST HOLY SOVEREIGN LADY, THE THEOTOKOS AND EVER-VIRGIN MARY",
      "tier": 1,
@@ -7953,6 +7958,7 @@ const SEPTEMBER = {
    },
    {
     "kind": "feast",
+    "name": null,
     "title": {
      "text": "COMMEMORATION OF THE FINDING OF THE WONDERWORKING ICON OF THE MOST HOLY THEOTOKOS KNOWN AS THE KURSK-ROOT ICON OF THE SIGN",
      "tier": 1,
@@ -9242,6 +9248,7 @@ const SEPTEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Martyr Callistratus and his companions",
     "title": {
      "text": "COMMEMORATION OF THE HOLY MARTYR CALLISTRATUS & HIS COMPANIONS",
      "tier": 1,

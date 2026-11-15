@@ -20,6 +20,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy and all-praised Apostle Philip",
     "title": {
      "text": "COMMEMORATION OF THE HOLY AND GLORIOUS APOSTLE PHILIP",
      "tier": 1,
@@ -1456,6 +1457,7 @@ const NOVEMBER = {
    },
    {
     "kind": "saint",
+    "name": "our father among the saints Gregory Palamas, Archbishop of Thessalonica",
     "title": {
      "text": "COMMEMORATION OF OUR FATHER AMONG THE SAINTS GREGORY PALAMAS, ARCHBISHOP OF THESSALONICA, THE WONDERWORKER",
      "tier": 1,
@@ -2879,6 +2881,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Martyrs and Confessors Gurias, Samonas and Abibus",
     "title": {
      "text": "COMMEMORATION OF THE HOLY MARTYRS; GURIAS, SAMONAS & ABIBUS",
      "tier": 1,
@@ -3768,6 +3771,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Apostle and Evangelist Matthew",
     "title": {
      "text": "COMMEMORATION OF THE HOLY APOSTLE & EVANGELIST MATTHEW",
      "tier": 1,
@@ -5258,6 +5262,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "our father among the saints Gregory the Wonderworker, Bishop of Neocaesarea",
     "title": {
      "text": "COMMEMORATION OF OUR FATHER AMONG THE SAINTS, GREGORY THE WONDERWORKER, BISHOP OF NEO-CAESAREA",
      "tier": 1,
@@ -6246,6 +6251,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Martyrs Plato and Romanus",
     "title": {
      "text": "COMMEMORATION OF THE HOLY MARTYRS PLATO & ROMANUS",
      "tier": 1,
@@ -7371,6 +7377,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Prophet Obadiah and the holy Martyr Barlaam",
     "title": {
      "text": "COMMEMORATION OF THE HOLY PROPHET OBADIAH COMMEMORATION OF THE HOLY MARTYR BARLAAM OF CAESAREA IN CAPPADOCIA",
      "tier": 1,
@@ -8524,6 +8531,7 @@ const NOVEMBER = {
    {
     "kind": "forefeast",
     "feast_ref": "entrance_theotokos",
+    "name": "our venerable father Gregory the Decapolite and our father among the saints Proclus, Archbishop of Constantinople",
     "title": {
      "text": "FOREFEAST OF THE ENTRANCE OF THE MOST HOLY THEOTOKOS COMMEMORATION OF OUR VENERABLE FATHER GREGORY THE DECAPOLITE & OF OUR FATHER AMONG THE SAINTS PROCLUS, ARCHBISHOP OF CONSTANTINOPLE",
      "tier": 1,
@@ -10709,6 +10717,7 @@ const NOVEMBER = {
    {
     "kind": "feast",
     "feast_ref": "entrance_theotokos",
+    "name": null,
     "title": {
      "text": "THE ENTRY OF OUR MOST HOLY LADY, THE THEOTOKOS & EVER-VIRGIN MARY, INTO THE TEMPLE",
      "tier": 1,
@@ -13092,6 +13101,7 @@ const NOVEMBER = {
    {
     "kind": "afterfeast",
     "feast_ref": "entrance_theotokos",
+    "name": "the holy Apostle Philemon and those with him",
     "title": {
      "text": "AFTER-FEAST OF THE ENTRY OF THE THEOTOKOS INTO THE TEMPLE COMMEMORATION OF THE HOLY APOSTLE PHILEMON & THOSE WITH HIM",
      "tier": 1,
@@ -14779,6 +14789,7 @@ const NOVEMBER = {
    {
     "kind": "afterfeast",
     "feast_ref": "entrance_theotokos",
+    "name": "our fathers among the saints Amphilochius, Bishop of Iconium, and Gregory, Bishop of Agrigentum",
     "title": {
      "text": "AFTERFEAST OF THE ENTRY OF THE THEOTOKOS INTO THE TEMPLE COMMEMORATION OF OUR FATHERS AMONG THE SAINTS, AMPHILOCHIUS, BISHOP OF ICONIUM, & GREGORY, BISHOP OF AGRIGENTUM",
      "tier": 1,
@@ -16928,6 +16939,7 @@ const NOVEMBER = {
    {
     "kind": "afterfeast",
     "feast_ref": "entrance_theotokos",
+    "name": "the holy Great-martyr Catherine and the holy Great-martyr Mercurius",
     "title": {
      "text": "AFTERFEAST OF THE ENTRY OF THE MOST HOLY THEOTOKOS INTO THE TEMPLE COMMEMORATION OF THE HOLY GREAT MARTYR CATHERINE OF ALEXANDRIA COMMEMORATION OF THE HOLY GREAT MARTYR MERCURIUS OF CAESAREA IN CAPPADOCIA",
      "tier": 1,
@@ -19277,6 +19289,7 @@ const NOVEMBER = {
    {
     "kind": "apodosis",
     "feast_ref": "entrance_theotokos",
+    "name": "the holy Hieromartyrs Clement, Pope of Rome, and Peter, Patriarch of Alexandria",
     "title": {
      "text": "APODOSIS OF THE ENTRY OF THE THEOTOKOS INTO THE TEMPLE COMMEMORATION OF OUR FATHERS AMONG THE SAINTS, THE HIEROMARTYR CLEMENT, POPE OF ROME, AND PETER, PATRIARCH OF ALEXANDRIA",
      "tier": 1,
@@ -21661,6 +21674,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "our venerable father Alypius the Stylite",
     "title": {
      "text": "COMMEMORATION OF OUR VENERABLE FATHER ALYPIUS THE STYLITE OF ADRIANOPOLIS",
      "tier": 1,
@@ -22332,6 +22346,7 @@ const NOVEMBER = {
    },
    {
     "kind": "saint",
+    "name": "our father among the saints Innocent, Bishop of Irkutsk",
     "title": {
      "text": "COMMEMORATION OF OUR FATHER AMONG THE SAINTS, INNOCENT, BISHOP OF IRKUTSK, THE WONDERWORKER",
      "tier": 1,
@@ -23757,6 +23772,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Great-martyr James the Persian and our venerable father Palladius",
     "title": {
      "text": "COMMEMORATION OF THE HOLY GREAT-MARTYR JAMES THE PERSIAN COMMEMORATION OF OUR VENERABLE FATHER PALLADIUS",
      "tier": 1,
@@ -25248,6 +25264,7 @@ const NOVEMBER = {
    },
    {
     "kind": "feast",
+    "name": null,
     "title": {
      "text": "COMMEMORATION OF THE WONDERWORKING ICON OF THE MOST HOLY THEOTOKOS KNOWN AS THE KURSK-ROOT ICON OF THE SIGN",
      "tier": 1,
@@ -26525,6 +26542,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Venerable-martyr Stephen the New and the holy Martyr Irenarchus",
     "title": {
      "text": "COMMEMORATION OF THE- HOLY VENERABLE-MARTYR STEPHEN THE NEW COMMEMORATION OF THE HOLY MARTYR IRENARCHUS",
      "tier": 1,
@@ -28039,6 +28057,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Martyr Paramon and our venerable father Acacius",
     "title": {
      "text": "COMMEMORATION OF THE HOLY MARTYR PARAMON, COMMEMORATION OF THE VENERABLE ACACIUS, WHO IS MENTIONED IN “THE LADDER”",
      "tier": 1,
@@ -29270,6 +29289,7 @@ const NOVEMBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy and all-praised Apostle Andrew the First-called",
     "title": {
      "text": "COMMEMORATION OF THE HOLY AND ALL-PRAISED APOSTLE ANDREW, THE FIRST-CALLED",
      "tier": 1,

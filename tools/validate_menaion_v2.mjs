@@ -306,6 +306,13 @@ function checkServiceOrder(svc, path, entry) {
 function checkEntry(entry, path, claimed, ctx) {
   const unknown = Object.keys(entry).filter(k => !S.ENTRY_TOP.known.includes(k));
   if (unknown.length) err(path, `unknown entry key(s): ${unknown.join(', ')} — add to the schema deliberately (§7.4)`);
+  // The dismissal name (ruling 12): every service carries one, hand-entered. It reads
+  // "and of <name>, whose memory we celebrate", so it is in sentence case with no
+  // closing stop. Null only on a feast itself (of the Theotokos, of an icon).
+  if (!('name' in entry)) err(path, `needs a hand-entered 'name' for the dismissal (null on a feast)`);
+  else if (entry.name === null) { if (entry.kind !== 'feast') err(path, `'name' is null but the service is not a feast`); }
+  else if (typeof entry.name !== 'string' || !/^(the|our) /.test(entry.name) || /[.;:]$/.test(entry.name) || entry.name === entry.name.toUpperCase())
+    err(path, `'name' must read after "and of": begin "the ..." or "our ...", sentence case, no closing stop`);
   if (entry.general_fallback) {
     const g = entry.general_fallback;
     if (!S.GENERAL_TYPES.includes(g.type)) err(path, `general_fallback.type '${g.type}' is not a General Menaion service`);
