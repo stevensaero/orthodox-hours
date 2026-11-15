@@ -11,6 +11,7 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
+import { resolveLicClosers } from '../lib/vespers-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -966,6 +967,20 @@ const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
 // Menaion V2 (branch v2-wirein: the Hours read V2; the other services still read
 // V1 until their own rewrites land, then V1 and its loader are deleted together).
 const _menaionV2Cache = {};
+// The Octoechos lookups the Vespers rules read (src/lib/vespers-propers.js).
+const VESPERS_OCTO = {
+  sundayDogmatikon: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.dogmatikon : null; },
+  dogmatikon: (t) => OctoV2.getV2Dogmatikon(t),
+  doxTheotokion: (t, eve) => OctoV2.getV2DoxasticonTheotokion(t, eve),
+  evening: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.lic_theotokion : null; },
+};
+// The Menaion V2 service of a date, { c, path }, or null when not encoded.
+function getMenaionV2Service(date, serviceIndex) {
+  const mo = String(date.getMonth() + 1).padStart(2, "0");
+  const key = `${mo}-${String(date.getDate()).padStart(2, "0")}`;
+  const list = v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
+  return list.length ? list[Math.min(serviceIndex, list.length - 1)] : null;
+}
 const _ocaHymnCache = {};
 let _menaionV2General = null; // the General Menaion, read for a service that names its fallback
 const PREFER_OCA_DEFAULT = true; // ruling 11; the reader's toggle arrives with the switch
@@ -3165,7 +3180,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright) {
   return [menaionEntry.paroemia_1, menaionEntry.paroemia_2, menaionEntry.paroemia_3].filter(Boolean);
 }
 
-function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "", templeDedication = null) {
+function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "", templeDedication = null, menaionV2 = null) {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
   const isPentecostarion = season === "pentecostarion" || season === "brightweek";
@@ -3644,6 +3659,43 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       {n:1,  text:"For His mercy is confirmed on us, and the truth of the Lord endures forever."},
     ];
     let licStichera = [];
+    // Glory and Both now at "Lord, I have cried", outside the Pentecostarion.
+    // Chosen printed-first in src/lib/vespers-propers.js from the Menaion V2 service
+    // (gated against the OCA texts by tools/test_menaion_v2_vespers.mjs); a date the
+    // Menaion does not hold still gets its Octoechos Both now.
+    const emitLicClosers = () => {
+      const r = resolveLicClosers({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO });
+      const v2Saint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : effSaint;
+      const LABEL = { doxasticon: "Doxasticon", feast: "Sticheron of the feast", theotokion: "Theotokion", dogmatikon: "Dogmatikon", stavrotheotokion: "Stavrotheotokion" };
+      const hymn = (slot, id) => ({
+        id, type: "movable", label: LABEL[slot.kind] || "Sticheron",
+        rubric: "Tone " + (slot.tone || tone) + ":",
+        text: hymnText(slot.node),
+        source: slot.source === "octoechos" ? "Octoechos" : "Menaion — " + (slot.kind === "feast" ? "of the feast" : v2Saint),
+        ...(slot.source === "octoechos" ? hymnProvenance(slot.node) : (slot.node.path ? { srcPath: slot.node.path } : {})),
+        fekula: { section: fekulaSection, note: r.rule + (r.notes.length ? " " + r.notes.join(" ") : "") },
+      });
+      if (r.glory && !r.combined) {
+        elements.push({ id: "v-lic-glory", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push(hymn(r.glory, "v-lic-doxasticon"));
+        elements.push({ id: "v-lic-nowever", type: "fixed", label: "",
+          text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
+      } else {
+        elements.push({ id: "v-lic-glory-nowever", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
+          source: "HTM Vespers",
+          fekula: { section: fekulaSection, note: "No doxasticon is printed: Glory… now and ever are sung together." } });
+      }
+      if (r.bothNow && r.bothNow.node) {
+        elements.push(hymn(r.bothNow, r.bothNow.kind === "dogmatikon" ? "v-lic-dogmatikon" : "v-lic-theotokion"));
+      } else {
+        elements.push({ id: "v-lic-theotokion", type: "movable", label: "Theotokion", unresolved: true,
+          text: "[Both now — no hymn found for Tone " + tone + "]", source: "Octoechos",
+          fekula: { section: fekulaSection, note: r.rule } });
+      }
+    };
+
     let licRendered = false; // true when Pentecostarion branch renders directly
     if (isSunday && !isPentecostarion) {
       // ── Sunday Vespers LIC engine (ordinary Octoechos Sundays) ──────────────
@@ -3688,42 +3740,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula: { section: fekulaSection, note: "Commemoration sticheron at V.(" + v.n + ") pending encoding. " + sunNote } });
         }
       });
-      // Glory → doxasticon, OR no-Glory rule (§8.2): when the commemoration has no
-      // doxasticon, NO resurrectional Glory is substituted — "Glory… now and ever"
-      // are sung together and resolve straight to the Dogmatikon.
-      const sunDox = menaionEntry && menaionEntry.stichera_glory;
-      const sunDoxText = sunDox ? (typeof sunDox === "string" ? sunDox : sunDox.text) : null;
-      if (sunDoxText) {
-        elements.push({ id: "v-lic-glory", type: "fixed", label: "",
-          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
-        elements.push({ id: "v-lic-doxasticon", type: "movable", label: "Doxasticon",
-          rubric: "Tone " + ((typeof sunDox === "string" ? tone : sunDox.tone) || tone) + ":",
-          text: sunDoxText, source: "Menaion — " + effSaint,
-          fekula: { section: fekulaSection, note: "Glory: doxasticon of " + effSaint + "." } });
-        elements.push({ id: "v-lic-nowever", type: "fixed", label: "",
-          text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
-      } else {
-        elements.push({ id: "v-lic-glory-nowever", type: "fixed", label: "",
-          text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
-          source: "HTM Vespers",
-          fekula: { section: fekulaSection, note: "No commemoration doxasticon: Glory… now and ever sung together. — sunday_vespers_spec.md §8.2" } });
-      }
-      // Both now = the Dogmatikon in the tone of the week (always, every resurrectional Sunday).
-      if (sunSat && sunSat.dogmatikon) {
-        elements.push({ id: "v-lic-dogmatikon", type: "movable", label: "Dogmatikon",
-          rubric: "Tone " + tone + ":",
-          text: hymnText(sunSat.dogmatikon), source: "Octoechos", ...hymnProvenance(sunSat.dogmatikon),
-          fekula: { section: fekulaSection, note: "Both Now: resurrectional Dogmatikon in the tone of the week (Saturday-evening Great Vespers). Fekula §4B / Ch.6; Octoechos." } });
-      } else {
-        // V2 always carries great_vespers.dogmatikon — reaching here is a data
-        // bug the V2 validator would have caught, not a fallback condition.
-        elements.push({ id: "v-lic-theotokion", type: "movable", label: "Theotokion",
-          unresolved: true,
-          rubric: "Tone " + tone + ":",
-          text: "[Dogmatikon — not found for Tone " + tone + "]",
-          source: "Octoechos",
-          fekula: { section: fekulaSection, note: "Both Now: tone-of-week Dogmatikon (fallback theotokion — Octoechos sat.dogmatikon absent)." } });
-      }
+      emitLicClosers();
       licRendered = true;
     } else if (!isPentecostarion && rank === "simple" && octoDay && octoDay.lic) {
       // §2A: first 3 from Octoechos
@@ -3983,6 +4000,10 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula:{section:fekulaSection, note:"Menaion sticheron at V.("+v.n+"). Enter stichera_lord_i_call in SAMPLE_MENAION to complete."}});
         }
       });
+      if (!isPentecostarion) {
+        emitLicClosers();
+      } else {
+      // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
       // Glory → doxasticon (Fekula: "if there be one"; stichera_glory_absent = verified absent in PDF)
       const doxasticonEntry = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_glory)
         ? pentEntry.stichera_glory
@@ -4061,6 +4082,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             source:"Octoechos",
             fekula:{section:fekulaSection, note:"Both Now: theotokion in tone of week."}});
         }
+      }
       }
     } else if (!licRendered) {
       // §2C/§2D+: all Menaion, render plain verses + single placeholder
@@ -15907,6 +15929,7 @@ export default function App() {
     Promise.all([
       ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
       _loadMenaionV2(m, `${m}-${String(d.getDate()).padStart(2, "0")}`),
+      _loadMenaionV2(String(dNext.getMonth() + 1).padStart(2, "0"), null), // Vespers opens the next day
       _loadPentecostarion(),
       OctoV2.loadV2Tone(toneForDate),
       OctoV2.loadV2Tone(toneForVespers),
@@ -16210,7 +16233,8 @@ export default function App() {
         vMen = sel;
         vPar = computeVespersParoemias(sel, vPnt, vespersNext.vIsPent, vespersNext.vIsBright);
       }
-      els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication);
+      els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
+        getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex));
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication);
     } else if (currentService.key === 'pre_communion') {

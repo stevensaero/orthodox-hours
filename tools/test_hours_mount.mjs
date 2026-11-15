@@ -22,18 +22,21 @@ await build({ root: TMP, configFile: false, logLevel: 'error',
            rollupOptions: { external: ['react', 'react-dom', 'react-dom/client', 'react-router-dom'] } } });
 const bundle = readdirSync(OUT).find((f) => /^entry\.m?js$/.test(f));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-// [date the tool opens on, text that must appear, text that must not]
+// [date, service, text that must appear, text that must not]. The date and service
+// are set the way the tool itself remembers them (sessionStorage). Vespers on a
+// date is the Vespers that opens the NEXT day.
 const CASES = [
-  ['2026-11-14', ['entreat the merciful God'], ['not yet encoded']],                       // Saturday, polyeleos, OCA troparion
-  ['2026-11-23', ['Today is the prelude', 'O God of our fathers'], ['not yet encoded']], // Monday afterfeast: feast, Glory, saint
-  ['2026-11-10', ['not yet encoded'], []],                                              // a weekday V2 does not hold
+  ['2026-11-14', '1st_hour', ['entreat the merciful God'], ['not yet encoded']],                      // Saturday, polyeleos, OCA troparion
+  ['2026-11-23', '3rd_hour', ['Today is the prelude', 'O God of our fathers'], ['not yet encoded']],  // Monday afterfeast: feast, Glory, saint
+  ['2026-11-10', '1st_hour', ['not yet encoded'], []],                                                // a weekday V2 does not hold
+  ['2026-11-15', 'vespers', ['When Christ called thee', 'Prophet David, the ancestor of God'], []],   // Sunday evening for 11-16: Glory and the printed dogmaticon
+  ['2026-11-21', 'vespers', ['Let heaven rejoice today'], []],                                        // Saturday evening for 11-22: Glory of the feast, then the dogmaticon
 ];
 let bad = 0;
-for (const [iso, must, mustNot] of CASES) {
-  const RealDate = Date; const fixed = new RealDate(iso + 'T10:00:00').getTime();
-  class FakeDate extends RealDate { constructor(...a) { super(...(a.length ? a : [fixed])); } static now() { return fixed; } }
+for (const [iso, service, must, mustNot] of CASES) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url: 'http://localhost/orthodox-hours/', pretendToBeVisual: true });
-  const { window } = dom; window.Date = FakeDate; globalThis.Date = FakeDate;
+  const { window } = dom;
+  window.sessionStorage.setItem('hours.date', iso); window.sessionStorage.setItem('hours.serviceKey', service);
   for (const k of Object.getOwnPropertyNames(window)) { if (k in globalThis) continue; try { Object.defineProperty(globalThis, k, { value: window[k], configurable: true, writable: true }); } catch { /* skip */ } }
   for (const k of ['window', 'document', 'navigator', 'localStorage', 'sessionStorage']) Object.defineProperty(globalThis, k, { value: k === 'window' ? window : window[k], configurable: true, writable: true });
   class Obs { observe() {} unobserve() {} disconnect() {} takeRecords() { return []; } }
@@ -42,15 +45,15 @@ for (const [iso, must, mustNot] of CASES) {
   const errs = []; const ce = console.error; console.error = (...a) => errs.push(a.map(String).join(' ').slice(0, 200));
   let text = '';
   try {
-    const mod = await import(join(OUT, bundle) + '?d=' + iso);
+    const mod = await import(join(OUT, bundle) + '?d=' + iso + service);
     mod.mount(window.document.getElementById('root'));
     for (let i = 0; i < 40; i++) { await sleep(100); text = window.document.body.textContent; if (must.every((m) => text.includes(m))) break; }
   } catch (e) { errs.push('THREW ' + (e.stack || e).toString().slice(0, 400)); }
-  console.error = ce; globalThis.Date = RealDate;
+  console.error = ce;
   const miss = must.filter((m) => !text.includes(m)); const extra = mustNot.filter((m) => text.includes(m));
   const fatal = errs.filter((e) => /THREW|Error boundary|Something went wrong|is not defined|Cannot read/.test(e));
-  if (miss.length || extra.length || fatal.length) { bad++; console.log(`FAIL ${iso}: missing ${JSON.stringify(miss)} unexpected ${JSON.stringify(extra)}`); fatal.slice(0, 3).forEach((e) => console.log('   ', e)); console.log('    page text length', text.length, '|', text.replace(/\s+/g, ' ').slice(0, 300)); }
-  else console.log(`ok   ${iso}: ${must.join(' | ')}`);
+  if (miss.length || extra.length || fatal.length) { bad++; console.log(`FAIL ${iso} ${service}: missing ${JSON.stringify(miss)} unexpected ${JSON.stringify(extra)}`); fatal.slice(0, 3).forEach((e) => console.log('   ', e)); console.log('    page text length', text.length, '|', text.replace(/\s+/g, ' ').slice(0, 300)); }
+  else console.log(`ok   ${iso} ${service}: ${must.join(' | ')}`);
   window.close();
 }
 rmSync(TMP, { recursive: true, force: true }); rmSync(OUT, { recursive: true, force: true });
