@@ -14,7 +14,7 @@ import { resolveHoursPropers } from '../lib/hours-propers.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
 import { stripCaret, ocaVespersReadingsFor } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
-import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
+import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
 
@@ -5462,7 +5462,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 // Readings slot: Prokeimenon and Epistle/Gospel rubric noted but not rendered
 //   (readings engine FW-19/20 not yet built).
 
-function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null) {
+function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null) {
   const { dow: dowNumber, tone } = liturgicalData;
   const isSunday = dowNumber === 0;
   const elements = [];
@@ -5517,9 +5517,9 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   // whenever the printed service appoints them — a presence gate, not the
   // former polyeleos/vigil rank gate — and stand beside the day's, never in
   // place of it. The shared element shape below keeps the explainer badges fed.
-  const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, dailyReading, feastReading });
+  const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, rank: menaionRank, dailyReading, feastReading });
   const typicaPropers = resolveLiturgyPropers({
-    liturgicalData, menaionEntry, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
+    liturgicalData, menaionEntry, menaionPlan, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
     sources: { sunProkeimenon: srcSunProkeimenon, sunAlleluia: srcSunAlleluia,
                dailyPropers: (k) => OctoV2.getV2DailyLiturgyPropers(k) },
   });
@@ -15759,10 +15759,20 @@ export default function App() {
     !selectedMenaionEntry.feast_e.startsWith('absent');
   const hasFeastG = selectedMenaionEntry && selectedMenaionEntry.feast_g &&
     !selectedMenaionEntry.feast_g.startsWith('absent');
-  const feastReading = (!namedDayIsSunday && (hasFeastE || hasFeastG))
-    ? { e: hasFeastE ? selectedMenaionEntry.feast_e : null,
-        g: hasFeastG ? selectedMenaionEntry.feast_g : null }
-    : null;
+  // The Menaion's Liturgy material: what the V2 service prints (liturgyPlan). The
+  // Epistle and Gospel "of the commemoration" are its first printed references.
+  const v2DaySvc = getMenaionV2Service(date, selectedServiceIndex);
+  const v2Liturgy = v2DaySvc ? v2LiturgyPlan(v2DaySvc.c, v2DaySvc.path) : null;
+  const v2Rank = v2DaySvc ? v2DaySvc.c.rank : null;
+  const feastReading = namedDayIsSunday ? null
+    : v2Liturgy
+      ? ((v2Liturgy.epistles.length || v2Liturgy.gospels.length)
+          ? { e: v2Liturgy.epistles[0] ? v2Liturgy.epistles[0].display : null, g: v2Liturgy.gospels[0] ? v2Liturgy.gospels[0].display : null }
+          : null)
+      // PENTECOSTARION season only — unchanged, read from the old-shape entry until that rework.
+      : (liturgicalData.season === "pentecostarion" && (hasFeastE || hasFeastG))
+        ? { e: hasFeastE ? selectedMenaionEntry.feast_e : null, g: hasFeastG ? selectedMenaionEntry.feast_g : null }
+        : null;
 
   // Library → Scripture handoff payload (Phase 2). Same source the Typica
   // assembler and context card use: dailyReading (cycle) + feastReading (menaion
@@ -16035,7 +16045,7 @@ export default function App() {
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
         getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex));
     } else if (currentService.key === 'typica') {
-      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication);
+      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank);
     } else if (currentService.key === 'pre_communion') {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
@@ -16047,7 +16057,7 @@ export default function App() {
       // passed in so the assembler stays pure; the Little Entrance order and
       // the Beatitude troparia are Phase 3.
       const liturgyCtx = {
-        liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading,
+        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionRank: v2Rank, pentEntry, dailyReading, feastReading,
         sources: {
           sunProkeimenon: srcSunProkeimenon,
           sunAlleluia: srcSunAlleluia,

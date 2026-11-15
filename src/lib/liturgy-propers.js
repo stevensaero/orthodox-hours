@@ -49,7 +49,7 @@ const textOf = (v) => (v && typeof v === "object" ? v.text : v) || null;
  * @returns {{ prokeimena: Array, alleluia: Array, communion: Array }}
  *   each item: { tone, text, stichoi:[], origin, source, note, fekula:{section,note}, path? }
  */
-export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pentEntry = null, menaionFirst = false, sources = {} }) {
+export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, menaionPlan = null, pentEntry = null, menaionFirst = false, sources = {} }) {
   const ld = liturgicalData || {};
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
@@ -123,7 +123,22 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pen
   }
 
   // ── the Menaion's proper — presence-gated, never rank-gated ──────────────
-  if (menaionEntry) {
+  // From the Menaion V2 service (liturgyPlan in src/data/menaion_v2/adapter.js):
+  // what the page prints for the Liturgy, in its order, feast and saint alike.
+  if (menaionPlan && menaionPlan.has) {
+    const src = "Menaion";
+    const fk = { section: menaionPlan.section ? "§" + menaionPlan.section : null,
+      note: "…and of the saint, if there be such. Present because the printed service appoints it; the gate is the Menaion's contents, not the saint's rank (cf. readings rule)." };
+    const of = (x) => (x.feast ? "the feast" : (x.who || menaionPlan.title || "the commemoration"));
+    menaionPlan.prokeimena.forEach((x) => men.prokeimena.push({ tone: x.tone, text: x.text, stichoi: x.stichoi, path: x.path,
+      origin: "menaion", feast: x.feast, source: src, note: "Prokeimenon of " + of(x) + ".", fekula: fk }));
+    menaionPlan.alleluia.forEach((x) => men.alleluia.push({ tone: x.tone, text: x.text, stichoi: x.stichoi, path: x.path,
+      origin: "menaion", feast: x.feast, source: src, note: "Alleluia of " + of(x) + ".", fekula: fk }));
+    menaionPlan.communion.forEach((x) => men.communion.push({ text: x.text, path: x.path,
+      origin: "menaion", feast: x.feast, source: src, note: "Communion hymn of " + of(x) + ".", fekula: fk }));
+  } else if (inPent && menaionEntry) {
+    // PENTECOSTARION — unchanged from v0.52.2, not yet reworked: the saint's propers
+    // inside the season still come from the old-shape entry.
     const saint = menaionEntry.saint || "the commemoration";
     const src = "Menaion · " + (menaionEntry.source_file || saint);
     const fk = { section: menaionEntry.fekula_section ? "§" + menaionEntry.fekula_section : null,
@@ -185,7 +200,13 @@ export function trisagionReplacement({ menaionEntry, pentEntry }) {
  * is read first, `zadostoinik_*` as the fallback.
  * Returns { refrain, irmos, source, suppressedOnly } or null.
  */
-export function zadostoinikFor({ menaionEntry, pentEntry }) {
+export function zadostoinikFor({ menaionEntry, menaionPlan = null, pentEntry }) {
+  // The Menaion V2 service prints it as the refrain and irmos "Instead of It is truly meet".
+  if (!pentEntry && menaionPlan && menaionPlan.zadostoinik) {
+    const z = menaionPlan.zadostoinik;
+    return { refrain: z.refrain, irmos: z.irmos, source: "Menaion", path: z.path, suppressedOnly: false, legacyField: false };
+  }
+  // PENTECOSTARION (and, until V1 is retired, a date V2 does not hold) — unchanged.
   for (const [entry, from] of [[pentEntry, "Pentecostarion"], [menaionEntry, "Menaion"]]) {
     if (!entry) continue;
     const refrain = entry.instead_of_it_is_truly_meet_refrain || entry.zadostoinik_refrain || null;

@@ -149,7 +149,7 @@ const EMPTY_HOOKS = Object.freeze({ before: {}, after: {}, replace: {}, skip: ne
 //                    dowTroparia, departedKontakion, protectress,
 //                    sundayBeatitudes(tone), weekdayBeatitudes(tone, dayKey) } }
 function planHooks(ctx, variant) {
-  const { liturgicalData: ld = {}, menaionEntry = null, pentEntry = null, dailyReading = null, feastReading = null, sources = {} } = ctx;
+  const { liturgicalData: ld = {}, menaionEntry = null, menaionPlan = null, pentEntry = null, dailyReading = null, feastReading = null, sources = {} } = ctx;
   const h = { before: {}, after: {}, replace: {}, skip: new Set(), section: {} };
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const rank = (menaionEntry && menaionEntry.rank) || "simple";
@@ -244,9 +244,9 @@ function planHooks(ctx, variant) {
 
   // ── Readings, prokeimenon, Alleluia, communion ───────────────────────────
   const readings = sources.readingsForDay
-    ? sources.readingsForDay({ liturgicalData: ld, menaionEntry, dailyReading, feastReading })
+    ? sources.readingsForDay({ liturgicalData: ld, menaionEntry, rank: ctx.menaionRank || null, dailyReading, feastReading })
     : { groups: [], order: "day-first", rule: { section: null, quote: "" }, hasMenaionReadings: false };
-  const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, pentEntry, menaionFirst: readings.order === "menaion-first", sources });
+  const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, menaionPlan, pentEntry, menaionFirst: readings.order === "menaion-first", sources });
 
   const prokEls = propers.prokeimena.map((p, i) => ({
     id: "lit-prokeimenon-" + i, type: "prokeimenon",
@@ -331,7 +331,7 @@ function planHooks(ctx, variant) {
 
   // ── Hymn to the Theotokos: the zadostoinik ──────────────────────────────
   {
-    const z = zadostoinikFor({ menaionEntry, pentEntry });
+    const z = zadostoinikFor({ menaionEntry, menaionPlan, pentEntry });
     if (z && !z.suppressedOnly) {
       h.replace["cm-07"] = [
         mov("lit-zadostoinik", "Instead of It is truly meet", [z.refrain, z.irmos].filter(Boolean).join("\n\n"), {

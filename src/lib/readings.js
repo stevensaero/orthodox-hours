@@ -117,6 +117,7 @@ const SATURDAY_RULE = {
 export function readingsForDay({
   liturgicalData,
   menaionEntry = null,
+  rank: rankGiven = null,          // the service's rank, from the Menaion V2 service
   dailyReading = null,
   feastReading = null,
 } = {}) {
@@ -126,7 +127,7 @@ export function readingsForDay({
   const inFeastPeriod = ["great_feast", "forefeast", "afterfeast", "apodosis"]
     .includes(ld.season);
 
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const rank = rankGiven || (menaionEntry && menaionEntry.rank) || "simple";
   const rule = isSunday
     ? sundayRule(rank, inFeastPeriod)
     : (isSaturday ? SATURDAY_RULE : WEEKDAY_RULE);

@@ -197,6 +197,36 @@ export function hoursPlan(c, base, opts = {}) {
   return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, hours, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
 }
 
+// What a service prints for the Liturgy, in print order: prokeimena, Alleluia,
+// communion verses, the Epistle and Gospel references, and the hymn sung "instead
+// of It is truly meet". Both stored shapes are read (one of each, or lists where a
+// feast and a saint each have theirs); a verse is attached to the hymn it follows.
+// Nothing is supplied that the page does not print.
+export function liturgyPlan(c, base) {
+  const l = c.liturgy ?? null;
+  const title = [].concat(c.title ?? []).map((t) => t.text ?? t).join(' ');
+  const empty = { has: false, title, prokeimena: [], alleluia: [], communion: [], epistles: [], gospels: [], zadostoinik: null };
+  if (!l) return empty;
+  const isVerse = (n) => labels(n).includes('refrain') || n.sourceLabel === 'Verse';
+  const hymns = (single, verse, list) => {
+    const out = [];
+    const push = (n, path) => out.push({ tone: n.tone ?? null, text: n.text, stichoi: [], feast: ofFeast(n) || c.kind === 'feast', who: n.saint ?? null, path: `${base}.liturgy.${path}` });
+    if (isText(l[single])) { push(l[single], single); if (isText(l[verse])) out[0].stichoi.push(l[verse].text); }
+    (l[list] ?? []).forEach((n, i) => { if (!isText(n)) return; if (isVerse(n) && out.length) out[out.length - 1].stichoi.push(n.text); else push(n, `${list}[${i}]`); });
+    return out;
+  };
+  const refs = (single, list) => [].concat(l[single] ?? [], l[list] ?? []).filter((r) => r && r.citation).map((r) => {
+    const cit = r.citation; const ref = String(cit.verses).includes(':') ? `${cit.book} ${cit.verses}` : `${cit.book} ${cit.chapter}:${cit.verses}`;
+    return { ref, pericope: cit.pericope_number ?? null, heading: r.heading ?? null, basis: r.citation_basis ?? 'printed', feast: ofFeast(r),
+      // "Book c:v (§n)" is the form the lectionary helpers read.
+      display: ref + (cit.pericope_number != null ? ` (§${cit.pericope_number})` : '') };
+  });
+  const zad = isText(l.megalynarion) || isText(l.megalynarion_refrain)
+    ? { refrain: l.megalynarion_refrain?.text ?? null, irmos: l.megalynarion?.text ?? null, rubric: l.megalynarion_rubric?.text ?? null, path: `${base}.liturgy.megalynarion` } : null;
+  return { has: true, title, section: c.fekula_section, prokeimena: hymns('prokeimenon', 'prokeimenon_verse', 'prokeimena'), alleluia: hymns('alleluia', 'alleluia_verse', 'alleluias'),
+    communion: hymns('communion_verse', null, 'communion_verses'), epistles: refs('epistle', 'epistles'), gospels: refs('gospel', 'gospels'), zadostoinik: zad };
+}
+
 // The OCA hymns for a date, as { slot: node }, or null when there are none.
 export async function ocaFor(key) {
   const slots = ocaSlotsForKey(key);
