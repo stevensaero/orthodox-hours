@@ -642,9 +642,32 @@ DONE on the branch — the VOL. III ORDER LAYER (14 Nov):
     Fekula appoints the Menaion's only.** See the next item.
 - Whose reading a reference is (feast or saint) is read from the page's own
   heading as the capture records it ("FOR THE FEAST:"), in `liturgyPlan`.
-- NOT YET: Vespers, Little Compline and Matins of the orders (not entered); the
-  bulletin's readings (still the V1 path); the other 73 entries, each entered
-  when its date is encoded (encoding_rule_v2.md 1.4).
+- **VESPERS OF THE FOUR ORDERS (entered and gated, 14 Nov).** Each order now
+  records its Vespers: the stichera at "Lord, I have cried" (whose, how many),
+  Glory and Both now, the Friday-evening change, entrance, readings, Litiya,
+  Aposticha, troparia. The gate runs the tool's own resolvers on a Tuesday and a
+  Friday evening (weekday orders) or Saturday evening (Sunday orders) and fails
+  on any place that differs. Vespers is CHECKED, not blindly overridden: printed
+  first and the general rule already give the order at every place but two:
+  - **A general-rule error, fixed:** two saints on a Saturday evening outside a
+    feast period sang 3 of the resurrection, 3 and 4. Fekula 1B and 1D give four
+    of the resurrection and six from the Menaion; vol. III prints 4, 3 and 3 for
+    5 Sep. `resolveLicStichera` now shares six evenly; the resurrection gives up
+    one only in a feast period (1F1 six-stichera, 1F2).
+  - **Litiya on a Sunday 25 Nov:** the general rule shows none (printed only);
+    vol. III composes it: the three stichera of the feast from the Vespers
+    Aposticha without verses; Glory, Both now, the doxasticon of the feast from
+    the Praises of Matins (`matins.praises_closer`). `resolveLitiya` takes the
+    order (`litiya.compose`). This is the second composed Litiya.
+  - The gate was tested by mutation: four deliberate errors in the orders
+    (a stichera split, a dogmatikon's tone, an Aposticha count, a troparion)
+    were each caught.
+- Sunday orders record the troparia sung when no Vigil is served; at a Vigil the
+  book appoints "Theotokos Virgin, rejoice", thrice. The tool has no Vigil mode.
+- Little Compline and Matins of the orders are NOT entered: the tool does not
+  assemble those services (`built: false`). Enter them when it does.
+- NOT YET: the bulletin's readings (still the old path); the other 73 entries,
+  each entered when its date is encoded (encoding_rule_v2.md 1.4).
 
 **RULED (Bill, 14 Nov) AND BUILT — THE GENERAL RULE FOR THE LITURGY'S PROPERS AND
 READINGS IS FEKULA'S, BY SECTION.** This REPLACES the "presence-gated, never
