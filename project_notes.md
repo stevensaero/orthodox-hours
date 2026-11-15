@@ -378,12 +378,36 @@ OCA toggle, the service chooser, merge, retire V1. Sized in
 `menaion_v2_wirein_spec.md` 6b.
 
 Open for Bill: with Prefer OCA on and two Menaion kontakia (10-04), is OCA's
-one kontakion read at every Hour? (Currently yes.) Weekday apodosis: Fekula's
-note 25 (nothing of the feast at the 9th Hour) is applied on Sundays only,
-where he states it.
+one kontakion read at every Hour? (Currently yes.)
 
-Found and NOT fixed: `npm run gate` fails on `main` at "temple index: STALE"
-(independent of this work; `node tools/build_temple_index.mjs` regenerates it).
+**DECIDED ON THE EVIDENCE (14 Nov): ODS 2nd ed. note 25 is NOT applied.** The
+note (ch. 1, 1F3) reasons that nothing of the feast ought to be read at the
+9th Hour of an apodosis. Chapter 2 (2G3, weekdays) carries no such note. And
+the 3rd edition, vol. III, which is later and decisive for the Menaion, appoints
+the feast at the Ninth Hour in all 8 apodosis entries it prints, Sunday and
+weekday ("At each Hour: ... troparion of the feast"; or "Third Hour and Ninth
+Hour: ... troparion of the feast"). No evidence was found for applying it on
+any day, so it is applied on none. How to decide such things (Bill): did the
+source state it, and is there evidence it is done.
+
+Also from vol. III: on 25 November (weekday) the Hours are "troparion of the
+feast; Glory, troparion of the Hieromartyrs; kontakion of the feast", though
+2G3 says only "troparion and kontakion of the feast". The plan now reads the
+saints' troparion at Glory on an apodosis whenever the page prints one.
+**Vol. III has date-specific Hours orders for 77 entries; they are not yet read
+by the adapter as a layer.** `ods_v3_hours.pilot.json` was made for this.
+
+**General Menaion fallback is wired (Hours).** An entry whose own troparion or
+kontakion is an absence node may carry a hand-entered `general_fallback:
+{ type, name, basis }`; the adapter reads the hymn from `general.js`, fills the
+printed placeholder with the name, and marks the source "General Menaion".
+First use: 11-29, `Martyr`, "Paramon". Note: that page appoints "the Martyricon
+from the Oktoechos" after Ode VI in the kontakion's place; the Hours read the
+General Menaion kontakion. Not yet asked of Bill.
+
+`npm run gate` is green again: the temple index was stale since the October
+entries were added without regenerating it (`node tools/build_temple_index.mjs`).
+The index is derived from V1 data and must be rebuilt on V2 at the switch.
 
 ### NEXT MENAION V2 BROWSER PASS (Bill, 14 Nov, with a screenshot)
 
