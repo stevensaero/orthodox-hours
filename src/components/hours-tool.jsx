@@ -889,13 +889,13 @@ function getNamedDay(date, pascha) {
 // their mate, exactly as a Menaion hymn is (adapter.js `slot`). Hymn by hymn: the
 // date plays no part. The node keeps its tone and its `path` in OUR book, so the
 // "source" link still opens the Octoechos at the hymn.
-const _ocaOctoCache = {};      // tone -> Map<text key, OCA node> for that tone's troparion and kontakion
+const _ocaOctoCache = {};      // tone -> Map<text key, OCA node> for every hymn of that tone; 'common' -> the theotokia shared by all tones
 let _preferOcaNow = true;      // the reader's toggle, set by the component before it assembles anything
 async function _loadOctoOca(tone) {
   await OctoV2.loadV2Tone(tone);
-  if (tone in _ocaOctoCache) return;
-  const map = await ocaMatesFor([OctoV2.getV2Troparion(tone), OctoV2.getV2Kontakion(tone)].filter(Boolean).map((n) => n.text));
-  _ocaOctoCache[tone] = map.size ? map : null;
+  const tones = await OctoV2.loadV2Tone(tone);
+  if (!(tone in _ocaOctoCache)) { const map = await ocaMatesFor(textsUnder(tones)); _ocaOctoCache[tone] = map.size ? map : null; }
+  if (!('common' in _ocaOctoCache)) { const map = await ocaMatesFor(textsUnder(OctoV2.v2Theotokia)); _ocaOctoCache.common = map.size ? map : null; }
 }
 // ── "Waiting for review on this day" (Bill, 15 Nov 2026) ──────────────────────
 // The day's own hymns are where a reader notices a deficiency, so the header says
@@ -917,12 +917,26 @@ function reviewForDay(dateObj, tone) {
   const questions = _openQuestions.filter((q) => q.status !== 'answered' && typeof q.path === 'string' && q.path.startsWith(key + '.'));
   return { key, ids: [...ids].sort(), on: [...on].sort(), questions: questions.length };
 }
-const octoOca = (n) => {
-  const o = n && _preferOcaNow ? ocaMate(_ocaOctoCache[n.tone], n) : null;
+// `tone`: the tone of the place, for a hymn that does not print its own (a sticheron).
+const octoOca = (n, tone = null) => {
+  if (!n || !_preferOcaNow || typeof n.text !== 'string') return n;
+  const t = n.tone ?? tone;
+  const o = ocaMate(_ocaOctoCache[t], { text: n.text, tone: t }) || ocaMate(_ocaOctoCache.common, { text: n.text, tone: t });
   return o ? { ...n, text: o.text, tier: o.tier, director: o.director, pointed: o.pointed, source: 'oca', sourceLabel: 'OCA', id: o.id, from: o.from, octoechos: n } : n;
 };
-// The label of an Octoechos hymn says OCA when the OCA's words are the ones shown.
-const octoSrc = (label, n) => (n && n.source === 'oca' ? String(label).replace(/^Octoechos/, 'OCA') : label);
+// The label of a hymn says OCA when the OCA's words are the ones shown: x is a node
+// (source 'oca'), or a resolved Vespers item or slot that ocaWords swapped (x.oca).
+const octoSrc = (label, x) => (x && (x.source === 'oca' || x.oca) ? String(label).replace(/^(Octoechos|Menaion|General Menaion)/, 'OCA') : label);
+// Everything Vespers may show in the OCA's words on one evening: the mates of the
+// Menaion day's hymns and of every Octoechos tone loaded so far (a theotokion in the
+// tone of a doxasticon comes from another tone's pages) and the common theotokia.
+// Null when the reader has Prefer OCA off: the resolvers then leave every hymn as
+// our books print it.
+const vespersOca = (menaionV2) => {
+  if (!_preferOcaNow) return null;
+  const parts = [menaionV2 ? _ocaHymnCache[menaionV2.path.slice(0, 5)] : null, ...Object.values(_ocaOctoCache)].filter(Boolean);
+  return parts.length ? new Map(parts.flatMap((m) => [...m])) : null;
+};
 const srcResTroparion = (tone) => octoOca(OctoV2.getV2Troparion(tone));
 const srcSunKontakion = (tone) => octoOca(OctoV2.getV2Kontakion(tone));
 const srcDismissalTheot = (tone) => OctoV2.getV2DismissalTheotokion(tone);
@@ -3132,6 +3146,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright, mena
 function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "", templeDedication = null, menaionV2 = null) {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
+  const vOca = vespersOca(menaionV2);   // "Prefer OCA texts": see ocaWords in vespers-propers.js
   const isPentecostarion = season === "pentecostarion" || season === "brightweek";
   const _fmt = pentEntry ? pentEntry.hours_format : null;
   const isSunday = season === "sunday" || _fmt === "pentecostarion_sunday" || _fmt === "all_saints_sunday";
@@ -3562,10 +3577,10 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     // in src/lib/vespers-propers.js from the Menaion V2 service, and gated verse by
     // verse against the OCA texts (tools/test_menaion_v2_vespers.mjs).
     const licPlan = !isPentecostarion
-      ? resolveLicStichera({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO })
+      ? resolveLicStichera({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, oca: vOca })
       : null;
     const licPlanned = licPlan ? licPlan.stichera.map((x) => ({
-      text: x.text, tone: x.tone || tone, source: x.source, resolved: true,
+      text: x.text, tone: x.tone || tone, source: octoSrc(x.source, x), resolved: true,
       srcPath: x.path || (x.node ? hymnProvenance(x.node).srcPath : undefined),
       repeatNote: x.of > 1 ? "(" + x.nth + " of " + x.of + ")" : "",
     })) : null;
@@ -3628,14 +3643,14 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     // (gated against the OCA texts by tools/test_menaion_v2_vespers.mjs); a date the
     // Menaion does not hold still gets its Octoechos Both now.
     const emitLicClosers = () => {
-      const r = resolveLicClosers({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO });
+      const r = resolveLicClosers({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, oca: vOca });
       const v2Saint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : effSaint;
       const LABEL = { doxasticon: "Doxasticon", feast: "Sticheron of the feast", theotokion: "Theotokion", dogmatikon: "Dogmatikon", stavrotheotokion: "Stavrotheotokion" };
       const hymn = (slot, id) => ({
         id, type: "movable", label: LABEL[slot.kind] || "Sticheron",
         rubric: "Tone " + (slot.tone || tone) + ":",
         text: hymnText(slot.node),
-        source: slot.source === "octoechos" ? "Octoechos" : "Menaion — " + (slot.kind === "feast" ? "of the feast" : v2Saint),
+        source: octoSrc(slot.source === "octoechos" ? "Octoechos" : "Menaion — " + (slot.kind === "feast" ? "of the feast" : v2Saint), slot),
         ...(slot.source === "octoechos" ? hymnProvenance(slot.node) : (slot.node.path ? { srcPath: slot.node.path } : {})),
         fekula: { section: fekulaSection, note: r.rule + (r.notes.length ? " " + r.notes.join(" ") : "") },
       });
@@ -4211,7 +4226,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   //  P+56 All Saints) carry has_litya: true on the pentEntry, not the menaionEntry.
   // The Menaion's Litiya is whatever the V2 page prints, and no more (printed only:
   // src/lib/vespers-propers.js resolveLitiya; ruled 14 Nov 2026).
-  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path, eveDow: dow, order: ods3OrderFor(menaionV2.path, (dow + 1) % 7) }) : null;
+  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path, eveDow: dow, order: ods3OrderFor(menaionV2.path, (dow + 1) % 7), oca: vOca }) : null;
   const menaionHasLitya = !!v2Litiya;
   const pentHasLitya = pentEntry && pentEntry.has_litya === true;
   const hasLitya = menaionHasLitya || pentHasLitya;
@@ -4254,12 +4269,12 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         : (v2Litiya.rubric ? "The page: \u201c" + v2Litiya.rubric + "\u201d " : "") + "The Litiya as the Menaion prints it; nothing is supplied where the page is silent.";
       v2Litiya.stichera.forEach((st, i) => {
         elements.push({ id: "v-litiya-stich-" + i, type: "movable", label: i === 0 ? "Litiya Stichera" : "",
-          rubric: "Tone " + (st.tone || "?") + ":", text: st.text, source: "Menaion — " + litSaint,
+          rubric: "Tone " + (st.tone || "?") + ":", text: st.text, source: octoSrc("Menaion — " + litSaint, st),
           ...(st.path ? { srcPath: st.path } : {}),
           fekula: { section: fekulaSection, note: litNote } });
       });
       const litHymn = (slot, id, label) => ({ id, type: "movable", label, rubric: "Tone " + (slot.tone || "?") + ":",
-        text: slot.node.text, source: "Menaion — " + (slot.kind === "feast" ? "of the feast" : litSaint),
+        text: slot.node.text, source: octoSrc("Menaion — " + (slot.kind === "feast" ? "of the feast" : litSaint), slot),
         ...(slot.node.path ? { srcPath: slot.node.path } : {}), fekula: { section: fekulaSection, note: litNote } });
       if (v2Litiya.glory) {
         elements.push({ id: "v-litiya-glory-tag", type: "fixed", label: "", text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
@@ -4452,7 +4467,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       // Whose stichera, the Glory and the Both now are chosen printed-first in
       // src/lib/vespers-propers.js from the Menaion V2 service and gated against the
       // OCA texts (tools/test_menaion_v2_vespers.mjs). This only lays them out.
-      const ap = resolveAposticha({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO });
+      const ap = resolveAposticha({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, oca: vOca });
       const apNote = ap.rule + (ap.notes.length ? " " + ap.notes.join(" ") : "");
       const apSaint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : effSaint;
       if (ap.stichera.source === "menaion") {
@@ -4462,7 +4477,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             elements.push({ id: "v-apost-verse-men-" + i, type: "fixed", label: "", rubric: "Reader:", text: it.text, source: "Menaion" });
           } else {
             elements.push({ id: "v-apost-stich-men-" + i, type: "movable", label: first ? "Aposticha" : "",
-              rubric: "Tone " + (it.tone || tone) + ":", text: it.text, source: "Menaion — " + apSaint,
+              rubric: "Tone " + (it.tone || tone) + ":", text: it.text, source: octoSrc("Menaion — " + apSaint, it),
               ...(it.path ? { srcPath: it.path } : {}),
               fekula: { section: fekulaSection, note: apNote } });
             first = false;
@@ -4472,9 +4487,10 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         const apDay = isSatEve ? srcVespersDay(tone, "sat") : srcVespersDay(tone, apostDayKey);
         const apList = (apDay && apDay.aposticha) || [];
         const apVerses = isSatEve ? satVerses : weekdayVerses;
-        apList.forEach((entry, i) => {
+        apList.forEach((entry0, i) => {
+          const entry = octoOca(entry0, tone);   // the Octoechos stichera are laid out here, not in the resolver
           elements.push({ id: "v-apost-stich-" + i, type: "movable", label: i === 0 ? "Aposticha" : "",
-            rubric: "Tone " + tone + ":", text: hymnText(entry), source: "Octoechos", ...hymnProvenance(entry),
+            rubric: "Tone " + tone + ":", text: stripCaret(hymnText(entry)), source: octoSrc("Octoechos", entry), ...hymnProvenance(entry),
             fekula: { section: fekulaSection, note: apNote } });
           if (apVerses[i]) elements.push({ id: "v-apost-verse-" + i, type: "fixed", label: "", text: apVerses[i], source: "HTM Vespers" });
         });
@@ -4486,7 +4502,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const apHymn = (slot, id) => ({
         id, type: "movable", label: AP_LABEL[slot.kind] || "Sticheron", rubric: "Tone " + (slot.tone || tone) + ":",
         text: hymnText(slot.node),
-        source: slot.source === "octoechos" ? "Octoechos" : "Menaion — " + (slot.kind === "feast" ? "of the feast" : apSaint),
+        source: octoSrc(slot.source === "octoechos" ? "Octoechos" : "Menaion — " + (slot.kind === "feast" ? "of the feast" : apSaint), slot),
         ...(slot.source === "octoechos" ? hymnProvenance(slot.node) : (slot.node.path ? { srcPath: slot.node.path } : {})),
         fekula: { section: fekulaSection, note: apNote } });
       if (ap.glory && !ap.combined) {
@@ -4698,7 +4714,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const isFeast = menaionV2.c.kind === "feast";
       return { saint: h.troparia.find((x) => x.role !== "feast" || isFeast), feast: isFeast ? null : h.troparia.find((x) => x.role === "feast") };
     })();
-    const tr = resolveVespersTroparia({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, own: vOwn });
+    const tr = resolveVespersTroparia({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, own: vOwn, oca: vOca });
     const trNote = tr.rule + (tr.notes.length ? " " + tr.notes.join(" ") : "") + " No kontakion is sung at Vespers.";
     const trSaint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : "saint of the day";
     const TR_LEAD = { glory: "Glory to the Father, and to the Son, and to the Holy Spirit.", bothNow: "Both now and ever, and unto the ages of ages. Amen.",
@@ -4712,7 +4728,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         elements.push({ id: it.kind === "theotokion" ? "v-trop-theotokion" : "v-trop-" + (i + 1), type: "movable",
           label: TR_LABEL[it.kind] + (it.tone ? " · Tone " + it.tone : ""), rubric: "",
           text: stripCaret(hymnText(it.node)),
-          source: it.source === "octoechos" ? octoSrc("Octoechos", it.node) : TR_SRC[it.source] + " — " + (it.kind === "feast" ? "of the feast" : trSaint),
+          source: it.source === "octoechos" ? octoSrc("Octoechos", it.node) : octoSrc(TR_SRC[it.source] + " — " + (it.kind === "feast" ? "of the feast" : trSaint), it),
           ...(it.source === "octoechos" ? hymnProvenance(it.node) : (it.node.path ? { srcPath: it.node.path } : {})),
           fekula: { section: fekulaSection, note: trNote } });
       } else {
@@ -8563,6 +8579,23 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.59.0",
+    date: "November 2026",
+    summary: "Prefer OCA texts now covers all the hymns of Vespers",
+    items: [
+      "With 'Prefer OCA texts' on, every hymn Vespers assembles is shown in the OCA's words " +
+      "where it has a matched OCA text: the stichera at 'Lord, I have cried' with their Glory " +
+      "and Both now (the dogmatika too), the Aposticha, the Litiya, and the theotokia after " +
+      "the troparia, from both the Menaion and the Octoechos.",
+      "The service itself does not change: which hymns, how many and in what order are decided " +
+      "from the tool's own books exactly as before. Each hymn is labelled OCA or Menaion or " +
+      "Octoechos, so a group may be mixed where some of its hymns are not matched yet.",
+      "An OCA text is used only where its tone is the tone of the place. A sticheron's tone is " +
+      "read from the heading above its group; the Menaion viewer now does the same.",
+      "Psalm verses and the verses of the Aposticha are never changed.",
+    ],
+  },
   {
     version: "v0.58.3",
     date: "November 2026",

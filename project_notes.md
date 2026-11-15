@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.58.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.59.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,43 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.59.0 — Prefer OCA covers ALL the hymns of Vespers, with the tone guard (15 Nov 2026)
+
+**Bill, 15 Nov: "go and mix freely."** A group of stichera may be part OCA, part St.
+Sergius; each hymn is labelled.
+
+- **`src/lib/vespers-propers.js`**: `ocaWords(x, oca)` swaps one resolved item (flat
+  `{ text, tone }` or slot `{ tone, node }`) for its register mate through `ocaMate`,
+  using the tone the resolver worked out for the PLACE (a sticheron's from its group
+  heading). The five resolvers are now thin wrappers (`_resolveX` + the overlay) taking
+  an optional `oca` Map; without it they return exactly what they did. A swapped item
+  gains `oca: { id, from }`, keeps `path`, and keeps our text in `ours`. A match a
+  person confirmed across tones (`toneDiffers`) makes the place carry the OCA's tone
+  (one so far: "Tell us, O Joseph", OCA Tone 3 over our Tone II, 11-30 aposticha closer).
+  Verses (`kind: 'verse'`) are never touched.
+- **`hours-tool.jsx`**: `_ocaOctoCache[tone]` now holds the mates of EVERY hymn of the
+  tone, plus `common` (the theotokia shared by all tones). `vespersOca(menaionV2)` merges
+  the Menaion day's mates with every tone loaded; `assembleVespers` passes it to the five
+  resolvers. `octoOca(node, tone)` for the Octoechos aposticha stichera, which are laid
+  out in the assembler. `octoSrc(label, x)` turns Menaion / Octoechos / General Menaion
+  into OCA in the label.
+- **Viewer tone guard:** `RElement` hands each hymn of a group the tone printed on the
+  group's first (`groupTone`), so `RText`'s `ocaMate` can judge a sticheron.
+- **NOT covered:** the Pentecostarion branches of `assembleVespers` (old-shape data);
+  the Beatitudes at the Liturgy (they come from the Matins canon); Matins itself.
+- **Gate** (`test_menaion_v2_vespers.mjs`): every encoded service x 7 evenings x 8
+  tones: 24,664 places, 5,893 in OCA words, each over its own mate and in tone; the
+  count of hymns never changes; nothing is swapped with `oca` absent. `--table` adds,
+  per date as a reader sees it in 2026: hymns at Vespers / in OCA words / of those, the
+  very hymn the OCA text for that day prints (e.g. 09-08: 19 / 15 / 15; 11-22: 20 / 11
+  / 11; 11-16: 20 / 3 / 3). Where the last two differ (09-06, 09-27, 10-04: one each)
+  the tool shows an OCA text the OCA did not print THAT day: a matched hymn reused.
+- **Load:** the OCA layer adds about 300 KB uncompressed (ten documents, the library,
+  the register) to a 4.5 MB page; no measurable difference in load time (1.12 s v
+  1.17 s locally). It loads whether or not Prefer OCA is on; left so.
+- Hours mount: the two Vespers cases that pinned our books now say `prefer_oca: '0'`;
+  a `'1'` case for the 11-30 Litiya. `SHOW=1` prints the context of an unexpected string.
 
 ### v0.58.3 — two matches confirmed by Bill (15 Nov 2026)
 

@@ -9,7 +9,7 @@ import { servicesOf } from '../src/data/menaion_v2/adapter.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../src/lib/vespers-propers.js';
 import { hoursPlan, ocaFor } from '../src/data/menaion_v2/adapter.js';
 import { loadMenaionV2General } from '../src/data/menaion_v2/index.js';
-import { loadOcaDoc, ocaStems, ocaVespersReadings } from '../src/data/oca_hymns/index.js';
+import { loadOcaDoc, ocaStems, ocaVespersReadings, ocaMatesFor, textsUnder, ocaTexts, textKey, loadOcaMatches } from '../src/data/oca_hymns/index.js';
 import { OCA_SLOTS } from '../src/data/oca_hymns/slots.js';
 import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
 const table = process.argv.includes('--table');
@@ -235,6 +235,57 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
   if (mine !== theirs && !KNOWN[id]) fail(`${id}:\n      tool ${st.stichera.length}: ${mine}\n      OCA  ${ocaSt.length}: ${theirs}`);
   if (st.stichera.some((x) => !x.text)) fail(`${id}: a sticheron with no text`);
   rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Stichera | ${st.stichera.length}: ${mine} | ${ocaSt.length}: ${theirs} | ${mine === theirs ? 'agree' : KNOWN[id] ? 'KNOWN: ' + KNOWN[id] : 'DIFFER'} |`);
+}
+// ── "Prefer OCA texts" at Vespers: hymn by hymn (15 Nov 2026) ────────────────
+// Every encoded service, on every evening of the week, in every tone, with the OCA's
+// words laid over what our books give. Each swapped hymn must
+//   (a) still say which hymn of OURS it stands in the place of,
+//   (b) be the register's mate of exactly that hymn, and
+//   (c) pass the tone guard: the OCA's tone is the tone of the place, unless a person
+//       confirmed the match across tones, and then the place carries the OCA's tone.
+// And with no `oca` the resolvers must give exactly what they gave before.
+{
+  const octoMates = []; for (let t = 1; t <= 8; t++) octoMates.push(await ocaMatesFor(textsUnder(await OctoV2.loadV2Tone(t))));
+  octoMates.push(await ocaMatesFor(textsUnder(OctoV2.v2Theotokia)));
+  const { all } = await loadOcaMatches();
+  const itemsOf = (a) => { const ap = resolveAposticha(a), lit = resolveLitiya(a), cl = resolveLicClosers(a);
+    return [...resolveLicStichera(a).stichera.map((x) => ['Lord I have cried', x]), ['LIC Glory', cl.glory], ['LIC Both now', cl.bothNow],
+      ...(ap.stichera.items ?? []).map((x) => ['Aposticha', x]), ['Aposticha Glory', ap.glory], ['Aposticha Both now', ap.bothNow],
+      ...(lit ? [...lit.stichera.map((x) => ['Litiya', x]), ['Litiya Glory', lit.glory], ['Litiya Both now', lit.bothNow]] : []),
+      ...resolveVespersTroparia(a).items.map((x) => ['Troparia', x])].filter(([, x]) => x && x.kind !== 'verse'); };
+  let places = 0, swapped = 0; const byDate = {}; const stemOf = {}; for (const st of ocaStems()) stemOf[`${st.slice(5, 7)}-${st.slice(7, 9)}`] ??= st;
+  for (const mm of ['09', '10', '11']) { const M = await loadMenaionV2Month(mm); if (!M) continue;
+    for (const key of Object.keys(M).sort()) {
+      const oca = new Map([await ocaMatesFor(textsUnder(M[key])), ...octoMates].flatMap((m) => [...m]));
+      // The evening this day's Vespers is sung on in 2026, and its tone: what a reader of the tool sees this year.
+      const ms = Date.UTC(2026, Number(mm) - 1, Number(key.slice(3))); const eve2026 = (new Date(ms).getUTCDay() + 6) % 7; const tone2026 = toneOf(ms);
+      const printedIds = stemOf[key] ? new Set(ocaTexts(await loadOcaDoc(stemOf[key])).map((t) => t.id)) : null;
+      for (const svc of servicesOf(M[key], key)) for (let eveDow = 0; eveDow < 7; eveDow++) for (let tone = 1; tone <= 8; tone++) {
+        const base = { c: svc.c, base: svc.path, eveDow, tone, octo };
+        const plain = itemsOf(base), over = itemsOf({ ...base, oca });
+        if (plain.length !== over.length) { fail(`${svc.path} eve ${eveDow} tone ${tone}: Prefer OCA changed HOW MANY hymns there are (${plain.length} -> ${over.length})`); continue; }
+        if (plain.some(([, x]) => x.oca)) fail(`${svc.path}: a hymn is in OCA words with Prefer OCA off`);
+        over.forEach(([where, x], i) => { places++; const [, was] = plain[i];
+          const ours = x.ours ?? x.node?.ours; const wasText = was.text ?? was.node?.text;
+          if (!x.oca) { if ((x.text ?? x.node?.text) !== wasText) fail(`${svc.path} ${where}: text changed with no OCA mark`); return; }
+          swapped++; const at = `${svc.path} eve ${eveDow} tone ${tone} ${where}`;
+          if (ours !== wasText) fail(`${at}: the OCA text does not stand over the hymn our books give there`);
+          const m = all[x.oca.id]; const mate = oca.get(textKey(ours));
+          if (!m || !mate || mate.id !== x.oca.id) fail(`${at}: ${x.oca.id} is not the register's mate of that hymn`);
+          const placeTone = was.tone ?? was.node?.tone ?? null;
+          if (mate && mate.tone != null && placeTone != null && mate.tone !== placeTone) {
+            if (!mate.toneDiffers) fail(`${at}: OCA Tone ${mate.tone} over a Tone ${placeTone} hymn, and no person confirmed it`);
+            else if (x.tone !== mate.tone) fail(`${at}: confirmed across tones, but the place does not carry the OCA's Tone ${mate.tone}`);
+          }
+          if (eveDow === eve2026 && tone === tone2026 && svc.path.endsWith('.c0')) { const d = (byDate[key] ??= { n: 0, oca: 0, same: 0, hasDoc: !!printedIds }); d.oca++; if (printedIds?.has(x.oca.id)) d.same++; }
+        });
+        if (eveDow === eve2026 && tone === tone2026 && svc.path.endsWith('.c0')) (byDate[key] ??= { n: 0, oca: 0, same: 0, hasDoc: !!printedIds }).n += over.length;
+      }
+    }
+  }
+  console.log(`Prefer OCA at Vespers: ${places} places over every evening and tone, ${swapped} in the OCA's words, each over its own mate and in tone`);
+  if (table) { console.log('As a reader sees it in 2026 (the day\'s own evening and tone): hymns at Vespers / in OCA words / of those, the very hymn the OCA text for that day prints');
+    for (const [k, d] of Object.entries(byDate)) console.log(`  ${k}: ${d.n} / ${d.oca} / ${d.hasDoc ? d.same : 'no OCA text for the day'}`); }
 }
 for (const id of Object.keys(KNOWN)) console.log(`  known difference — ${id}: ${KNOWN[id]}`);
 if (table) { console.log('| Date | Day | Tone | Rank | Place | Tool | OCA | |\n|---|---|---|---|---|---|---|---|'); rows.forEach((r) => console.log(r)); }

@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.58.3 and after)
+# Next-session kickoff — encoding the Menaion (v0.59.0 and after)
 
-State at handoff: **v0.58.3**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.59.0**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE

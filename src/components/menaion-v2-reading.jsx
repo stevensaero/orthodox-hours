@@ -121,7 +121,7 @@ function pointed(text) {
     (/^\[[^\]]+\]$/.test(seg) ? <u key={i}>{seg.slice(1, -1)}</u> : <React.Fragment key={i}>{seg}</React.Fragment>));
 }
 
-export function RText({ node, path, label }) {
+export function RText({ node, path, label, groupTone = null }) {
   const { mode, oca, openOca } = useContext(ReadingContext);
   if (isAbsence(node)) return <RAbsence node={node} path={path} />;
   if (!isTextNode(node)) return null;
@@ -131,7 +131,7 @@ export function RText({ node, path, label }) {
   const full = path;
   // "Prefer OCA texts": where this hymn has an OCA mate, the OCA's words are
   // shown in its place, marked, with the book's own text one hover away.
-  const mate = ocaMate(oca, node);   // the tone guard applies where the node prints its tone
+  const mate = ocaMate(oca, node.tone != null ? node : { text: node.text, tone: groupTone });   // the tone guard: the hymn's own tone, or that of the group it stands in
   const shownText = mate ? mate.text.replace(/\^/g, '') : node.text;
   const lines = mode === 'clean' ? splitPointed(shownText) : null;
   return (
@@ -296,7 +296,7 @@ export function RCanon({ canon, path }) {
 // ── the generic element dispatcher ───────────────────────────────────────────
 // Driven by the manifest `kind`, not by a hand-written switch per service. A key
 // with no recognised shape still renders — nothing is silently absent (§8.1).
-export function RElement({ value, path, fieldKey }) {
+export function RElement({ value, path, fieldKey, groupTone = null }) {
   if (value == null) return null;
   if (isAbsence(value)) return <RAbsence node={value} path={path} />;
   if (isReading(value)) return <RCitation node={value} path={path} />;
@@ -305,13 +305,17 @@ export function RElement({ value, path, fieldKey }) {
   const kind = entry?.kind;
 
   if (Array.isArray(value)) {
-    return <>{value.map((v, i) => <RElement key={i} value={v} path={`${path}[${i}]`} fieldKey={fieldKey} />)}</>;
+    // A group of stichera prints its tone once, on the first; the rest stand under it.
+    // Each is handed that tone, so the OCA tone guard (ocaMate) can judge it.
+    let t = groupTone;
+    return <>{value.map((v, i) => { if (isTextNode(v) && v.tone != null) t = v.tone;
+      return <RElement key={i} value={v} path={`${path}[${i}]`} fieldKey={fieldKey} groupTone={t} />; })}</>;
   }
   if (isTextNode(value)) {
     const isRubric = /rubric$/.test(fieldKey ?? '');
     return isRubric
       ? <RRubric node={value} path={path} />
-      : <RText node={value} path={path} />;
+      : <RText node={value} path={path} groupTone={groupTone} />;
   }
   if (value.odes) return <RCanon canon={value} path={path} />;
   if (typeof value === 'object') {

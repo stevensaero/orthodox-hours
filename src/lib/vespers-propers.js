@@ -12,6 +12,40 @@
 // BUILT SO FAR: "Lord, I have cried" (stichera, Glory, Both now); the Aposticha
 // (whose stichera, Glory, Both now); the Litiya (what the page prints, and no more);
 // the troparia at the end (never a kontakion); the entrance and the readings.
+import { ocaMate, stripCaret } from '../data/oca_hymns/index.js';
+
+// ── "Prefer OCA texts" at Vespers (Bill, 15 Nov 2026) ────────────────────────
+// Every resolver below takes an optional `oca`: the register mates of the hymns in
+// play (Map<text key, OCA node>; hours-tool.jsx builds it from the Menaion day and
+// the Octoechos tone). The service is decided from OUR books exactly as without it;
+// then each hymn that was chosen is shown in the OCA's words where it has a matched
+// OCA text and the tone agrees. Hymn by hymn: never what an OCA document appoints
+// for the date. A group may therefore be mixed (ruled: "mix freely"); each hymn says
+// whose words it is in. Psalm verses and aposticha verses are not hymns and are
+// never touched.
+//   x: a flat item { text, tone, ... } or a slot { tone, node: { text, ... } }.
+//   The tone is the one the resolver worked out for the PLACE (a sticheron takes it
+//   from the heading above its group), which is what the tone guard needs.
+// A swapped item gains `oca: { id, from }` and keeps its path in our book.
+// An OCA text carries its OWN tone (ruled 15 Nov 2026). The guard lets one through in
+// another tone only where a person confirmed the match across tones; it is then sung
+// in the OCA's tone, and the place says so.
+const sung = (o) => (o.toneDiffers && o.tone != null ? { tone: o.tone } : {});
+export function ocaWords(x, oca) {
+  if (!x || !oca || x.oca || x.kind === 'verse') return x;
+  if (x.node && typeof x.node.text === 'string') {
+    if (x.node.source === 'oca') return x;
+    const o = ocaMate(oca, { text: x.node.text, tone: x.tone ?? x.node.tone ?? null });
+    return o ? { ...x, ...sung(o), oca: { id: o.id, from: o.from }, node: { ...x.node, text: stripCaret(o.text), tier: o.tier, director: o.director, pointed: o.pointed, source: 'oca', ours: x.node.text, ...sung(o) } } : x;
+  }
+  if (typeof x.text === 'string') {
+    const o = ocaMate(oca, { text: x.text, tone: x.tone ?? null });
+    return o ? { ...x, ...sung(o), oca: { id: o.id, from: o.from }, text: stripCaret(o.text), ours: x.text } : x;
+  }
+  return x;
+}
+const each = (list, oca) => (Array.isArray(list) ? list.map((x) => ocaWords(x, oca)) : list);
+
 const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
 const EVES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri']; // the evening Vespers is sung on
 const isText = (n) => !!n && typeof n.text === 'string';
@@ -29,7 +63,7 @@ export const rubricTone = (node) => {
 //   { kind: 'doxasticon'|'feast'|'theotokion'|'dogmatikon'|'stavrotheotokion',
 //     source: 'menaion'|'octoechos', tone, node, basis: 'printed'|'rubric'|'rule' }.
 // `combined`: Glory and Both now are sung together before the one hymn in bothNow.
-export function resolveLicClosers({ c, base, eveDow, tone, octo }) {
+function _resolveLicClosers({ c, base, eveDow, tone, octo }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const at = (key, node) => ({ ...node, path: `${base}.${vname}.${key}` });
   const notes = [];
@@ -128,7 +162,7 @@ function fit(items, n) {
   return out;
 }
 
-export function resolveLicStichera({ c, base, eveDow, tone, octo }) {
+function _resolveLicStichera({ c, base, eveDow, tone, octo }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const notes = []; const saturday = eveDow === 6; const eve = EVES[eveDow];
   // The printed stichera, each with the tone it stands under (printed once per group).
@@ -202,7 +236,7 @@ export function resolveLicStichera({ c, base, eveDow, tone, octo }) {
 //   Glory), sundayApostichaTheotokion(tone), eveningApostichaTheotokion(tone, eve).
 // Returns { stichera: { source: 'menaion', items } | { source: 'octoechos' }, glory,
 //   bothNow, combined, rule, notes }.
-export function resolveAposticha({ c, base, eveDow, tone, octo }) {
+function _resolveAposticha({ c, base, eveDow, tone, octo }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const at = (key, node) => ({ ...node, path: `${base}.${vname}.${key}` });
   const notes = []; const saturday = eveDow === 6; const friday = eveDow === 5; const eve = EVES[eveDow];
@@ -259,7 +293,7 @@ export function resolveAposticha({ c, base, eveDow, tone, octo }) {
 // the Matins Aposticha." NOT BUILT: the other Saturday-evening Litiyas of ch. 1,
 // which begin with the temple's sticheron and draw on the Octoechos.
 // Returns null, or { rubric, stichera: [{ text, tone, path }], glory, bothNow, combined, composed }.
-export function resolveLitiya({ c, base, eveDow = null, order = null }) {
+function _resolveLitiya({ c, base, eveDow = null, order = null }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   // ODS 3rd ed. vol. III composes the Litiya for this date from hymns the page prints
   // elsewhere (src/data/ods_v3/orders.js: `compose`): the feast's stichera of the
@@ -322,7 +356,7 @@ export function resolveLitiya({ c, base, eveDow = null, order = null }) {
 // octo adds: resTroparion(tone), resDismissalTheotokion(tone), dailyDismissalTheotokion(tone, eve).
 // Returns { items: [{ lead, kind, source, tone, node }], rule, notes }; lead is
 //   null | 'glory' | 'bothNow' | 'gloryBothNow'.
-export function resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }) {
+function _resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const notes = []; const saturday = eveDow === 6; const friday = eveDow === 5; const eve = EVES[eveDow];
   const high = ['doxology', 'polyeleos', 'vigil', 'great_feast'].includes(c.rank);
@@ -403,3 +437,13 @@ export function resolveVespersReadings({ c, base, eveDow }) {
   readings.forEach((r) => { r.source = 'menaion'; });
   return { entrance: eveDow === 6 || /entrance/i.test(rubric ?? '') || readings.length > 0, entranceRubric: rubric, readings };
 }
+
+// ── The same five, with the OCA's words laid over what was chosen ────────────
+export function resolveLicClosers(a) { const r = _resolveLicClosers(a); return a.oca ? { ...r, glory: ocaWords(r.glory, a.oca), bothNow: ocaWords(r.bothNow, a.oca) } : r; }
+export function resolveLicStichera(a) { const r = _resolveLicStichera(a); return a.oca ? { ...r, stichera: each(r.stichera, a.oca) } : r; }
+export function resolveAposticha(a) {
+  const r = _resolveAposticha(a); if (!a.oca) return r;
+  return { ...r, stichera: r.stichera.items ? { ...r.stichera, items: each(r.stichera.items, a.oca) } : r.stichera, glory: ocaWords(r.glory, a.oca), bothNow: ocaWords(r.bothNow, a.oca) };
+}
+export function resolveLitiya(a) { const r = _resolveLitiya(a); return r && a.oca ? { ...r, stichera: each(r.stichera, a.oca), glory: ocaWords(r.glory, a.oca), bothNow: ocaWords(r.bothNow, a.oca) } : r; }
+export function resolveVespersTroparia(a) { const r = _resolveVespersTroparia(a); return a.oca ? { ...r, items: each(r.items, a.oca) } : r; }
