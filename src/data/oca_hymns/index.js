@@ -57,3 +57,26 @@ export async function ocaHymn(key, slot) {
   };
 }
 export const ocaSlotsForKey = (key) => Object.keys(OCA_SLOTS[key] || {});
+
+// The readings an OCA document appoints at Vespers: the references it heads them
+// with, in order ("Genesis 28:10-17"; "Composite 17 (Exod. 40:1–5, 9, 10, 16, 34–35)").
+// Dashes are made plain hyphens; nothing else is changed.
+export function ocaVespersReadings(doc) {
+  const out = []; let on = false;
+  for (const b of doc.blocks) {
+    const t = b.text.replace(/[[\]]/g, '');
+    if (b.k === 'heading' && /^(Old Testament )?Readings/i.test(t)) { on = true; continue; }
+    if (!on) continue;
+    const m = t.replace(/[–—]/g, '-').replace(/^Composite \d+ \((.*)\)$/, '$1')
+      .match(/^(?:\(\d+\)\s*)?((?:[1-4] )?[A-Z][A-Za-z.]+(?: [a-z]+ [A-Z][a-z]+)? \d+:\d[\d:,;\- ]*)/);
+    if (b.k === 'heading' && m) { out.push({ ref: m[1].trim(), head: t, file: doc.file, locus: `paragraph ${b.p[0]}` }); continue; }
+    if (b.k === 'heading' && /^(Litya|Aposticha|Tone \d)/.test(t)) break;
+  }
+  return out;
+}
+// The same, for a Menaion date that has a mapped OCA document; [] when it has none.
+export async function ocaVespersReadingsFor(key) {
+  const ref = Object.values(OCA_SLOTS[key] || {})[0];
+  const doc = ref ? await loadOcaDoc(ref.doc) : null;
+  return doc ? ocaVespersReadings(doc) : [];
+}
