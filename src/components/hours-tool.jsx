@@ -14409,7 +14409,7 @@ function HowItWorksPanel() {
   // ── Built services inventory ──────────────────────────────────────────────
   const serviceInventory = [
     { name: "The Ordinary Beginning", status: "built", note: "Three seasonal variants (ordinary, Bright Week, Christ-is-risen period)" },
-    { name: "Vespers", status: "built", note: "Full HTM skeleton + interleaved Lord I Have Cried stichera (Octoechos + Menaion by §4A/§4B rules), Aposticha, Litiya, Entrance; Menaion/Pentecostarion/Octoechos movable texts" },
+    { name: "Vespers", status: "built", note: "The HTM order with the day's stichera, entrance and readings, Litiya, Aposticha and troparia, each as the printed service or Fekula appoints" },
     { name: "Compline (Apodeipnon)", status: "planned", note: "" },
     { name: "Midnight Office", status: "planned", note: "" },
     { name: "Matins (Orthros)", status: "planned", note: "Data encoding underway: Octoechos Sunday Resurrectional Matins complete for all eight tones (1–8) (sessional hymns, songs of ascent, all three canons, praises); P+56 All Saints feast canon also encoded. Assembler not yet built." },
@@ -14417,7 +14417,7 @@ function HowItWorksPanel() {
     { name: "The Third Hour", status: "built", note: "" },
     { name: "The Sixth Hour", status: "built", note: "" },
     { name: "The Ninth Hour", status: "built", note: "" },
-    { name: "Divine Liturgy", status: "planned", note: "Epistle and Gospel references shown in context card" },
+    { name: "Divine Liturgy", status: "built", note: "St. John Chrysostom and St. Basil: Beatitudes, troparia and kontakia by temple, prokeimena, readings, communion hymn" },
     { name: "Prayers Before Holy Communion", status: "built", note: "Full Jordanville Prayer Book order" },
     { name: "Prayers After Holy Communion", status: "built", note: "Adapts to Chrysostom, Basil, or Presanctified Liturgy" },
     { name: "The Order of the Typica", status: "built", note: "Read when no Divine Liturgy is celebrated" },
@@ -14451,7 +14451,7 @@ function HowItWorksPanel() {
       {open.overview && (
         <div style={panelStyle}>
           {p(<>This is a liturgical assembly tool for <strong>OCA parishes following Russian usage</strong>. Given a date, it computes the liturgical season, looks up the appointed saint or feast, and assembles the correct movable parts of each service — with every decision traced to its rubrical source. It is as much a <strong>teaching aid</strong> as an assembly tool: every element is annotated with where it comes from and why it appears.</>)}
-          {p(<>The tool currently assembles <strong>10 of the 14 services</strong> in the daily cycle. It handles ordinary weekdays, Sundays (with Octoechos tone rotation), and the entire Pentecostarion season from Pascha through All Saints of North America. Great Lent and Triodion services are the next major development area.</>)}
+          {p(<>The tool currently assembles <strong>11 of the 14 services</strong> listed below. It handles ordinary weekdays, Sundays (with Octoechos tone rotation), the forefeasts, afterfeasts and leavetakings of the Great Feasts, and the Pentecostarion season from Pascha through All Saints of North America. Great Lent and Triodion services are the next major development area.</>)}
           {sub("Service inventory")}
           <div style={{ fontSize: "0.78rem", border: "1px solid #D4C49A", borderRadius: "4px",
                         overflow: "hidden", marginBottom: "0.8rem" }}>
@@ -14480,7 +14480,8 @@ function HowItWorksPanel() {
           {ul([
             <><strong>Psalter reader &amp; the Order of the Psalter</strong> (<a href="/orthodox-hours/psalter?from=tool" style={{color: "#8B6914"}}>open</a>) — Full text of all 20 kathismas with stasis and psalm numbering, reached from Vespers kathisma assignments; now also assembled as a full service, including a For-the-Departed mode with the departed prayers, stasis dividers, and the whole-Psalter conclusion.</>,
             <><strong>Scripture viewer</strong> (<a href="/orthodox-hours/scripture?from=tool" style={{color: "#8B6914"}}>open</a>) — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
-            <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion?from=tool" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
+            <><strong>The Menaion</strong> (<a href="/orthodox-hours/menaion-v2?from=tool" style={{color: "#8B6914"}}>open</a>) — The fixed-calendar services as captured from the printed book: every line of each day's Vespers, Matins and Liturgy, the General Menaion, and a search. Every Menaion hymn in an assembled service links to its place here.</>,
+            <><strong>Questions for review</strong> (<a href="/orthodox-hours/questions?from=tool" style={{color: "#8B6914"}}>open</a>) — Points where the sources are silent or disagree and the tool has had to choose. Each states what is printed, what was consulted and what the tool does meanwhile, with a link to send an answer.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion?from=tool" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
             <><strong>Octoechos reading view (V2)</strong> (<a href="/orthodox-hours/octoechos-v2?from=tool" style={{color: "#8B6914"}}>open</a>) — The bound book, digitized: tone → day → service navigation, corpus search, audit mode. The complete eight-tone cycle; every assembled Octoechos text links to its exact position here.</>,
             <><strong>Service outline</strong> — A collapsible outline card with a jump button that lists the sections of the current service and scrolls to any of them; available for Vespers, the Typica, and the Order of the Psalter, making a specific point in a long service easy to find.</>,
@@ -14522,18 +14523,62 @@ function HowItWorksPanel() {
           {p("Every decision the tool makes is traced to a source. When sources conflict, the higher-ranked source wins — and the conflict is flagged in the tool’s notes.")}
           {sub("1 · Fekula & Williams, The Order of Divine Services (2009)")}
           {p(<>The primary assembly authority. Every structural decision — which troparion governs, which kontakion goes at which Hour, when the Menaion overrides the Octoechos — is cited to a specific section of Fekula. When you see a badge like <span style={{color:"#8B6914"}}>§2C</span> or <span style={{color:"#8B6914"}}>§4A</span>, that is the exact section justifying the placement.</>)}
+          {p(<>Two editions are used. The <strong>2nd edition</strong> gives the general rules by kind of day (chapter 1 for Sundays, chapter 2 for weekdays, chapter 6 for the theotokia). The <strong>3rd edition, volume III</strong> prints the whole order for particular dates. Where it does, the tool follows that printed order in place of the general rule, and cites it by page.</>)}
           {sub("2 · OCA Calendar (oca.org)")}
-          {p("Authoritative for OCA parishes. Takes precedence over the Russian Menaion when they differ. The OCA calendar determines which saints are commemorated on which dates. When the OCA calendar and the Russian Menaion disagree, the OCA calendar governs — and the divergence is documented in the encoding record for that date.")}
-          {sub("3 · St. Sergius Menaion PDFs")}
-          {p("The primary source for daily service texts. Each day’s PDF contains the full texts for Vespers, Matins, and Liturgy. The tool reads these PDFs to extract troparion tone and text, kontakion tone and text, service rank (stichera count), paroemias (Old Testament lessons), and Matins ode assignments.")}
+          {p("Authoritative for OCA parishes. The OCA calendar determines which saints are commemorated on which dates. The OCA also publishes service texts for Sundays and feasts: its own translations of the troparia, kontakia and other hymns, pointed for singing. Where one exists for the day, the tool keeps it beside the Menaion’s text and, with “Prefer OCA texts” on, shows it in the Menaion hymn’s place (see How the Tool Decides).")}
+          {sub("3 · St. Sergius Menaion")}
+          {p("The primary source for daily service texts. Each day’s service is captured whole from the printed text: every hymn, rubric and heading of Vespers, Matins and the Liturgy, in the order printed. Nothing is summarized, so the tool can read the page before it applies any rule.")}
           {sub("4 · General Menaion")}
-          {p("A fallback source for days where the daily Menaion PDF does not include a troparion or kontakion. The General Menaion provides common texts organized by saint type (martyrs, hierarchs, venerable, etc.). When used, a (name) placeholder is substituted for the specific saint’s name.")}
+          {p("The fallback for a day whose own service prints no troparion or kontakion. The General Menaion provides common services by kind of saint (a martyr, a hierarch, a venerable one, and so on). When one is used the saint’s name is put where the book prints “(name)”, and the hymn is labelled “General Menaion” so it is never mistaken for the day’s own.")}
           {sub("5 · HTM Horologion (Unabbreviated Book of the Hours)")}
           {p("Source for all invariable service skeleton texts — the psalms, the Trisagion, Our Father, More Honourable, priest exclamations, and closing prayers at every Hour. Also the structural source for the Typica and Post-Communion Prayers. These texts never change regardless of season or saint.")}
           {sub("6 · Jordanville Prayer Book")}
           {p("Source for the Prayers Before Holy Communion. The Jordanville Prayer Book follows the order given in the Jordanville Russian-font Molitvoslov. All text is fixed — Psalms 22, 23, 115, Psalm 50, the Canon for Holy Communion (Odes I–IX), ten prayers by the Holy Fathers, and the communion verses.")}
           {sub("7 · Pentecostarion")}
           {p("Source for the movable-cycle hymns from Pascha through All Saints Sunday (P+0 through P+56). Contains unique troparia, kontakia, and structural overrides (e.g. Christ is risen replacing O Heavenly King, Paschal troparion at all Hours during Bright Week, feast kontakia at the Hours during the Ascension and Pentecost periods).")}
+        </div>
+      )}
+
+      {/* ── 3b. How the Tool Decides ──────────────────────────────────────── */}
+      <div style={headerStyle} onClick={() => toggle("decides")}>
+        <span>How the Tool Decides</span>{chevron(open.decides)}
+      </div>
+      {open.decides && (
+        <div style={panelStyle}>
+          {p("For every movable part of a service the tool answers one question: what is sung here today? It answers in a fixed order, and each element in the assembled service says which step supplied it.")}
+          {sub("1 · The printed page first")}
+          {ul([
+            <>If the day’s service <strong>prints the hymn</strong>, that hymn is used.</>,
+            <>If the page prints only a <strong>rubric</strong> (“Both now, Theotokion in Tone IV”), the tool takes that hymn from the Octoechos in the tone the rubric names.</>,
+            <>Only where the page is <strong>silent</strong> does a rule decide.</>,
+            <>On a <strong>Saturday evening and Sunday</strong> the Sunday order is laid over the page: the resurrectional hymns of the tone come first and the Menaion’s are fitted to what is left.</>,
+          ])}
+          {sub("2 · A printed order for the date (Fekula, 3rd edition, volume III)")}
+          {p("For some dates Fekula prints the complete order of the day’s services. Where he does, that order overrides the general rule: whose hymns, how many, and in what sequence. The element’s note cites the page. The dates covered grow as the Menaion is captured.")}
+          {sub("3 · The general rule, by section (Fekula, 2nd edition)")}
+          {p(<>Every other day follows the rule for its kind of day: <span style={{color:"#8B6914"}}>§1A–§1F</span> on Sundays, <span style={{color:"#8B6914"}}>§2A–§2G</span> on weekdays, by the rank of the service and whether the day stands in a forefeast or afterfeast. Some examples of what those rules decide:</>)}
+          {ul([
+            <><strong>The Hours.</strong> Which troparion and kontakion each Hour reads. On a Sunday the Sunday troparion comes first; in an afterfeast the feast’s; two kontakia are shared between the Hours as the section says.</>,
+            <><strong>Vespers.</strong> No kontakion is sung at Vespers. After the troparion, the hymn at “Both now” is chosen by Fekula’s chapter 6: for a higher-ranking service the resurrectional dismissal theotokion in the tone of the last troparion; on a Friday evening always in the tone of the week; in a feast period the troparion of the feast.</>,
+            <><strong>The Liturgy: troparia and kontakia.</strong> Their order after the Little Entrance depends on whether the temple is dedicated to the Lord, the Theotokos or a saint, so the tool asks for the dedication. Where a service prints hymns for two saints, both are sung; where one saint has two kontakia, the one after Ode VI is taken.</>,
+            <><strong>The Liturgy: Beatitudes.</strong> The page’s own rubric says how many troparia, from the Octoechos or from which ode, and in what order. Festal antiphons belong to the feasts of the Lord; a feast of the Theotokos keeps the Beatitudes.</>,
+            <><strong>The Liturgy: prokeimenon, Alleluia, readings, communion hymn.</strong> Whose are taken depends on the section. On a polyeleos weekday the prokeimenon, Alleluia and communion hymn are the Menaion’s only, while the Epistle and Gospel are the day’s and the Menaion’s; in an afterfeast they are the feast’s and the saint’s.</>,
+          ])}
+          {sub("OCA service texts and “Prefer OCA texts”")}
+          {p(<>Where the OCA publishes a service text for the day, the tool holds it as a second witness beside the Menaion. With <strong>Prefer OCA texts</strong> on (the default, in the context card), an OCA hymn is shown in the place of <em>its own counterpart</em> in the Menaion and nowhere else: the OCA’s troparion for the Menaion’s troparion, and so on. Turned off, the St. Sergius Menaion is shown throughout. On a day with no OCA text the switch changes nothing.</>)}
+          {p(<>The OCA texts are also the tool’s <strong>answer key</strong>. Its tests assemble each service for every date the OCA covers and compare the result, place by place, with what the OCA prints: the same hymn kind, in the same tone, in the same order. A difference either fails the test or is recorded with its reason.</>)}
+          {p(<>Where the tool follows Fekula and the OCA text for that day does not print the item, the item carries the mark <strong>“OCA: not in the OCA text”</strong>. The mark only reports a difference; it changes nothing. It is separate from Prefer OCA texts, which swaps one text for another.</>)}
+          {sub("Two services on one date")}
+          {p("Some dates have two printed services, for two commemorations. Each is kept whole and separate. The context card lists them, the one on the OCA calendar first and selected by default; choosing the other re-assembles every service for it.")}
+          {sub("When the Menaion prints nothing")}
+          {ul([
+            <><strong>No troparion or kontakion on the page:</strong> the matching General Menaion service supplies it, labelled as such.</>,
+            <><strong>A date not yet captured:</strong> the service shows “the Menaion is not yet encoded for this date” at that place. The tool does not guess.</>,
+          ])}
+          {sub("The dismissal")}
+          {p("The dismissal names the saints of the day by a short name entered by hand for each service, since the printed title is too long to read aloud. On a feast itself no saint is added.")}
+          {sub("When the sources do not settle it")}
+          {p(<>Where the books are silent or disagree, the tool makes a provisional choice, says so in the element’s note, and lists the point under <a href="/orthodox-hours/questions?from=tool" style={{color: "#8B6914"}}>Questions for review</a> so that someone who knows can answer it.</>)}
         </div>
       )}
 
@@ -14613,9 +14658,8 @@ function HowItWorksPanel() {
           {p("Only the two Movable rows change from day to day. Everything else is identical on every ordinary weekday of the year. On feast days and during the Pentecostarion, seasonal rules alter the Fixed skeleton too — replacing O come let us worship with Christ is risen, or omitting O Heavenly King — but those changes are also fixed by the rubrics, not by the saint of the day.")}
           {sub("Lord I Have Cried — how stichera are inserted at Vespers")}
           {p(<>At every Vespers, after the kathisma, the psalms <strong>Lord I Have Cried</strong> (Psalms 140, 141, 129, and 116) are chanted. The last several verses of these psalms serve as an <em>insertion scaffold</em> — a numbered countdown from verse 10 down to verse 1. The <strong>stichera</strong> (hymns appointed for the day) are inserted into this countdown, one sticheron after each verse, beginning at the verse that matches the stichera count.</>)}
-          {p(<>The stichera count is determined by service rank: <strong>6 stichera</strong> for Simple, Six-Stichera, and Doxology rank (insertion begins at V.6); <strong>8 stichera</strong> for Polyeleos rank (insertion at V.8); <strong>10 stichera</strong> for Vigil rank (insertion at V.10, no plain verses). After V.1, the sequence closes with <em>Glory…</em> (the doxasticon) and <em>Now and ever…</em> (the theotokion).</>)}
-          {p(<>For dates with encoded stichera, the tool fully assembles Lord I Have Cried — interleaving Octoechos resurrection stichera and Menaion saint stichera into the correct verse slots per Fekula §4A and §4B rules. Saturday evening uses 7 Octoechos resurrection stichera plus the feast Glory; ordinary weekdays follow the §4A1 rule (3 Pentecostarion + 3 Menaion or 6 Octoechos). Dates not yet encoded show the psalm scaffold as a readable fallback.</>)}
-          {sub("The Kathisma schedule")}
+          {p(<>How many stichera are sung is <strong>stated on the printed page</strong> (“On Lord, I have cried, 6 stichera…”), with “Twice” beside any that is repeated. Six begin at V.6, eight at V.8, ten at V.10. Where a simple service prints only three, the Octoechos supplies the first three. After V.1 the sequence closes with <em>Glory…</em> (the doxasticon) and <em>Now and ever…</em> (a theotokion, or in a feast period the feast’s hymn).</>)}
+          {p(<>On a <strong>Saturday evening</strong> there are always ten: the resurrection stichera of the tone first, then the Menaion’s, shared as Fekula’s chapter 1 gives for the rank (seven and three for a simple service, six and four, four and six, and so on). Dates not yet captured show the psalm scaffold as a readable fallback.</>)}
           {p(<>At Vespers and Matins, one or more sections of the Psalter — called <strong>kathismas</strong> — are read in sequence throughout the week. The Psalter’s 150 psalms are divided into <strong>20 kathismas</strong>, each further subdivided into three stases (antiphons). The full Psalter is read through once per week in ordinary time; more frequently during Great Lent.</>)}
           {p(<>Which kathisma is appointed depends on two things: the <strong>day of the week</strong> and the <strong>period of the church year</strong>. The tool detects one of six periods: Summer/Winter, Autumn/Spring, Great Lent Weeks 1–4 and 6, Great Lent Week 5 (unique table), Passion Week (Monday–Wednesday only), and Bright Week (no kathisma at any service). Several override rules apply: great feasts of the Lord suppress the kathisma; Saturday evening and feasts of Polyeleos or Vigil rank always use Kathisma I (“Blessed is the Man”); Sunday evening has no kathisma.</>)}
           {p(<>The kathisma shown at Vespers links directly to the built-in <strong>Psalter reader</strong>, which displays the full psalm text for the appointed kathisma with stasis divisions. Source: OCA Liturgics, oca.org/liturgics/outlines/kathisma-readings-at-vespers.</>)}
@@ -14643,72 +14687,25 @@ function HowItWorksPanel() {
       </div>
       {open.encoding && (
         <div style={panelStyle}>
-          {p("Before the tool can assemble a service for a given date, that date must be encoded — meaning a human has read the source PDF and extracted the key liturgical data. This is not automated. Every entry represents a deliberate act of reading, cross-referencing, and decision-making.")}
-          {sub("How encoding works")}
-          {p("The encoder opens the St. Sergius Menaion PDF for that date and checks:")}
+          {p("Before the tool can assemble a service for a given date, that date’s printed service must be captured. This is deliberate hand work, checked by machine: every printed line of the source must be stored or expressly accounted for, or the capture is rejected.")}
+          {sub("How a date is captured")}
           {ul([
-            <><strong>Service rank</strong> — counted from the stichera on Lord I Call at Vespers: 3 stichera = Simple (§2A), 6 stichera = Six-Stichera (§2C), Great Doxology sung = Doxology (§2D), Polyeleos sung = Polyeleos (§2E), All-Night Vigil = Vigil (§2F).</>,
-            <><strong>Troparion</strong> — tone number and full text.</>,
-            <><strong>Kontakion(s)</strong> — tone number, full text, and which Matins ode they follow (Ode III or Ode VI). If there are two kontakia, both are recorded with their ode assignments, because the tool uses different kontakia at different Hours.</>,
-            <><strong>OCA cross-reference</strong> — the OCA calendar at oca.org is checked for the primary commemoration, translation differences, and any date divergences between OCA and Russian usage.</>,
+            <><strong>The whole service</strong> — every hymn, rubric, heading and reading reference of Vespers, Matins and the Liturgy, in the printed order, each with the page it came from. Never a selection.</>,
+            <><strong>Rank</strong> — decided by an ordered test of what the service contains (a Great Feast, a Vigil, a Polyeleos, a Great Doxology, six stichera, or simple). Where Fekula’s volume III prints the rank, that is decisive. Counting stichera alone is not enough.</>,
+            <><strong>Two services on a date</strong> — each captured as its own service.</>,
+            <><strong>The dismissal name</strong> — entered by hand for each service.</>,
+            <><strong>Fekula’s printed order</strong> — where volume III has one for the date, it is entered at the same time, as structure only (whose, how many, in what sequence).</>,
+            <><strong>OCA service texts</strong> — captured whole, as a separate layer, and mapped to the Menaion hymns they stand for.</>,
           ])}
-          {p(<>Encoded data is written directly into the tool’s monthly data files — <code>src/data/menaion/may.js</code>, <code>june.js</code>, <code>july.js</code>, etc. for fixed-calendar dates, and <code>src/data/pentecostarion.js</code> for dates keyed to Pascha. These files are the single point of truth. Git history is the version record.</>)}
+          {p("Git history is the version record. The Pentecostarion is still held in an earlier, summarized form and is due the same full capture.")}
           {sub("Currently encoded")}
           {ul([
-            <><strong>Menaion:</strong> May 16–31 (16 entries), June 1–30 (30 date keys · 36 service entries for multi-service dates), July 1–15 (5 entries).</>,
+            <><strong>Menaion:</strong> September 5–8 and 27; October 4; November 14–30. Open the Menaion to see exactly which dates are present.</>,
             <><strong>Pentecostarion:</strong> P+19, P+35–P+56, and P+63 (24 entries). Covers Thomas Sunday week through All Saints of North America, including Ascension, Pentecost, and the Saturdays of the Reposed.</>,
             <><strong>Pre-Communion Prayers:</strong> Complete (35 sections, Jordanville Prayer Book).</>,
             <><strong>Post-Communion Prayers:</strong> Complete (HTM order, adapts to liturgy type).</>,
           ])}
-          {p("Dates not yet encoded are marked with a red border in the assembled service. The saint’s name appears from the OCA calendar, but troparion and kontakion texts cannot be supplied until the Menaion PDF has been read and encoded.", { fontStyle: "italic", color: "#5C4A1E" })}
-          {sub("Data record fields")}
-          {p("Every date that has been encoded carries some or all of the following fields. The Status column reflects the current state.")}
-          <table style={{ width: "100%", tableLayout: "fixed", fontSize: "0.75rem", borderCollapse: "collapse", marginBottom: "0.8rem" }}>
-            <thead>
-              <tr style={{ background: "rgba(139,105,20,0.1)", textAlign: "left" }}>
-                <th style={{ width: "30%", padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Field</th>
-                <th style={{ width: "42%", padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>What it contains</th>
-                <th style={{ width: "28%", padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ["saint", "Full name of the commemorated saint or feast", "✓ active"],
-                ["rank", "Service rank: simple · six_stichera · doxology · polyeleos · vigil", "✓ active"],
-                ["fekula_section", "Fekula §2A–§2F or §4A–§4B15 governing assembly", "✓ active"],
-                ["note", "Encoding notes: OCA divergences, calendar collisions, rank evidence", "✓ active"],
-                ["troparion · tone & text", "Primary troparion — tone number and full text", "✓ active — all four Hours + Vespers"],
-                ["troparion_2 · tone, text, placement", "Second troparion (Glory) when two troparia govern", "✓ active"],
-                ["kontakion · tone, text, matins_ode", "Kontakion with Matins ode assignment (III or VI)", "✓ active — Hours + Typica"],
-                ["kontakion_ode3 · tone, text", "Kontakion chanted after Ode III at Matins — governs 1st & 6th Hours", "✓ active"],
-                ["hours_kontakion", "Pentecostarion: feast kontakion governing Both now at Hours", "✓ active — Pentecostarion"],
-                ["hours_format", "Assembly engine signal: paschal · pentecostarion_sunday · etc.", "✓ active"],
-                ["feast_e / feast_g", "Feast proper Epistle and Gospel readings", "✓ active — context card + scripture viewer"],
-                ["paroemia_1/2/3", "Old Testament Vespers lessons (Polyeleos & above)", "✓ active — Vespers"],
-                ["prokeimenon · tone, text, stichos", "Prokeimenon at Liturgy", "✓ encoded — Liturgy future"],
-                ["alleluia · tone, verse, stichos", "Alleluia verse at Liturgy", "✓ encoded — Liturgy future"],
-                ["communion_verse", "Communion hymn text at Liturgy", "✓ encoded — Liturgy future"],
-                ["oca_primary", "Whether this is the OCA calendar’s primary commemoration", "✓ active — multi-service selector"],
-                ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "⚠︎ partial"],
-                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "✓ encoded — all entries carry structural flags; Matins assembler not yet built"],
-                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "✓ encoded — all entries carry structural flags; Matins assembler not yet built"],
-                ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "✓ active — interleaved into Vespers for encoded dates (§4A/§4B rules)"],
-                ["stichera_glory / aposticha_glory", "Vespers doxastikon — Glory at LIC or Aposticha", "✓ active — rendered for §2E/§2F and encoded §2C entries"],
-                ["stichera_aposticha", "Vespers Aposticha stichera texts with verse inserts", "✓ active — fully assembled for §2E/§2F entries with encoded data"],
-              ].map(([field, desc, used], i) => (
-                <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.02)" }}>
-                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "normal", overflowWrap: "break-word" }}>{field}</td>
-                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: "#2C1F0A" }}>{desc}</td>
-                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE",
-                    color: used.startsWith("✓ active") ? "#3A6B3A" : used.startsWith("✓ encoded") ? "#3A6B6B" : used.startsWith("⚠") ? "#8B6914" : "#9A8A70",
-                    whiteSpace: "normal" }}>
-                    {used}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {p(<>Legend: <strong>{"✓"} active</strong> = field drives assembled output today. <strong>{"✓"} encoded</strong> = data captured, service not yet built. <strong>{"⚠︎"} partial/future</strong> = not all entries carry this field, or the service that uses it is not yet built.</>, { fontStyle: "italic", color: "#5C4A1E" })}
+          {p("Dates not yet captured are marked with a red border in the assembled service. The saint’s name appears from the OCA calendar, but the hymns cannot be supplied until the printed service has been captured.", { fontStyle: "italic", color: "#5C4A1E" })}
         </div>
       )}
 
@@ -14720,7 +14717,7 @@ function HowItWorksPanel() {
         <div style={panelStyle}>
           {sub("What works today")}
           {ul([
-            <><strong>Ten services</strong> fully assembled: Ordinary Beginning, Vespers, 1st/3rd/6th/9th Hours, Pre-Communion Prayers, Post-Communion Prayers, the Typica, and the Order of the Psalter.</>,
+            <><strong>Eleven services</strong> assembled: Ordinary Beginning, Vespers, 1st/3rd/6th/9th Hours, the Divine Liturgy, the Typica, Pre-Communion Prayers, Post-Communion Prayers, and the Order of the Psalter.</>,
             <><strong>Ordinary time and Pentecostarion</strong> seasons are fully supported — the tool correctly handles Sundays with Octoechos tone rotation, weekdays with Menaion saint commemorations, and the complete Paschal cycle from Bright Week through All Saints of North America.</>,
             <><strong>Great Feasts</strong> of the Lord (Ascension, Pentecost) alter the service structure as prescribed by Fekula §4 and the HTM rubrics.</>,
             <><strong>Reader mode</strong> replaces priest exclamations with lay reader responses throughout.</>,
@@ -14732,12 +14729,12 @@ function HowItWorksPanel() {
           {ul([
             <><strong>Great Lent and Triodion</strong> — Lenten services follow substantially different rubrical patterns (Lenten Hours with prostrations, Presanctified Liturgy, altered Vespers structure, Lenten kathisma tables). The calendar engine tracks these periods correctly, but the assembly rules and Triodion data have not been built yet. This is the next major development area.</>,
             <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled (though the Octoechos Sunday Matins data is now fully encoded — all eight tones (1–8) complete). These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
-            <><strong>Divine Liturgy</strong> is not assembled. Epistle and Gospel references are shown in the context card, and Liturgy-specific fields (prokeimenon, alleluia, communion verse) are encoded in the data but not yet surfaced.</>,
-            <><strong>Vespers stichera coverage</strong> — Lord I Have Cried and Aposticha stichera are fully assembled for encoded dates. Menaion encoding currently covers May 16–June 30 (complete) plus July 1–3 and 14–15, and Pentecostarion P+19–P+63; dates outside this range show the psalm scaffold with a placeholder. Extending coverage requires reading and encoding additional Menaion months.</>,
-            <><strong>Encoding coverage</strong> — the Menaion covers May 16–June 30 plus July 1–3 and 14–15. Dates outside this range show the OCA calendar’s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19–P+63.</>,
+            <><strong>Festal antiphons</strong> for the feasts of the Lord are not yet assembled; the Liturgy says so at that place and shows the typical antiphons.</>,
+            <><strong>Vigil</strong> — for a service of Vigil rank or a Great Feast the tool gives the Vigil form of the troparia (“O Theotokos and Virgin, rejoice”, the blessing of the loaves). On a lower-ranking Sunday, where a Vigil may or may not be served, it gives the form sung when Vespers is served alone; there is no switch yet for “a Vigil is served tonight”.</>,
+            <><strong>Coverage</strong> — the Menaion is captured for September 5–8 and 27, October 4 and November 14–30; the Pentecostarion for P+19–P+63. A date outside these shows the saint’s name from the OCA calendar and marks each hymn it cannot supply. Coverage grows one printed service at a time.</>,
           ])}
           {sub("Translation note")}
-          {p("The tool primarily uses St. Sergius (Russian) Menaion texts. The OCA often uses a different English translation of the same prayer. These are the same prayer in a different rendering — not different prayers. Known divergences are flagged and will be corrected to OCA text in future updates.")}
+          {p("The Menaion texts are the St. Sergius translation. The OCA often uses a different English translation of the same hymn: the same prayer in another rendering, not a different prayer. Where the OCA publishes its text for the day, “Prefer OCA texts” shows it; sometimes the OCA appoints a different hymn altogether, and the tool then shows the OCA’s in the place of the one it replaces.")}
           {sub("How to give feedback")}
           {p("Your knowledge as a practicing reader is the best quality check this tool has.")}
           {ul([

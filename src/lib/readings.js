@@ -196,7 +196,6 @@ export function readingsForDay({
   // the general rule (ruled 14 Nov 2026). Each name is bound to a reference the
   // service prints; a name that binds to nothing is left out and reported.
   const ol = order && order.liturgy;
-  let ods3 = null;
   if (ol && (ol.epistle || ol.gospel) && menaionRefs) {
     const cite = "ODS 3rd ed. vol. III, p. " + (ol.page || order.pages[0]) + " (" + order.id + ")";
     const unbound = [];
@@ -204,7 +203,7 @@ export function readingsForDay({
     const whos = (slot) => { const k = slot === "e" ? "epistle" : "gospel"; return (isSaturday && ol.saturday && ol.saturday[k]) || ol[k] || null; };
     const made = ["e", "g"].map((slot) => { const w = whos(slot); if (!w) return groups.find((x) => x.slot === slot) || null;
       const items = w.flatMap((who) => pick(slot, who)); return items.length ? { slot, label: slot === "e" ? "Epistle" : "Gospel", items } : null; }).filter(Boolean);
-    ods3 = { id: order.id, cite, general: groups, unbound };
+    const ods3 = { id: order.id, cite, general: groups, unbound };
     groups = made;
     return { groups, order: (whos("e") || [])[0] === "day" || !whos("e") ? "day-first" : "menaion-first",
       rule: { section: cite, quote: "The readings appointed for this date." }, hasMenaionReadings, ods3 };
