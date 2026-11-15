@@ -15322,11 +15322,11 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
     // until the Phase 5 cutover (menaion_v2_spec.md §2.1). Both are listed so
     // the V2 capture can be reviewed from the tool without a remembered URL.
     menaionV2: {
-      title: "The Menaion (V2)", spine: "#A8763A", host: "app",
+      title: "The Menaion", spine: "#A8763A", host: "app",
       to: "/menaion-v2?" + dateQ + (comm ? "&comm=" + comm : ""),
       lab: "Open to",
       pv: (ld && ld.namedDay) ? ld.namedDay : (comm ? comm + " · commemoration of the day" : "commemoration of the day"),
-      cover: "Full capture · in progress", partial: true,
+      cover: "Full capture · in progress (V2)", partial: true,
     },
     pentecostarion: {
       title: "The Pentecostarion", spine: "#7A5A8A", host: "app",
