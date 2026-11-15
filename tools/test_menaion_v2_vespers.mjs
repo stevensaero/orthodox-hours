@@ -162,7 +162,7 @@ const KNOWN = {
   '11-14 litiya Both now': 'as above: the OCA adds a Both now (Tone 2) the page does not print.',
   '11-16 litiya Glory': 'as 14 Nov: the OCA adds a Glory (Tone 2) the page does not print.',
   '11-16 litiya Both now': 'as 14 Nov: the OCA adds a Both now (Tone 2) the page does not print.',
-  '11-22 litiya': 'NOT BUILT: the page prints no Litiya; the OCA gives the Saturday-evening Litiya composed by Fekula ch. 1 from the feast.',
+
   '11-30 aposticha Glory': 'the OCA sings a different doxasticon here (Tone 3, "by Germanos"); the Menaion prints one in Tone 2. An OCA-layer matter, not a rule.',
   '11-30 aposticha Both now': 'follows from the Glory above: the OCA\'s Both now is in Tone 3, the Menaion\'s in Tone 2; both are of the forefeast.',
 };
@@ -206,7 +206,7 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
       rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Readings | ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | ${wr.join(' ; ') || 'none'} | ${mineR === theirsR ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
     if (rd.readings.length && !rd.entrance) fail(`${key}: readings without an entrance`); }
   // The Litiya: printed only.
-  { const li = resolveLitiya({ c: svc.c, base: svc.path }); const wl = ocaLitya(doc); const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];
+  { const li = resolveLitiya({ c: svc.c, base: svc.path, eveDow }); const wl = ocaLitya(doc); const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];
     if (!!li !== !!wl) { checked++; const id = `${key} litiya`; if (!KNOWN[id]) fail(`${id}: tool ${li ? 'has one' : 'none'}, OCA ${wl ? 'has one' : 'none'}`); rows.push(`| ${key} | ${D} | ${tone} | ${svc.c.rank} | Litiya | ${li ? 'printed' : 'none'} | ${wl ? 'has one' : 'none'} | ${KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
     else if (li) {
       checked++; const mineL = [...new Set(li.stichera.map((x) => x.tone))].join(','); const theirsL = [...new Set(wl.stichera)].join(',');

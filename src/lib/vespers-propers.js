@@ -242,11 +242,27 @@ export function resolveAposticha({ c, base, eveDow, tone, octo }) {
 // ── The Litiya ──────────────────────────────────────────────────────────────
 // PRINTED ONLY (Bill, 14 Nov 2026): a Litiya is shown when the page prints one, with
 // the stichera, Glory and Both now the page prints, and nothing is supplied where
-// the page is silent. NOT BUILT: the Saturday-evening Litiya that Fekula ch. 1
-// composes from the temple's sticheron and stichera of the Aposticha.
-// Returns null, or { rubric, stichera: [{ text, tone, path }], glory, bothNow, combined }.
-export function resolveLitiya({ c, base }) {
+// the page is silent.
+// ONE composed case is built, because it comes wholly from the day's own page and
+// was checked against the OCA text for 22 Nov 2026: on a Saturday evening in a
+// forefeast or afterfeast, simple to doxology rank (Fekula §1F1), "Stichera of the
+// feast, from the Vespers Aposticha; Glory, Both now, sticheron of the feast, from
+// the Matins Aposticha." NOT BUILT: the other Saturday-evening Litiyas of ch. 1,
+// which begin with the temple's sticheron and draw on the Octoechos.
+// Returns null, or { rubric, stichera: [{ text, tone, path }], glory, bothNow, combined, composed }.
+export function resolveLitiya({ c, base, eveDow = null }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
+  if (v.litiya == null && eveDow === 6 && ['forefeast', 'afterfeast'].includes(c.kind) && c.fekula_section === '2G1') {
+    const ofFeast = (n) => ['feast', 'forefeast'].includes(n.saint) || [].concat(n.label ?? []).includes('of_the_feast');
+    let t = null;
+    const stichera = (Array.isArray(v.aposticha) ? v.aposticha : []).map((n, i) => ({ n, i }))
+      .filter(({ n }) => isText(n) && !([].concat(n.label ?? []).includes('refrain')) && ofFeast(n))
+      .map(({ n, i }) => { if (n.tone != null) t = n.tone; return { text: n.text, tone: t, spec_mel: n.spec_mel ?? null, path: `${base}.${vname}.aposticha[${i}]` }; });
+    const closer = c.matins?.aposticha_closer;
+    if (!stichera.length || !isText(closer) || closer.type !== 'of_the_feast') return null;
+    return { rubric: null, stichera, glory: null, combined: true, composed: '§1F1',
+      bothNow: { kind: 'feast', source: 'menaion', tone: closer.tone ?? null, node: { ...closer, path: `${base}.matins.aposticha_closer` }, basis: 'rule' } };
+  }
   if (v.litiya == null) return null;
   // Two stored shapes: the list itself, or { rubric, stichera } where the rubric sits inside.
   const nested = !Array.isArray(v.litiya) && Array.isArray(v.litiya.stichera);

@@ -4188,7 +4188,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   //  P+56 All Saints) carry has_litya: true on the pentEntry, not the menaionEntry.
   // The Menaion's Litiya is whatever the V2 page prints, and no more (printed only:
   // src/lib/vespers-propers.js resolveLitiya; ruled 14 Nov 2026).
-  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path }) : null;
+  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path, eveDow: dow }) : null;
   const menaionHasLitya = !!v2Litiya;
   const pentHasLitya = pentEntry && pentEntry.has_litya === true;
   const hasLitya = menaionHasLitya || pentHasLitya;
@@ -4214,7 +4214,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const greatFeastFormats = ['ascension', 'pentecost', 'apodosis_ascension', 'apodosis_pentecost'];
     const isGreatFeast = rank === "great_feast" ||
       (litEntryIsPent && greatFeastFormats.includes(pentEntry.hours_format));
-    if (!isGreatFeast) {
+    // Fekula §1F1 names only stichera of the feast for the composed Saturday-evening Litiya.
+    if (!isGreatFeast && !(v2Litiya && v2Litiya.composed && !litEntryIsPent)) {
       elements.push({id:"v-litiya-temple", type:"temple_selector",
         label:"Sticheron of the Temple",
         source:"HTM Vespers",
@@ -4223,7 +4224,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
 
     if (!litEntryIsPent) {
       // Menaion V2: the stichera, Glory and Both now the page prints.
-      const litNote = (v2Litiya.rubric ? "The page: \u201c" + v2Litiya.rubric + "\u201d " : "") + "The Litiya as the Menaion prints it; nothing is supplied where the page is silent.";
+      const litNote = v2Litiya.composed
+        ? "Saturday evening in a forefeast or afterfeast (Fekula " + v2Litiya.composed + "): stichera of the feast from the Vespers Aposticha; Glory, Both now, the sticheron of the feast from the Matins Aposticha. Served if the rector wishes."
+        : (v2Litiya.rubric ? "The page: \u201c" + v2Litiya.rubric + "\u201d " : "") + "The Litiya as the Menaion prints it; nothing is supplied where the page is silent.";
       v2Litiya.stichera.forEach((st, i) => {
         elements.push({ id: "v-litiya-stich-" + i, type: "movable", label: i === 0 ? "Litiya Stichera" : "",
           rubric: "Tone " + (st.tone || "?") + ":", text: st.text, source: "Menaion — " + litSaint,
