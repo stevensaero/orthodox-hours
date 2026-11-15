@@ -229,6 +229,10 @@ def build():
     entry = {
         'kind': 'apodosis',
         'feast_ref': 'entrance_theotokos',
+        # Hand-entered: how the dismissal names the day's saints ("and of ..., whose memory we
+        # celebrate"). From the title line; the OCA title where there is one. None on a feast
+        # of the Theotokos or of an icon, where no saint is added.
+        'name': 'the holy Hieromartyrs Clement, Pope of Rome, and Peter, Patriarch of Alexandria',
         'title': s.node(s.raw(3, 5), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'doxology',
         'fekula_section': '2G3',

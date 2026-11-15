@@ -436,6 +436,7 @@ export const ENTRY_TOP = {
   known: [
     'kind', 'title', 'feast_ref', 'day_of', 'rank', 'fekula_section',
     'oca_primary', 'source_file', 'note',
+    'name',                      // HAND-ENTERED (ruling 12): how the dismissal names the day's saints; null on a feast of the Theotokos or of an icon
     'preface_rubric',            // printed between the title and the first service heading (11-15)
     'appendix',                  // printed after the last service: ordered rubrics and texts (11-20)
     'troparion', 'kontakion', 'ikos',

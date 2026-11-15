@@ -20,6 +20,7 @@ const OCTOBER = {
   "commemorations": [
    {
     "kind": "saint",
+    "name": "the holy Hieromartyr Hierotheus, Bishop of Athens",
     "title": {
      "text": "COMMEMORATION OF THE HOLY HIEROMARTYR HIEROTHEUS, BISHOP OF ATHENS",
      "tier": 1,
@@ -725,6 +726,7 @@ const OCTOBER = {
    },
    {
     "kind": "saint",
+    "name": "our venerable father Paul the Simple",
     "title": {
      "text": "COMMEMORATION OF THE VENERABLE PAUL THE SIMPLE, DISCIPLE OF THE VENERABLE ANTHONY THE GREAT",
      "tier": 1,

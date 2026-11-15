@@ -192,6 +192,10 @@ def build():
     entry = {
         'kind': 'afterfeast',
         'feast_ref': 'entrance_theotokos',
+        # Hand-entered: how the dismissal names the day's saints ("and of ..., whose memory we
+        # celebrate"). From the title line; the OCA title where there is one. None on a feast
+        # of the Theotokos or of an icon, where no saint is added.
+        'name': 'our fathers among the saints Amphilochius, Bishop of Iconium, and Gregory, Bishop of Agrigentum',
         'title': s.node(s.raw(3, 5), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'six_stichera',
         'fekula_section': '2G1',

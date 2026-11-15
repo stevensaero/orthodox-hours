@@ -95,6 +95,10 @@ def build():
 
     entry = {
         'kind': 'saint',
+        # Hand-entered: how the dismissal names the day's saints ("and of ..., whose memory we
+        # celebrate"). From the title line; the OCA title where there is one. None on a feast
+        # of the Theotokos or of an icon, where no saint is added.
+        'name': 'the holy Martyrs and Confessors Gurias, Samonas and Abibus',
         'title': s.node(s.raw(3), 3, 'title', sourceLabel=s.raw(2)),
         'preface_rubric': r(4, 15, 'Be it known'),
         'rank': 'simple',
