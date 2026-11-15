@@ -43,7 +43,8 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
 - DONE for Vespers: the Glory and Both now at Lord I call (`resolveLicClosers` in
   `src/lib/vespers-propers.js`; gate `tools/test_menaion_v2_vespers.mjs`, 24 of 24
   places agree with the OCA texts) AND its stichera (`resolveLicStichera`, verse by
-  verse agreement on all 12 shared dates). NEXT: Litiya, then Aposticha, then troparia.
+  verse agreement on all 12 shared dates), AND the Aposticha (`resolveAposticha`; 34 of 36
+  places agree, 2 known). NEXT: the Litiya, then the troparia at the end of Vespers.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
