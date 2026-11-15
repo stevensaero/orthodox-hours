@@ -539,9 +539,80 @@ document, never on a guessed pattern.
 - This is different from Prefer OCA, which swaps a hymn for its own OCA
   counterpart. Describe both in the How-It-Works pass.
 
-NEXT on the branch: the Liturgy's entrance troparia and kontakia and the
-Beatitudes; dismissal `name`; bulletin; Prefer OCA toggle and service chooser;
-the How-It-Works pass; merge and retire V1.
+DONE on the branch — Liturgy, the LITTLE ENTRANCE and the BEATITUDES (14 Nov):
+- `entrancePlan(c, path, { oca, general })` in the adapter: the troparia and
+  kontakia the service gives the Liturgy, and its Beatitude troparia
+  (`beatitudesOf`). PRINTED FIRST: the lists printed "At Liturgy" are read where
+  the page has them; a troparion or kontakion stored apart for the Liturgy
+  (`liturgy_troparion`, `liturgy_kontakion`, R-1) is read in place of the one at
+  Vespers or Matins (14 and 16 Nov: the Liturgy prints the apostles' general
+  troparion, not the one at Vespers); otherwise those are read. "Or this
+  Troparion" alternatives are kept aside and noted. The General Menaion
+  fallback serves here too (now one shared helper, `generalHymn`).
+- `src/lib/liturgy-entrance.js` reads the plan (`menaion`). Fekula's tables by
+  temple are unchanged. A "saint" slot now stands for EVERY troparion or
+  kontakion the page prints for the day's saints: "if there be troparia and
+  kontakia for both saints, both are used" (2B); "the first is chanted before
+  Glory, and the second following Glory" (2G1 *). The separate second-saint
+  slots and the 1B table are gone; the page decides how many hymns fill a slot.
+- **V1 errors found and fixed:**
+  - A feast of the Theotokos was given festal antiphons and no Beatitudes.
+    Festal antiphons belong to feasts of the Lord (ch. 2 note 68); 8 Sep and
+    21 Nov print "On the Beatitudes, 8 Troparia" and now show them.
+  - A feast of the Theotokos on a Sunday took the feast's order alone; 1E keeps
+    the Sunday (Sunday troparion, of the feast, Glory Sunday kontakion, Both now
+    of the feast). The branch for it existed but could never be reached.
+  - Two saints with one troparion and two kontakia (5 Sep, Zacharias and
+    Elizabeth) lost the second kontakion; a double with one kontakion (19 Nov)
+    showed an empty slot.
+  - The Beatitudes followed the rank word, not the page. 6 Sep is six-stichera
+    but its rubric appoints "four each from Odes III and VI", all from the
+    Menaion; V1 gave four from the Octoechos.
+- **The page's own Beatitudes rubric is followed** (`parseBeatitudesRubric`):
+  how many, from the Oktoechos or which ode, in the printed order. All 20
+  rubrics in V2 read. On Sundays Fekula's counts apply (1A eight; 1C/1D/1E six
+  and four from Ode III; 1F1 ten, or twelve when the page also prints the
+  saint's; 1F3 six and four from Ode IX), taking the parts the rubric names.
+- **Apodosis on a weekday (25 Nov):** 2G3 names the feast alone; the page prints
+  the hieromartyrs' troparion and kontakion at the Liturgy and the OCA sings
+  them. Sung as printed: feast, saints, Glory saints' kontakion, Both now the
+  feast's. Same finding as at the Hours (vol. III).
+- **Gate `tools/test_menaion_v2_liturgy.mjs`:** the order of troparia and
+  kontakia agrees with what the OCA prints "(at the Divine Liturgy)" on all 12
+  dates (80 hymns, with Prefer OCA on and off), the temple's, the day's and the
+  closing hymns set aside since the OCA texts never print them. 5 KNOWN, each
+  checked: three where Menaion and OCA print different hymns (27 Sep and 4 Oct
+  troparia, 29 Nov kontakion); 4 Oct kontakion (below); 26 Nov Beatitudes.
+- `tools/test_liturgy_assembly.mjs` entrance and Beatitudes scenarios re-based
+  on V2 services. Mount test: Liturgy pages for 21 and 22 Nov.
+- The Typica's weekday kontakion "of the saint of the date" reads the same plan.
+  Its Sunday and feast kontakia branches are Pentecostarion-only and unchanged.
+- The Trisagion substitute reads `liturgy.trisagion_replacement` from the plan
+  (no V2 page has one yet).
+
+**INTERPRETIVE CHOICES ON RECORD (Liturgy, V2), for Bill to overrule:**
+1. **One saint, two kontakia (after Ode III and Ode VI): the Liturgy sings the
+   one after Ode VI.** V1 did the same. The only statement found is ODS
+   Appendix A-V (icons of the Theotokos, weekdays): "we use the kontakion sung
+   after Ode VI". **Evidence the other way: on 4 Oct the OCA prints at the
+   Liturgy its Tone 8 kontakion, which is the Menaion's kontakion after Ode
+   III.** One date. With Prefer OCA on the OCA's is shown; Menaion-only shows
+   Ode VI and says so. 27 Sep cannot decide it (the OCA's is neither).
+2. **Saturday with "4 from the Oktoechos": the Menaion's four go first**, from
+   2A ("these precede those of the Octoechos (four each)"), which stands under
+   "On Saturday". Other days follow the printed order (Octoechos first).
+3. "Four from the Oktoechos" = its last four (carried over from V1's record).
+4. **26 Nov (St. Innocent): the rubric appoints 8, the page prints 7** and
+   marks none "Twice" (page checked). Seven are shown with a note; nothing is
+   doubled to make up the number. Elsewhere the page marks the first "Twice".
+5. 25 Nov with Prefer OCA: the saints' kontakion is the OCA's "Sts. Clement and
+   Peter" (slot `kontakion_alt`), the counterpart of the Menaion's; the OCA
+   prints no kontakion of St. Clement alone.
+
+NEXT on the branch: dismissal `name`; bulletin; Prefer OCA toggle and service
+chooser; the How-It-Works pass; merge and retire V1. Still V1 in the Liturgy:
+only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
+the Lord are still flagged, not assembled (no such day is in V2 yet).
 
 **RULED (Bill, 14 Nov, on the evidence):**
 - **An OCA hymn replaces its own counterpart and nothing else.** 10-04: the OCA
@@ -619,6 +690,10 @@ before `v2-wirein` is merged. It must cover at least:
 - **OCA practice marks at the Liturgy and Typica** ("OCA: sung" / "OCA: likely
   omitted"): the full order is always rendered; the mark only reports what
   the OCA text for that day prints. How this differs from Prefer OCA.
+- **The Liturgy's troparia and kontakia**: Fekula's order by temple; that a
+  saint slot holds every hymn the page prints for the day's saints; which
+  kontakion is taken when two are printed; the Beatitudes following the page's
+  own rubric; festal antiphons for feasts of the Lord only.
 - That every element names its source and the rule applied.
 Check each explainer too (RankExplainer, the kontakion and prokeimenon ones).
 
