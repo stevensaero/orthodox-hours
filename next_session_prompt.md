@@ -61,6 +61,8 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   it is done.
 - The Sunday Vespers and bulletin gates pin today's output; list every change
   with the OCA text or Fekula section that justifies it, for Bill.
+- OWED BEFORE THE MERGE (Bill): a full pass over "How the tool works" and the
+  explainers so they describe the tool as built (list in project_notes.md).
 - AFTER Vespers, raise with Bill: reading ODS vol. III's date-specific orders
   (77 entries; `ods_v3_hours.pilot.json`) as a layer in the adapter.
 - Then: Typica and Liturgy propers, dismissal `name`, bulletin; the Prefer OCA
