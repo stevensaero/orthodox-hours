@@ -1,6 +1,11 @@
-# ENCODING RULE v2.14 — Orthodox Hours Tool
+# ENCODING RULE v2.15 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.15 changes (14 Nov 2026) — ODS VOL. III ORDERS OVERRIDE THE GENERAL RULE (§1.4, new):**
+- Ruled by Bill: where vol. III prints an order for a date, the tool follows it
+  in place of the general rule. When a date with a vol. III entry is encoded,
+  its order is entered in `src/data/ods_v3/orders.js` in the same session.
 
 **v2.14 changes (14 Nov 2026) — OCA SERVICE TEXTS ARE CAPTURED WHOLE (§3.6, new):**
 - The OCA `-tt` service texts become a separate layer, `src/data/oca_hymns/`,
@@ -316,6 +321,42 @@ an ambiguous flag ("either the book is wrong or our OCR is") into an actionable
 one ("the book prints 62"). That only arises once a value is already suspected,
 so the trigger is suspicion, not coverage: vol. III carries 567 numeric values
 across 154 of its 235 pages, and checking them all by eye is not the same task.
+
+---
+
+### 1.4 ODS vol. III ORDERS OVERRIDE THE GENERAL RULE (ruled by Bill, 14 Nov 2026)
+
+Vol. III prints, for 77 entries, the whole order of the day's services. Where it
+does, **that order is what the tool follows**; the general rules of the 2nd
+edition (ch. 1, 2) serve every date vol. III does not cover. The orders are
+baked in, not consulted by hand.
+
+**When you encode a date, check `ods_v3_index.json` for an entry. If there is
+one, enter its order in `src/data/ods_v3/orders.js` in the same session.**
+
+1. **Structure only.** No text of the book goes in the repo. An order records
+   who, how many and in what sequence, in the tool's own vocabulary (documented
+   at the head of `orders.js`), with the entry id and the printed page of each
+   service. Nothing is quoted.
+2. **One order per printed Menaion service per kind of day.** `service` is the
+   V2 path (`09-05.c1`); `day` is `sunday` or `weekday`. A vol. III entry for a
+   service the St. Sergius Menaion does not hold is not entered; say so in a
+   comment (25 Nov, St. Clement of Ochrid).
+3. **Names bind to the page.** `saint:Zacharias` is the hymn the page tags for
+   that saint; `feast` is the feast's hymn as this day's page prints it. If a
+   name binds to nothing the gate fails: fix the capture's tags or the order,
+   never the binding.
+4. **Run `node tools/test_ods_v3_orders.mjs`.** It applies each order through
+   the tool's own code, checks the result IS the order, and reports each place
+   where the order changes what the general rule gives. A change is not an
+   error. A part of an order the code does not yet drive must be listed in the
+   gate's OWED table or the gate fails.
+5. **Driven so far:** the Hours; at the Liturgy the Beatitudes, the troparia and
+   kontakia after the entrance, the prokeimenon, Alleluia and communion verse,
+   and the Epistle and Gospel. **Not yet entered or driven:** Vespers, Little
+   Compline, Matins.
+6. A printed rank in vol. III is still decisive for rank (§1.1 step 0); the gate
+   fails if the order's rank and the stored rank differ.
 
 ---
 

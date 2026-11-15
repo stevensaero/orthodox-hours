@@ -609,6 +609,62 @@ DONE on the branch — Liturgy, the LITTLE ENTRANCE and the BEATITUDES (14 Nov):
    Peter" (slot `kontakion_alt`), the counterpart of the Menaion's; the OCA
    prints no kontakion of St. Clement alone.
 
+**RULED (Bill, 14 Nov): ODS 3rd ed. VOL. III DATE-SPECIFIC ORDERS OVERRIDE THE
+GENERAL RULE**, "so that the tool stays in step with Fekula. Still great as a
+reference, but the rules should get baked in."
+
+DONE on the branch — the VOL. III ORDER LAYER (14 Nov):
+- `src/data/ods_v3/orders.js`: hand-kept, STRUCTURE ONLY (no text of the book;
+  entry id and page cited). One order per printed Menaion service per kind of
+  day. `ods3OrderFor(servicePath, dow)`. Entered: the four orders for the dates
+  V2 holds: `ods3-0905-sun`, `ods3-0905-wkd` (09-05.c1), `ods3-1125-wkd`,
+  `ods3-1125-sun-clement-rome` (11-25.c0). Vol. III's Sunday order with St.
+  Clement of Ochrid is not entered: St. Sergius holds no such service.
+- Driven: the Hours (`hoursPlan`, `opts.order`); at the Liturgy the Beatitudes
+  and the entrance troparia and kontakia (`liturgy-entrance.js`), the
+  prokeimenon, Alleluia and communion verse (`resolveLiturgyPropers`), the
+  Epistle and Gospel (`readingsForDay`, which now takes every reference the
+  service prints). Each cites "ODS 3rd ed. vol. III, p. N (entry id)". The
+  general result is kept beside the override for the gate.
+- Gate `tools/test_ods_v3_orders.mjs`: every name binds to the page, the tool's
+  output IS the order, and each change from the general rule is reported.
+- **What the orders changed (17 places) and what that shows:**
+  - 5 Sep Sunday, 1st Hour kontakion: Zacharias (general rule gave Elizabeth's
+    at both the 1st and 6th). Beatitudes 12 (4 + 4 + 4), not 10.
+  - 25 Nov Sunday: the hieromartyr's troparion and kontakion ARE sung after the
+    entrance (1F3 names the feast only). Beatitudes 6 + 2 from Canon I + 2 from
+    Canon II, not the first four.
+  - 25 Nov weekday: three Epistles and Gospels (day, feast, hieromartyrs); the
+    tool had dropped the hieromartyrs'.
+  - **The sung propers differ on 3 of 4 orders, always the same way: the tool's
+    general rule adds the day's prokeimenon, Alleluia and communion verse where
+    Fekula appoints the Menaion's only.** See the next item.
+- Whose reading a reference is (feast or saint) is read from the page's own
+  heading as the capture records it ("FOR THE FEAST:"), in `liturgyPlan`.
+- NOT YET: Vespers, Little Compline and Matins of the orders (not entered); the
+  bulletin's readings (still the V1 path); the other 73 entries, each entered
+  when its date is encoded (encoding_rule_v2.md 1.4).
+
+**TO PUT TO BILL — THE GENERAL RULE FOR THE SUNG PROPERS IS NOT FEKULA'S.**
+`resolveLiturgyPropers` is "presence-gated, never rank-gated": the day's
+prokeimenon, Alleluia and communion verse, plus the Menaion's wherever printed.
+Fekula says otherwise, in the 2nd edition itself:
+- 2E (polyeleos, weekday, p. 50): "Prokeimenon: From the Menaion, only";
+  Epistle and Gospel for the day and from the Menaion; Alleluia and communion
+  hymn from the Menaion only. Saturday: all from the Menaion, then the day.
+- 2G1 (feast period, weekday): forefeast, of the saint; afterfeast, of the feast
+  (and of the saint). Not the day's.
+- 2A and 2D do appoint "for the day and from the Menaion".
+Vol. III agrees with these on every order entered. And **the OCA texts agree
+with Fekula, not with the tool**: 16 Nov (Monday, polyeleos) the Apostle's only.
+So the ruling earlier today (render the full order, mark "OCA: likely omitted")
+rested on my statement that the tool's order was the more correct one, and for
+polyeleos and feast-period days that statement was wrong: what the mark calls
+"likely omitted" Fekula does not appoint at all. Proposed: make the general rule
+Fekula's by section (2A/2D day and Menaion; 2E, 2F Menaion only; 2G by its
+table; ch. 1 for Sundays), keep the OCA mark only where the tool and the OCA
+text still differ. Awaiting Bill.
+
 NEXT on the branch: dismissal `name`; bulletin; Prefer OCA toggle and service
 chooser; the How-It-Works pass; merge and retire V1. Still V1 in the Liturgy:
 only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
@@ -647,8 +703,9 @@ Also from vol. III: on 25 November (weekday) the Hours are "troparion of the
 feast; Glory, troparion of the Hieromartyrs; kontakion of the feast", though
 2G3 says only "troparion and kontakion of the feast". The plan now reads the
 saints' troparion at Glory on an apodosis whenever the page prints one.
-**Vol. III has date-specific Hours orders for 77 entries; they are not yet read
-by the adapter as a layer.** `ods_v3_hours.pilot.json` was made for this.
+**Vol. III's date-specific orders are now a layer that overrides the general
+rule** (`src/data/ods_v3/orders.js`; see "THE VOL. III ORDER LAYER"). The pilot
+JSON on Bill's machine quotes the book and so is not what the repo holds.
 
 **General Menaion fallback is wired (Hours).** An entry whose own troparion or
 kontakion is an absence node may carry a hand-entered `general_fallback:
@@ -694,6 +751,8 @@ before `v2-wirein` is merged. It must cover at least:
   saint slot holds every hymn the page prints for the day's saints; which
   kontakion is taken when two are printed; the Beatitudes following the page's
   own rubric; festal antiphons for feasts of the Lord only.
+- **ODS vol. III orders**: that a date-specific order overrides the general
+  rule, how it is cited, and that the layer grows as dates are encoded.
 - That every element names its source and the rule applied.
 Check each explainer too (RankExplainer, the kontakion and prokeimenon ones).
 
