@@ -42,6 +42,7 @@ for (const mo of Object.keys(MONTH_LOADERS).sort()) {
           if (p.primaryTrop && p.secondaryTrop && p.primaryTrop.text === p.secondaryTrop.text) fail(`${at} ${HOURS[i]}: the same troparion twice`);
         });
         if (!plan.rule || !/^§\d/.test(plan.rule)) fail(`${at}: no Fekula section cited`);
+        if (plan.notes.some((x) => /does not say which one/.test(x))) fail(`${at}: two kontakia are printed; the OCA kontakion slot needs 'replaces'`);
         if (o && !per.some((p) => /(^|\|)OCA/.test(p.primaryTropSource + '|' + p.secondaryTropSource + '|' + p.kontakionSource))) fail(`${at}: OCA hymns are mapped but none is read`);
         if (missing) gaps++;
         rows.push({ path: path + (c.oca_primary || M[key].commemorations.length === 1 ? '' : ' (2nd)'), day: sunday ? 'Sunday' : 'Weekday', text: o ? 'OCA' : 'Menaion', sec: `${c.rank}, §${plan.cited}`,

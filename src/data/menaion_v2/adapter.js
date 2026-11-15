@@ -167,7 +167,14 @@ export function hoursPlan(c, base, opts = {}) {
     if (sunday && lordsFeast) notes.push('A feast of the Lord on a Sunday supersedes the Sunday service (ODS ch. 5): the weekday order is given.');
     if (!sunday || lordsFeast) {
       trop = () => (double ? [first, second] : [first]);
-      if (o) { kont = () => o; rule = `§${section}: troparion and kontakion (the OCA prints one kontakion; it is read at every Hour).`; }
+      // An OCA hymn stands in for its own counterpart and nothing else (ruled 14 Nov
+      // 2026): `replaces` names which of two Menaion kontakia the OCA text is.
+      const rep = o?.node.replaces;
+      if (o && m3 && m6 && !rep) notes.push('Two kontakia are printed and the OCA slot does not say which one its kontakion replaces.');
+      if (o && m3 && m6 && (rep === 'ode3' || rep === 'ode6')) {
+        kont = (hr) => (firstSixth(hr) ? (rep === 'ode3' ? o : m3) : (rep === 'ode6' ? o : m6));
+        rule = `§${section}: troparion from the Menaion; two kontakia are printed: that after Ode III at the 1st and 6th Hours, that after Ode VI at the 3rd and 9th (the OCA text is the one after Ode ${rep === 'ode3' ? 'III' : 'VI'}).`;
+      } else if (o) { kont = () => o; rule = `§${section}: troparion and kontakion (the OCA prints one kontakion${m3 && m6 ? ', which is neither of the Menaion\'s two' : ''}; it is read at every Hour).`; }
       else if (m3 && m6) { kont = (hr) => (firstSixth(hr) ? m3 : m6); rule = `§${section}: troparion from the Menaion; two kontakia are printed: that after Ode III at the 1st and 6th Hours, that after Ode VI at the 3rd and 9th.`; }
       else { kont = () => one ?? gap('kontakion', h.absent.kontakion); rule = `§${section}: troparion and kontakion from the Menaion.`; }
     } else {
