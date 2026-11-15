@@ -44,8 +44,8 @@ const CASES = [
   ['2026-11-14', '1st_hour', ['Prefer OCA texts'], ['entreat the merciful God', 'not yet encoded'], { prefer_oca: '0' }],                                         // Prefer OCA off: the Menaion's troparion, not the OCA's
   ['2026-11-14', '1st_hour', ['O wonderworker Gregory, instructor in Orthodoxy'], ['not yet encoded'], null, 1],   // choosing the second service re-assembles the Hour for it
   // The Octoechos half of Prefer OCA (15 Nov 2026): the Sunday troparion of the tone in the OCA's words where it is matched,
-  // labelled OCA, and its "source" link still opening OUR Octoechos at the hymn. The Tone 7 Sunday kontakion has no match yet.
-  ['2026-11-15', '3rd_hour', ['By Thy Cross Thou didst destroy death', 'OCA — Tone 7 (Sunday resurrectional)', 'Octoechos — Tone 7 (Sunday kontakion)'], ['Thou didst destroy death by Thy Cross'], { prefer_oca: '1' }, null, [/\/octoechos-v2\?.*#tone7\.troparion$/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],
+  // labelled OCA, and its "source" link still opening OUR Octoechos at the hymn. The Tone 7 Sunday kontakion and the martyrs' troparion: confirmed by Bill, 15 Nov 2026.
+  ['2026-11-15', '3rd_hour', ['By Thy Cross Thou didst destroy death', 'OCA — Tone 7 (Sunday resurrectional)', 'The dominion of death can no longer hold men captive', 'OCA — Tone 7 (Sunday kontakion)', 'Thou hast granted us the miracles of Thy holy'], ['Thou didst destroy death by Thy Cross', 'No longer does the might of death'], { prefer_oca: '1' }, null, [/\/octoechos-v2\?.*#tone7\.troparion$/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],
   ['2026-11-15', '3rd_hour', ['Thou didst destroy death by Thy Cross', 'Octoechos — Tone 7 (Sunday resurrectional)'], ['By Thy Cross Thou didst destroy death', 'OCA — Tone 7'], { prefer_oca: '0' }],
   // "Waiting for review on this day": the header counts the open items that touch the day's own hymns and links to them, filtered.
   ['2026-11-15', '3rd_hour', ['Help us improve this tool. Review items for this day:', 'OCA matches'], [], null, null, [/\/oca-matches\?day=2026-11-15&ids=o[0-9a-f]{10}(,o[0-9a-f]{10})*&on=m[0-9a-f,m]+&from=tool$/, /\/oca-matches\?day=(?!2026-11-15)/]],

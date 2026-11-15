@@ -8564,6 +8564,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.58.3",
+    date: "November 2026",
+    summary: "Two OCA matches confirmed: the Tone 7 Sunday kontakion and the troparion of 15 November",
+    items: [
+      "With 'Prefer OCA texts' on, the Sunday kontakion of Tone 7 and the troparion of the " +
+      "Martyrs Gurias, Samonas and Abibus (15 November) are now shown in the OCA's words. " +
+      "Both matches were confirmed by a person on the review page.",
+    ],
+  },
+  {
     version: "v0.58.2",
     date: "November 2026",
     summary: "The question about 15 November is answered from the books",

@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.58.2** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.58.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,17 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.58.3 — two matches confirmed by Bill (15 Nov 2026)
+
+- Bill's own decisions, pasted from the review page and applied directly:
+  `o0d1f858f0c` (OCA Tone 5 troparion of the martyrs, 15 Nov) = `menaion:11-15.c0.troparion`
+  (it was Candidate 3 on its card; the OCA names the three martyrs, ours names no one,
+  and our text is printed on 11-15 only, so the name cannot land on another day);
+  `oe29f5eb520` (OCA Tone 7 Sunday kontakion) = `octoechos:tone7.kontakion`.
+- Register: 184 automatic, 12 by a person, 150 awaiting review.
+- **Lesser-fasts Alleluia service (Appendix A-II): Bill, 15 Nov: AFTER the remaining
+  OCA steps.**
 
 ### v0.58.2 — Q-0004 (15 November) ANSWERED from the books; Q-0014 opened (15 Nov 2026)
 
