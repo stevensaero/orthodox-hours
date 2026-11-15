@@ -666,7 +666,7 @@ DONE on the branch — the VOL. III ORDER LAYER (14 Nov):
   book appoints "Theotokos Virgin, rejoice", thrice. The tool has no Vigil mode.
 - Little Compline and Matins of the orders are NOT entered: the tool does not
   assemble those services (`built: false`). Enter them when it does.
-- NOT YET: the bulletin's readings (still the old path); the other 73 entries,
+- NOT YET: the other 73 entries,
   each entered when its date is encoded (encoding_rule_v2.md 1.4).
 
 **RULED (Bill, 14 Nov) AND BUILT — THE GENERAL RULE FOR THE LITURGY'S PROPERS AND
@@ -705,12 +705,45 @@ Built:
   hieromartyrs; the OCA the feast only).
 - After this the vol. III orders change the general rule in 11 places, not 17:
   the sung propers on 5 Sep (both days) and 25 Nov (Sunday) now agree unaided.
-- NOT YET: the bulletin's readings still go through the old path (no Menaion
-  references passed); it moves with the bulletin work. The Pentecostarion keeps
-  its own order (chapter 4), unchanged.
+- The bulletin now follows the same rule (see THE BULLETIN). The Pentecostarion
+  keeps its own order (chapter 4), unchanged.
 
-NEXT on the branch: dismissal `name`; bulletin; Prefer OCA toggle and service
-chooser; the How-It-Works pass; merge and retire V1. Still V1 in the Liturgy:
+DONE — THE DISMISSAL NAME (ruling 12; data on main, code on the branch, 14 Nov):
+- Every Menaion V2 service carries a hand-entered `name` in its line map
+  (`'name': ...` above `'title'`), read as "and of <name>, whose memory we
+  celebrate": sentence case, beginning "the ..." or "our ...", no closing stop.
+  From the title line; the OCA title where there is one (14 Nov "all-praised
+  Apostle Philip", 15 Nov "Martyrs and Confessors"). `null` on a feast itself
+  (8 Sep, 21 Nov, the Kursk-Root icon), where no saint is added. The validator
+  requires it. **29 names entered; they are editorial and Bill has not read
+  them.** Two worth his eye: 6 Sep ("the holy Archangel Michael and the holy
+  Martyr Eudoxius and those with him": the day keeps a miracle, not the
+  Archangel's own feast) and 29 Nov ("the holy Martyr Paramon and our venerable
+  father Acacius": the Menaion's two, not the OCA's "370 Martyrs in Bithynia").
+- `dismissalOf(c)` -> { name, rank, kind }; `buildDismissalText` takes it as
+  `commemoration` at every call site (Hours, Vespers, Typica, Liturgy,
+  Post-Communion) and takes the rank from it. V1's `saint` is read only where
+  the date has no V2 service.
+- The short name also labels the Typica's kontakion of the saint and the source
+  line of the Liturgy's hymns, in place of the printed title in capitals.
+
+DONE — THE BULLETIN (14 Nov):
+- `src/lib/bulletin-day.js`, `buildBulletinDay(...)`: the day's commemoration,
+  troparia, kontakia, extras and readings from the V2 service through the
+  Liturgy's own plans (`entrancePlan`, `liturgyPlan`, `readingsForDay`). So the
+  sheet agrees with the Liturgy: the feast's troparion and kontakion in a feast
+  period (V1 never showed them), both saints' hymns, the OCA hymn in its own
+  place, Fekula's reading rule, a vol. III order where there is one.
+- The gate (`tools/test_bulletin_day.mjs`) now RUNS that code on V2 services
+  (6 Sep; 16 Nov, 2E; 25 Nov with the vol. III order). It used to rebuild the
+  sheet by hand from V1 fields.
+- The retired V1 / Pentecostarion entry is read only for a date with no V2
+  service; the May counter-case in the gate still exercises that path.
+- Kept as it was, not reviewed: the sheet's "Dismissal Theotokion" line on an
+  ordinary Sunday.
+
+NEXT on the branch: Prefer OCA toggle and service chooser; the How-It-Works
+pass; the Menaion browser items; merge and retire V1. Still V1 in the Liturgy:
 only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
 the Lord are still flagged, not assembled (no such day is in V2 yet).
 
