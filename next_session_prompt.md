@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.59.1 and after)
+# Next-session kickoff — encoding the Menaion (v0.59.2 and after)
 
-State at handoff: **v0.59.1**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.59.2**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -61,8 +61,7 @@ ONLY BILL'S match decisions are applied (`node tools/apply_match_decisions.mjs
 decisions", even from a priest, is a SUGGESTION: `--suggest <file> --role "<role>"`,
 present it to Bill, `--approve` only what he approves.
 
-**Remaining OCA steps, in order:** (4) Prefer OCA toggle and badge in the Octoechos
-viewer; (5) the by-day comparison checking stichera one by one; matcher weaknesses
+**Remaining OCA steps, in order:** (5) the by-day comparison checking stichera one by one; matcher weaknesses
 (a general hymn changed in number; a name not in our books; a true mate ranked low).
 Then the Alleluia service of the lesser fasts (ODS 2nd ed. Appendix A-II; Q-0014).
 

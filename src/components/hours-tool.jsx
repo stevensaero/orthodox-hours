@@ -7745,17 +7745,6 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             ↗︎ source
           </a>
         )}
-        {/* These are the OCA's words: say which of its service texts they are from, and open it at the hymn. */}
-        {isMovable && element.ocaHref && (
-          <a
-            href={element.ocaHref}
-            title={"These are the OCA's words, taken from its service text for " + new Date(element.ocaFrom.date + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) + ". A matched hymn is the same hymn on any day; open that text at this hymn."}
-            style={{ fontSize: "0.68rem", color: "#9A8A70", textDecoration: "none", borderBottom: "1px dotted rgba(139,105,20,0.45)",
-                     fontFamily: "Georgia, serif", letterSpacing: "0.04em", whiteSpace: "nowrap" }}
-          >
-            ↗︎ OCA text of {new Date(element.ocaFrom.date + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-          </a>
-        )}
         {(isMovable || element.showFekula) && element.fekula && (
           <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
         )}
@@ -8590,6 +8579,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.59.2",
+    date: "November 2026",
+    summary: "Prefer OCA texts in the Octoechos; the extra OCA link in the services is removed",
+    items: [
+      "The Octoechos now has the 'Prefer OCA texts' setting the Menaion has: a hymn with a " +
+      "matched OCA text is shown in the OCA's words, marked 'OCA 2026', and the mark opens the " +
+      "OCA service text at that hymn.",
+      "So every hymn in the OCA's words reaches its OCA text the same way: 'source' opens our " +
+      "book at the hymn, and the OCA mark there opens the OCA text.",
+      "Removed: the second link ('OCA text of ...') added to the services in v0.59.1. It " +
+      "duplicated that path.",
+    ],
+  },
   {
     version: "v0.59.1",
     date: "November 2026",
@@ -16505,21 +16508,8 @@ export default function App() {
     const isVespers = currentService.key === 'vespers';
     const srcLit = isVespers ? vespersNext.vLit : liturgicalData;
     const srcDate = isVespers ? vespersNext.vDateStr : selectedDate;
-    // "Which OCA text are these words from?" (step 3, 15 Nov 2026). Every OCA text the
-    // services can show comes out of the register maps loaded above, so a hymn in the
-    // OCA's words is recognised here by its text and given a link to the OCA service
-    // text it was taken from, at that hymn. Done in this one place, so no assembler has
-    // to remember to say it. (The date in the link is the OCA text's own; the viewer
-    // marks it as an archive when it is of another year than the service.)
-    const ocaByText = new Map();
-    if (preferOca) for (const m of [...Object.values(_ocaHymnCache), ...Object.values(_ocaOctoCache)]) if (m) for (const o of m.values()) ocaByText.set(stripCaret(o.text), o);
     return els.map(el => {
       let out = el;
-      if (ocaByText.size && el.type === 'movable' && typeof el.text === 'string') {
-        const o = ocaByText.get(stripCaret(el.text));
-        if (o && o.from) out = { ...out, ocaFrom: { id: o.id, doc: o.from.doc, date: o.from.date },
-          ocaHref: `/orthodox-hours/menaion-v2?oca=${encodeURIComponent(o.from.doc)}&at=${o.id}&why=service&date=${srcDate}&from=tool` };
-      }
       if (el.kathismaNum) {
         out = { ...out, psalterHref: `/orthodox-hours/psalter?kathisma=${el.kathismaNum}&service=${currentService.key}&date=${selectedDate}` };
       }

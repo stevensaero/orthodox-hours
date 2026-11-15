@@ -34,6 +34,7 @@ import {
   ReadingContext, DAY_SLOTS, SvcCanonical, RHeading, RRubric,
 } from './octoechos-v2-reading.jsx';
 import { getLiturgicalData } from './hours-tool.jsx';
+import { ocaMatesFor, textsUnder } from '../data/oca_hymns/index.js';
 
 // ── Color constants — matches the existing data browsers ─────────────────────
 const C = {
@@ -415,6 +416,17 @@ export default function OctoechosV2Browser() {
 
   const [shared, setShared] = useState(null);
   const [theotokia, setTheotokia] = useState(null);
+  // "Prefer OCA texts": the SAME setting as the Hours tool's and the Menaion's
+  // (localStorage `prefer_oca`, on by default), so the books and the services agree.
+  const [preferOca, setPreferOca] = useState(() => { try { const v = localStorage.getItem('prefer_oca'); return v === null ? true : v === '1'; } catch { return true; } });
+  const [ocaMap, setOcaMap] = useState(null);   // Map<text key, OCA hymn> for the tone on the page and the common theotokia
+  useEffect(() => { try { localStorage.setItem('prefer_oca', preferOca ? '1' : '0'); } catch { /* no storage */ } }, [preferOca]);
+  useEffect(() => {
+    if (!preferOca || !data) { setOcaMap(null); return undefined; }
+    let live = true;
+    ocaMatesFor([...textsUnder(data), ...textsUnder(theotokia)]).then((map) => { if (live) setOcaMap(map.size ? map : null); });
+    return () => { live = false; };
+  }, [preferOca, data, theotokia]);
   useEffect(() => { loadRecurrences().then(setRecurrences).catch(() => setRecurrences([])); }, []);
   useEffect(() => { loadSics().then(setSics).catch(() => setSics([])); }, []);
   useEffect(() => { loadOctoechosV2Shared().then(setShared).catch(() => setShared(null)); }, []);
@@ -778,10 +790,14 @@ export default function OctoechosV2Browser() {
                 </div>
               )}
               {data && (
-                <ReadingContext.Provider value={{ mode, sics: sicIndex, roots, tonePrefix: `tone${tone}.`, showRubrics }}>
+                <ReadingContext.Provider value={{ mode, sics: sicIndex, roots, tonePrefix: `tone${tone}.`, showRubrics, oca: preferOca ? ocaMap : null, ocaTone: tone }}>
                   <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: narrow ? "16px 18px" : "26px 34px", maxWidth: "720px", margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)" }}>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", fontSize: "0.68rem", color: C.inkMid }}>
                       <label style={{ cursor: "pointer" }}><input type="checkbox" checked={showRubrics} onChange={e => setRubPersist(e.target.checked)} /> Rubrics</label>
+                      <label style={{ cursor: "pointer" }}
+                             title="Where a hymn on this page has a matched OCA text, show the OCA's words in its place, marked 'OCA' with its year; the mark opens the OCA service text at that hymn. The same setting as in the Hours tool and the Menaion. The audit view always shows the book as printed.">
+                        <input type="checkbox" checked={preferOca} onChange={e => setPreferOca(e.target.checked)} /> Prefer OCA texts{preferOca && ocaMap ? ` (${ocaMap.size})` : ''}
+                      </label>
                       <label style={{ cursor: "pointer" }} title="As printed shows the * / ** pointing of the bound page; clean reading sets one melodic line per row (§3.4)">
                         <input type="checkbox" checked={mode === 'clean'} onChange={e => setModePersist(e.target.checked ? 'clean' : 'printed')} /> Clean reading
                       </label>

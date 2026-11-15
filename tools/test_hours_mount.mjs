@@ -52,11 +52,9 @@ const CASES = [
   // "Waiting for review on this day": the header counts the open items that touch the day's own hymns and links to them, filtered.
   ['2026-11-15', '3rd_hour', ['Help us improve this tool. Review items for this day:', 'OCA matches'], [], null, null, [/\/oca-matches\?day=2026-11-15&ids=o[0-9a-f]{10}(,o[0-9a-f]{10})*&on=m[0-9a-f,m]+&from=tool$/, /\/oca-matches\?day=(?!2026-11-15)/]],
   ['2026-11-28', 'vespers', ['Help us improve this tool. Review items for this day:', 'open question'], [], null, null, [/\/questions\?day=11-29&date=2026-11-29&from=tool$/, /\/questions\?day=11-28/]],   // Vespers belongs to the next day: Q-0009 is about 29 Nov
-  // Step 3 (15 Nov 2026): a hymn in the OCA's words says which OCA service text it is from and links to it at the hymn.
-  ['2026-11-15', '3rd_hour', ['OCA text of Nov 15, 2026', 'OCA text of Sep 20, 2026'], [], { prefer_oca: '1' }, null, [/\/menaion-v2\?oca=2026-1115-texts-tt-&at=o0d1f858f0c&why=service&date=2026-11-15&from=tool$/, /\/menaion-v2\?oca=[^&]*&at=(?!o[0-9a-f]{10}&)/]],
-  ['2026-11-15', '3rd_hour', ['O come, let us worship'], ['OCA text of'], { prefer_oca: '0' }, null, [/\/octoechos-v2\?/, /why=service/]],
-  ['2026-11-29', 'vespers', ['OCA text of Nov 30, 2026'], [], { prefer_oca: '1' }, null, [/\/menaion-v2\?oca=2026-1130-texts-tt&at=o[0-9a-f]{10}&why=service&date=2026-11-30&from=tool$/, /why=service&date=2026-11-29/]],
-  ['2026-11-22', 'liturgy', ['OCA text of'], [], { prefer_oca: '1', parish_dedication: 'dormition' }, null, [/\/menaion-v2\?oca=[^&]+&at=o[0-9a-f]{10}&why=service&date=2026-11-22&from=tool$/, /why=service&date=(?!2026-11-22)/]],
+  // The way from a hymn in the OCA's words to the OCA text it is from is: "source" (our book, at the hymn, in the OCA's words) and
+  // then the OCA badge there. There is NO second link in the service (Bill, 15 Nov 2026: it duplicated that path).
+  ['2026-11-15', '3rd_hour', ['OCA — Tone 7 (Sunday resurrectional)'], ['OCA text of'], { prefer_oca: '1' }, null, [/\/octoechos-v2\?.*#tone7\.troparion$/, /why=service/]],
   ['2026-11-14', 'vespers', ['By Thy Cross Thou didst destroy death'], ['not yet entered'], { prefer_oca: '1' }],   // Saturday evening: the same troparion at Vespers
   ['2027-11-15', '6th_hour', ['You received grace from on high'], ['not yet encoded'], { prefer_oca: '1' }, null, [/\/menaion-v2\?date=2027-11-15&from=tool#11-15\.c0\.kontakion$/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],   // a hymn shown in the OCA's words links to the place in OUR book it stands in (the viewer shows the OCA text there too)
   ['2026-11-16', '1st_hour', ['O come, let us worship'], ['not yet encoded'], { prefer_oca: '0' }, null, [/\/menaion-v2\?.*#11-16\.c0/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],   // a Menaion hymn links to its own place in the Menaion (Prefer OCA off, so the Menaion's texts show)

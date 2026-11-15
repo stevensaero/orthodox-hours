@@ -17,9 +17,13 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useContext, createContext } from 'react';
+import { ocaMate } from '../data/oca_hymns/index.js';
 
 export const ReadingContext = createContext({
   mode: 'printed', sics: {}, roots: {}, tonePrefix: '', showRubrics: true,
+  // "Prefer OCA texts" (the same setting as the Hours tool and the Menaion): the
+  // register mates of the hymns on the page, and the tone the page is in.
+  oca: null, ocaTone: null,
 });
 
 const C = {
@@ -77,6 +81,50 @@ function Marked({ text, indent = true }) {
         </span>
       ))}
     </span>
+  );
+}
+
+// ── "Prefer OCA texts" ───────────────────────────────────────────────────────
+// Where a hymn of the Octoechos has a matched OCA text, the OCA's words are shown in
+// its place and marked. The tone guard (ocaMate) takes the hymn's own tone, or the
+// tone of the page it stands on. The mark links to the OCA service text the words
+// are from, at that hymn; the book's own text is one hover away.
+function useOcaMate(node) {
+  const ctx = useContext(ReadingContext);
+  return ctx.oca && node && typeof node.text === 'string' ? ocaMate(ctx.oca, { text: node.text, tone: node.tone ?? ctx.ocaTone ?? null }) : null;
+}
+const ocaShown = (mate) => mate.text.replace(/\^/g, '');
+// The OCA's pointing: [syllable] is underlined, as in the Hours tool and the Menaion.
+function ocaPointed(text) {
+  return text.split(/(\[[^\]]*\])/).map((p, i) => (p.startsWith('[') ? <u key={i}>{p.slice(1, -1)}</u> : p));
+}
+function OcaWords({ mate, indent = true }) {
+  const { mode } = useContext(ReadingContext);
+  const text = ocaShown(mate);
+  const lines = mode === 'clean' ? splitPointed(text) : null;
+  if (!lines) return <span>{ocaPointed(text)}</span>;
+  return (
+    <span style={{ display: "block" }}>
+      {lines.map((l, i) => (
+        <span key={i} style={{ display: "block", textIndent: 0, paddingLeft: indent && i > 0 ? "1.1rem" : 0 }}>
+          {ocaPointed(l.t)}
+          {l.pen && <span style={{ color: C.inkLight, fontSize: "0.7em", fontFamily: "monospace" }}> //</span>}
+        </span>
+      ))}
+    </span>
+  );
+}
+function OcaBadge({ mate, ours }) {
+  return (
+    <a href={`/orthodox-hours/menaion-v2?oca=${encodeURIComponent(mate.from.doc)}&at=${mate.id}&why=service&from=tool`}
+       title={`OCA text from the service text for ${mate.from.date}${mate.from.head ? ` (${mate.from.head})` : ''}. `
+              + (mate.by === 'human' ? 'Match confirmed by a person.' : `Matched automatically: ${(mate.evidence || []).join('; ')}.`)
+              + ' Click to see it in the OCA service text.'
+              + ` The Octoechos prints: ${ours}`}
+       style={{ fontFamily: SERIF, fontSize: "0.62rem", fontStyle: "normal", letterSpacing: "0.06em", color: C.gold, border: `1px solid ${C.gold}`, textDecoration: "none",
+                borderRadius: "3px", padding: "0 4px", marginRight: "6px", textIndent: 0, whiteSpace: "nowrap", display: "inline-block", lineHeight: 1.5 }}>
+      OCA {mate.from.date.slice(0, 4)} ↗
+    </a>
   );
 }
 
@@ -153,6 +201,7 @@ export function RText({ node, path }) {
   const ctx = useContext(ReadingContext);
   const full = ctx.tonePrefix + path;
   const lab = printedLabel(node);
+  const mate = useOcaMate(node);
   return (
     <div id={full} title={node.src ? `${node.src.file} — ${node.src.locus}` : undefined}
          style={{ margin: "7px 0" }}>
@@ -167,7 +216,8 @@ export function RText({ node, path }) {
         textIndent: ctx.mode === 'printed' ? "1.4rem" : 0,
       }}>
         {lab && <span style={{ fontStyle: "italic", color: C.gold }}>{lab} </span>}
-        <Marked text={node.text} />
+        {mate && <OcaBadge mate={mate} ours={node.text} />}
+        {mate ? <OcaWords mate={mate} /> : <Marked text={node.text} />}
         {node.repeat && <span style={{ color: C.inkLight, fontStyle: "italic" }}> (Twice)</span>}
         {node.incipit_ref && (
           <a href={`#${node.incipit_ref}`} title={`Incipit — repeats ${node.incipit_ref} (§2.7); the printed line is an opening-words reference`}
@@ -301,9 +351,11 @@ export function ROdesB({ odes, path }) {
 function RTextInline({ node, path }) {
   const ctx = useContext(ReadingContext);
   const full = ctx.tonePrefix + path;
+  const mate = useOcaMate(node);
   return (
     <span id={full} title={node.src ? `${node.src.file} — ${node.src.locus}` : undefined}>
-      <Marked text={node.text} />
+      {mate && <OcaBadge mate={mate} ours={node.text} />}
+      {mate ? <OcaWords mate={mate} /> : <Marked text={node.text} />}
       {node.incipit_ref && (
         <a href={`#${node.incipit_ref}`} title={`Incipit — same as ${node.incipit_ref}`}
            style={{ color: C.gold, fontSize: "0.75rem", textDecoration: "none", marginLeft: "6px" }}>↩</a>

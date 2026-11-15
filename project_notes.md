@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.59.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.59.2** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,9 +41,28 @@ matcher's pool; capture the Paschal-season OCA texts (none on hand); put its ser
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
 
+### v0.59.2 — Prefer OCA in the Octoechos viewer (step 4); the v0.59.1 service link REMOVED (15 Nov 2026)
+
+- **Bill, 15 Nov: "Is that extra link actually required? ... the source takes you to
+  the menaion, with oca revealed, then from there you can click in another level."**
+  Removed: the "OCA text of ..." link and its stamping (`ocaByText`, `ocaHref`) from
+  `hours-tool.jsx`. THE ONE WAY from an OCA-worded hymn to its OCA text is:
+  "source" -> our book at the hymn, in the OCA's words -> the "OCA <year> ↗" mark ->
+  the OCA service text at the hymn. Do not add a second route in the services.
+- **Step 4, which that way needed:** `octoechos-v2-browser.jsx` has the `prefer_oca`
+  toggle (shared with the Hours tool and the Menaion) and loads the mates of the
+  tone on the page and of the common theotokia; `octoechos-v2-reading.jsx`: `RText`
+  and `RTextInline` show the OCA's words (`useOcaMate`: tone guard on the hymn's own
+  tone, else the page's tone; `OcaWords` underlines `[syllables]`) with an `OcaBadge`
+  linking to `/menaion-v2?oca=<stem>&at=<id>&why=service&from=tool`. The OCA document
+  is still shown by the Menaion viewer; `why=service` labels the marked hymn "the
+  hymn you came from". The audit view shows the book as printed.
+- Viewer mount gate: mounts the Octoechos viewer too (Tone 7 on and off with the link,
+  every tone once). Hours mount: asserts the service carries NO "OCA text of" link.
+
 ### v0.59.1 — step 3 ("OCA text of ..." link); THE OCA INTAKE made permanent (15 Nov 2026)
 
-- **Step 3.** A hymn in the OCA's words carries a second link beside "source":
+- **Step 3 (REMOVED in v0.59.2; kept here as the record).** A hymn in the OCA's words carried a second link beside "source":
   "↗ OCA text of Nov 30, 2026" -> `/menaion-v2?oca=<stem>&at=<id>&why=service&date=<the
   service's date>&from=tool`. Done in ONE place, the element-stamping pass in
   `hours-tool.jsx`: the element's text is looked up in the register maps already

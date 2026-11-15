@@ -24,9 +24,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import Browser from ${JSON.stringify(join(ROOT, 'src/components/menaion-v2-browser.jsx'))};
+import OctoBrowser from ${JSON.stringify(join(ROOT, 'src/components/octoechos-v2-browser.jsx'))};
 import { MONTH_LOADERS } from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/index.js'))};
 export { MONTH_LOADERS };
 export function mount(el) { const r = createRoot(el); flushSync(() => r.render(React.createElement(Browser))); return r; }
+export function mountOcto(el) { const r = createRoot(el); flushSync(() => r.render(React.createElement(OctoBrowser))); return r; }
 `);
 await build({ root: TMP, configFile: false, logLevel: 'error',
   build: { ssr: join(TMP, 'src/entry.jsx'), outDir: OUT, emptyOutDir: true,
@@ -53,9 +55,11 @@ async function visit(url, label, expectText, opts = {}) {
   try {
     const mod = await import(join(OUT, bundle) + `?v=${visits}`);
     if (opts.preferOca != null) window.localStorage.setItem('prefer_oca', opts.preferOca ? '1' : '0');
-    mod.mount(window.document.getElementById('root'));
+    (opts.octo ? mod.mountOcto : mod.mount)(window.document.getElementById('root'));   // `octo`: the Octoechos viewer
     await sleep(opts.wait ?? 120);
     const text = window.document.body.textContent;
+    // `href`: some link on the page must match.
+    if (opts.href && ![...window.document.querySelectorAll('a[href]')].some((a) => opts.href.test(a.getAttribute('href')))) errors.push(`${label}: no link matching ${opts.href}`);
     for (const t of opts.must ?? []) if (!text.includes(t)) errors.push(`${label}: expected on the page: ${JSON.stringify(t)}`);
     for (const t of opts.mustNot ?? []) if (text.includes(t)) errors.push(`${label}: should not be on the page: ${JSON.stringify(t)}`);
     // Every hymn the services take from this page must be findable by its stored path:
@@ -113,6 +117,15 @@ await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-t
 // The OCA badge on a hymn opens the OCA service text it came from, at that hymn.
 await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2026-11-15', '11-15: the OCA badge', null, { preferOca: true, wait: 400,
   clickOca: ['the hymn you came from', 'OCA service text for', 'back to the Menaion'] });
+// The Octoechos viewer has the same toggle (15 Nov 2026): a matched hymn in the OCA's words, marked, the mark
+// leading to the OCA service text at that hymn. This is the second half of the way from a Sunday hymn in a
+// service to its OCA text: "source" lands here, the mark goes on.
+await visit('https://example.org/orthodox-hours/octoechos-v2#tone7.troparion', 'Octoechos Tone 7, Prefer OCA on', null, { octo: true, preferOca: true, wait: 900,
+  must: ['Prefer OCA texts', 'OCA 2026', 'By Thy Cross Thou didst destroy death'], mustNot: ['Thou didst destroy death by Thy Cross'],
+  href: /\/menaion-v2\?oca=2026-[0-9]{4}-texts-tt-?&at=o[0-9a-f]{10}&why=service&from=tool$/ });
+await visit('https://example.org/orthodox-hours/octoechos-v2#tone7.troparion', 'Octoechos Tone 7, Prefer OCA off', null, { octo: true, preferOca: false, wait: 900,
+  must: ['Prefer OCA texts', 'Thou didst destroy death by Thy Cross'], mustNot: ['OCA 2026', 'By Thy Cross Thou didst destroy death'] });
+for (let t = 1; t <= 8; t++) await visit(`https://example.org/orthodox-hours/octoechos-v2#tone${t}.kontakion`, `Octoechos Tone ${t}`, null, { octo: true, preferOca: true, wait: 700, must: ['Prefer OCA texts'] });
 // No year given: the calendar year stands in.
 { const now = new Date().getFullYear() === 2026;
   await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15', '11-15, no year given', null, { wait: 400,
