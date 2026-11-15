@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.56.4** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.57.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,25 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.57.0 — Prefer OCA: the Octoechos half (Sunday troparion and kontakion) (15 Nov 2026)
+
+- I had said in the v0.56.0 plan that the lookup would cover "a Menaion or Octoechos
+  troparion or kontakion" and built only the Menaion half. Bill noticed on Sunday
+  15 Nov: nothing in the Hours was in OCA words (Sunday troparion and kontakion are
+  the Octoechos's; the saints' troparion waits on review). Now built.
+- `hours-tool.jsx`: `_ocaOctoCache[tone]` (register mates of that tone's troparion and
+  kontakion, loaded by `_loadOctoOca` beside the tone), `octoOca(node)` swaps in the OCA
+  text/tier/pointing and keeps the node's `tone` and `path`; `srcResTroparion`,
+  `srcSunKontakion` and `VESPERS_OCTO.resTroparion` go through it, so every service
+  gets it. `_preferOcaNow` is a module variable the component sets each render (the
+  accessors are module-level and are also called on dates with no Menaion service).
+  `octoSrc()` turns the label's "Octoechos" into "OCA"; `liturgy-entrance.js` likewise.
+- Matched now: troparia of Tones 1,2,3,5,6,7,8; kontakia of Tones 4,5,6,8. On review:
+  kontakia of Tones 1,2,3,7 (scores 0.42 to 0.47) and whatever Tone 4's troparion has.
+- NOT yet in OCA words anywhere in the services: stichera, aposticha, Litiya, dogmatika,
+  theotokia (Menaion or Octoechos). The Octoechos viewer has no Prefer OCA toggle.
+- Hours mount gate: 3 cases (11-15 3rd Hour on and off; 11-14 Vespers).
 
 ### v0.56.4 — archive notice reworded; the open rulings are questions Q-0010..13 (15 Nov 2026)
 

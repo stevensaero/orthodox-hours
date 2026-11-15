@@ -12,7 +12,7 @@ import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_tro
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
-import { stripCaret } from '../data/oca_hymns/index.js';
+import { stripCaret, ocaMatesFor, ocaMate } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { ods3OrderFor } from '../data/ods_v3/orders.js';
 import { buildBulletinDay } from '../lib/bulletin-day.js';
@@ -884,8 +884,27 @@ function getNamedDay(date, pascha) {
 // hymnProvenance. The V1 dataset (src/data/octoechos/) was retired at cutover
 // (v0.36.0); the V1↔V2 comparison evidence lives in
 // tools/compare_v1_v2_report.md.
-const srcResTroparion = (tone) => OctoV2.getV2Troparion(tone);
-const srcSunKontakion = (tone) => OctoV2.getV2Kontakion(tone);
+// "Prefer OCA texts", the Octoechos half (15 Nov 2026): the Sunday troparion and
+// kontakion of the tone are shown in the OCA's words where the match register holds
+// their mate, exactly as a Menaion hymn is (adapter.js `slot`). Hymn by hymn: the
+// date plays no part. The node keeps its tone and its `path` in OUR book, so the
+// "source" link still opens the Octoechos at the hymn.
+const _ocaOctoCache = {};      // tone -> Map<text key, OCA node> for that tone's troparion and kontakion
+let _preferOcaNow = true;      // the reader's toggle, set by the component before it assembles anything
+async function _loadOctoOca(tone) {
+  await OctoV2.loadV2Tone(tone);
+  if (tone in _ocaOctoCache) return;
+  const map = await ocaMatesFor([OctoV2.getV2Troparion(tone), OctoV2.getV2Kontakion(tone)].filter(Boolean).map((n) => n.text));
+  _ocaOctoCache[tone] = map.size ? map : null;
+}
+const octoOca = (n) => {
+  const o = n && _preferOcaNow ? ocaMate(_ocaOctoCache[n.tone], n) : null;
+  return o ? { ...n, text: o.text, tier: o.tier, director: o.director, pointed: o.pointed, source: 'oca', sourceLabel: 'OCA', id: o.id, from: o.from, octoechos: n } : n;
+};
+// The label of an Octoechos hymn says OCA when the OCA's words are the ones shown.
+const octoSrc = (label, n) => (n && n.source === 'oca' ? String(label).replace(/^Octoechos/, 'OCA') : label);
+const srcResTroparion = (tone) => octoOca(OctoV2.getV2Troparion(tone));
+const srcSunKontakion = (tone) => octoOca(OctoV2.getV2Kontakion(tone));
 const srcDismissalTheot = (tone) => OctoV2.getV2DismissalTheotokion(tone);
 // §8 conflation fix: the Typica serves the LITURGY prokeimenon/Alleluia
 // (never the Matins text — schema rule `prokeimenonNotEqual`).
@@ -967,7 +986,7 @@ const VESPERS_OCTO = {
   apostichaTheotokion: (t) => OctoV2.getV2ApostichaTheotokion(t),
   sundayApostichaTheotokion: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.aposticha_theotokion : null; },
   eveningApostichaTheotokion: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.aposticha_theotokion : null; },
-  resTroparion: (t) => OctoV2.getV2Troparion(t),
+  resTroparion: (t) => srcResTroparion(t),
   resDismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t),
   dailyDismissalTheotokion: (t, eve) => OctoV2.getV2DailyDismissalTheotokion(t, eve),
 };
@@ -2401,7 +2420,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
   if (primaryTrop) {
     elements.push({
       id: `${hourKey}-troparion`, type: 'movable', label: 'Troparion',
-      source: primaryTropSource,
+      source: octoSrc(primaryTropSource, primaryTrop),
       toneNote: `Tone ${primaryTrop.tone}`,
       text: primaryTrop.text,
       ...(primaryTrop.path ? { srcPath: primaryTrop.path } : {}),
@@ -2498,7 +2517,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
     elements.push({
       id: `${hourKey}-kontakion`, type: 'movable', label: 'Kontakion',
       rubric: kontakionOdeNote,
-      source: kontakionSource,
+      source: octoSrc(kontakionSource, kontakion),
       toneNote: `Tone ${kontakion.tone || '—'}`,
       text: kontakion.text,
       ...(kontakion.path ? { srcPath: kontakion.path } : {}),
@@ -3285,7 +3304,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const _resTrop = srcResTroparion(tone);
     if (_resTrop) {
       primTrop = _resTrop.text; primTropTone = _resTrop.tone; primTropPath = _resTrop.path || null;
-      primSrc = "Octoechos — Resurrectional troparion, Tone " + tone;
+      primSrc = octoSrc("Octoechos — Resurrectional troparion, Tone " + tone, _resTrop);
       if (effTrop) { secTrop = effTrop; secTropTone = effTropTone; secSrc = "Menaion — " + effSaint; }
     } else if (effTrop) {
       primTrop = effTrop; primTropTone = effTropTone; primSrc = "Menaion — " + effSaint;
@@ -4673,7 +4692,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         elements.push({ id: it.kind === "theotokion" ? "v-trop-theotokion" : "v-trop-" + (i + 1), type: "movable",
           label: TR_LABEL[it.kind] + (it.tone ? " · Tone " + it.tone : ""), rubric: "",
           text: stripCaret(hymnText(it.node)),
-          source: it.source === "octoechos" ? "Octoechos" : TR_SRC[it.source] + " — " + (it.kind === "feast" ? "of the feast" : trSaint),
+          source: it.source === "octoechos" ? octoSrc("Octoechos", it.node) : TR_SRC[it.source] + " — " + (it.kind === "feast" ? "of the feast" : trSaint),
           ...(it.source === "octoechos" ? hymnProvenance(it.node) : (it.node.path ? { srcPath: it.node.path } : {})),
           fekula: { section: fekulaSection, note: trNote } });
       } else {
@@ -8524,6 +8543,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.57.0",
+    date: "November 2026",
+    summary: "Prefer OCA texts now reaches the Sunday troparion and kontakion",
+    items: [
+      "With 'Prefer OCA texts' on, the Sunday troparion and kontakion of the tone are shown in " +
+      "the OCA's words where they have a matched OCA text, at the Hours, Vespers, the Typica " +
+      "and the Liturgy. Seven of the eight Sunday troparia and four of the kontakia are " +
+      "matched so far; the rest wait on the match review page and show the St. Sergius text.",
+      "Such a hymn is labelled OCA, and its 'source' link still opens the Octoechos at the " +
+      "hymn itself.",
+    ],
+  },
   {
     version: "v0.56.4",
     date: "November 2026",
@@ -16009,11 +16041,12 @@ export default function App() {
       _loadMenaionV2(String(dNext.getMonth() + 1).padStart(2, "0"),            // Vespers opens the next day
         `${String(dNext.getMonth() + 1).padStart(2, "0")}-${String(dNext.getDate()).padStart(2, "0")}`),
       _loadPentecostarion(),
-      OctoV2.loadV2Tone(toneForDate),
-      OctoV2.loadV2Tone(toneForVespers),
+      _loadOctoOca(toneForDate),
+      _loadOctoOca(toneForVespers),
     ]).then(() => setDataVersion(v => v + 1));
   }, [selectedDate, templeDedication]);
 
+  _preferOcaNow = preferOca;   // read by the Octoechos accessors (octoOca) during this render's assembly
   const date = parseCalendarDate(selectedDate);
   const liturgicalData = getLiturgicalData(date);
   const dailyReading = getDailyReading(date);  // Lectionary: epistle & gospel for the day

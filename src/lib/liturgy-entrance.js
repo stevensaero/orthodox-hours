@@ -359,8 +359,8 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaion = null, pentE
   const hymn = (slot) => {
     const S = sources;
     switch (slot) {
-      case "sunday_troparion": { const h = S.sundayTroparion && S.sundayTroparion(tone); return h && { label: "Sunday Troparion", ...h, source: "Octoechos · Tone " + tone }; }
-      case "sunday_kontakion": { const h = S.sundayKontakion && S.sundayKontakion(tone); return h && { label: "Sunday Kontakion", ...h, source: "Octoechos · Tone " + tone }; }
+      case "sunday_troparion": { const h = S.sundayTroparion && S.sundayTroparion(tone); return h && { label: "Sunday Troparion", ...h, source: (h.source === "oca" ? "OCA service texts" : "Octoechos") + " · Tone " + tone }; }
+      case "sunday_kontakion": { const h = S.sundayKontakion && S.sundayKontakion(tone); return h && { label: "Sunday Kontakion", ...h, source: (h.source === "oca" ? "OCA service texts" : "Octoechos") + " · Tone " + tone }; }
       case "feast_troparion":  return feastSlot("troparion");
       case "feast_kontakion":  return feastSlot("kontakion");
       case "temple_troparion": return temple && temple.troparion && { label: "Troparion of the Temple", ...temple.troparion, source: "Temple · " + temple.label };
