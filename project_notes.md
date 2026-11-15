@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.58.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.58.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -35,8 +35,8 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 that you present for approval through me." Only Bill's decisions are applied.
 
 - **The day line** (`hours-tool.jsx`, header strip, always visible, not in the reading
-  flow or the bulletin): "Waiting for review on this day: N OCA matches · M open
-  questions". `reviewForDay(date, tone)`: the day's HYMNS = every text on the Menaion
+  flow or the bulletin): "Help us improve this tool. Review items for this day: N OCA
+  matches · M open questions" (Bill's wording, v0.58.1: an invitation, not a status). `reviewForDay(date, tone)`: the day's HYMNS = every text on the Menaion
   page of the date + the tone's Sunday troparion and kontakion; an OCA review item
   counts if any of its candidates is one of them (`matches_review_index.js`, GENERATED
   by the matcher: text key -> review ids; ~20 KB, lazy). Questions: unanswered rows

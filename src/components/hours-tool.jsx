@@ -8564,6 +8564,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.58.1",
+    date: "November 2026",
+    summary: "The review line in the header reads as an invitation",
+    items: [
+      "The line under the date now says 'Help us improve this tool. Review items for this " +
+      "day:' followed by the links, in place of 'Waiting for review on this day'.",
+    ],
+  },
+  {
     version: "v0.58.0",
     date: "November 2026",
     summary: "The day's header says what is waiting for review on that day",
@@ -16738,7 +16747,7 @@ export default function App() {
             return (
               <div style={{ padding: "0 10px 6px 0", textAlign: "center", fontSize: "0.72rem", color: "#8B7040" }}
                    title="Places in this day's services where the tool is not yet sure, or where two sources differ. Your answer helps settle them.">
-                Waiting for review on this day:{" "}
+                Help us improve this tool. Review items for this day:{" "}
                 {rv.ids.length > 0 && <a style={a} href={"/orthodox-hours/oca-matches?day=" + iso + "&ids=" + rv.ids.join(",") + "&on=" + rv.on.join(",") + "&from=tool"}>
                   {rv.ids.length} OCA {rv.ids.length === 1 ? "match" : "matches"}</a>}
                 {rv.ids.length > 0 && rv.questions > 0 && " · "}
