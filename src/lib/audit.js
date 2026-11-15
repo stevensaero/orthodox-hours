@@ -1,5 +1,7 @@
 // audit.js — Unified encoding completeness engine
-// Used by: scripts/audit.js (CLI), menaion-browser.jsx, pentecostarion-browser.jsx
+// Used by: scripts/audit.js (CLI), scripts/check-skeleton.mjs, pentecostarion-browser.jsx
+// (Pentecostarion only since v0.53.0: the summarized Menaion it also audited was
+// retired; the Menaion is gated by tools/validate_menaion_v2.mjs.)
 //
 // Architecture: a single FIELD_REGISTRY drives all completeness checks for both
 // Menaion and Pentecostarion entries. Each field entry declares:
@@ -63,11 +65,6 @@ export const FIELD_REGISTRY = [
     check: (entry) => 'source_file' in entry,  // null valid — OCA-only entries have no St. Sergius PDF
   },
   {
-    field: 'rank', category: 'identity', appliesTo: 'menaion_only',
-    required: () => true,
-    description: 'Service rank: simple | six_stichera | doxology | polyeleos | vigil',
-  },
-  {
     field: 'fekula_section', category: 'identity', appliesTo: 'both',
     required: () => true,
     description: 'Fekula section governing assembly (e.g. 2A, 4B15)',
@@ -102,12 +99,6 @@ export const FIELD_REGISTRY = [
     },
   },
   {
-    field: 'kontakion_ode6', category: 'hours', appliesTo: 'menaion_only',
-    required: () => true,
-    description: 'Kontakion after Ode VI (used at 3rd & 9th Hours)',
-    check: (entry) => isPresent(entry, 'kontakion_ode6') && !!(entry.kontakion_ode6.text),
-  },
-  {
     field: 'kontakion', category: 'hours', appliesTo: 'pentecostarion_only',
     required: () => true,
     description: 'Kontakion: hours_kontakion or kontakion_ode6 must be present',
@@ -133,7 +124,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_text', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Prokeimenon text',
@@ -141,7 +131,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_tone', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Prokeimenon tone',
@@ -149,7 +138,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_stichos', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Prokeimenon stichos verse',
@@ -157,7 +145,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'alleluia_tone', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Alleluia tone number',
@@ -165,7 +152,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'alleluia_verse', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Alleluia verse',
@@ -173,7 +159,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'alleluia_stichos', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     // alleluia_stichos may legitimately be null (e.g. P+56 T8 alleluia has no stichos)
@@ -184,7 +169,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'communion_verse', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Communion verse',
@@ -194,9 +178,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'stichera_lord_i_call', category: 'vespers_lic', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
-      }
       // Pentecostarion: required for Great Feasts (menaion_set_aside).
       // IMPORTANT: check the field VALUE not === true, so missing flag doesn't hide the requirement.
       // If an entry has stichera_lord_i_call encoded, it should be correct regardless of flag.
@@ -211,9 +192,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'stichera_lord_i_call_count', category: 'vespers_lic', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
-      }
       // Required on ALL Pentecostarion entries
       return true;
     },
@@ -224,9 +202,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'stichera_glory', category: 'vespers_lic', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
-      }
       return entry.menaion_set_aside === true;
     },
     description: 'LIC Glory doxasticon (tone + text, or null if §2B no doxasticon)',
@@ -279,9 +254,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'stichera_aposticha', category: 'vespers_aposticha', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['doxology', 'polyeleos', 'vigil'].includes(entry.rank);
-      }
       // Pentecostarion: required for Great Feasts and their apodoses
       return entry.menaion_set_aside === true ||
              entry.hours_format === 'apodosis_pentecost' ||
@@ -307,9 +279,6 @@ export const FIELD_REGISTRY = [
     // PDF). A bare absence is a red gap (status → partial) so the Menaion board lights up until
     // an encoding pass examines the PDF and either encodes the Glory or sets _absent: true.
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['simple', 'six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
-      }
       return entry.menaion_set_aside === true ||
              entry.hours_format === 'apodosis_pentecost' ||
              entry.hours_format === 'apodosis_ascension';
@@ -323,9 +292,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'aposticha_both_now', category: 'vespers_aposticha', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['doxology', 'polyeleos', 'vigil'].includes(entry.rank);
-      }
       // Required on ALL Pentecostarion entries — every day has a vespers Both now
       return true;
     },
@@ -369,22 +335,14 @@ export const FIELD_REGISTRY = [
   {
     field: 'has_polyeleos', category: 'matins', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
       // Required on ALL Pentecostarion entries
       return true;
     },
     description: 'Polyeleos sung at Matins (boolean)',
   },
   {
-    field: 'matins_gospel', category: 'matins', appliesTo: 'menaion_only',
-    required: (entry) => ['polyeleos', 'vigil'].includes(entry.rank),
-    description: 'Matins Gospel reading (§2E/§2F; null if not printed in PDF)',
-    check: (entry) => 'matins_gospel' in entry,  // null valid — PDF may not print matins gospel
-  },
-  {
     field: 'beatitudes_source', category: 'matins', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
       return entry.menaion_set_aside === true ||
              (entry.hours_format || '').includes('sunday') ||
              entry.hours_format === 'all_saints_sunday' ||
@@ -396,7 +354,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'beatitudes_troparia', category: 'matins', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
       // Pentecostarion: required on Sundays and Great Feasts
       return entry.menaion_set_aside === true ||
              (entry.hours_format || '').includes('sunday') ||
@@ -516,56 +473,7 @@ function deriveStatus(results, gaps, hasPlaceholder) {
 }
 
 // ── BACKWARD-COMPATIBLE WRAPPERS ─────────────────────────────────────────────
-// These preserve the existing API used by menaion-browser.jsx,
-// pentecostarion-browser.jsx, and scripts/audit.js.
-
-/**
- * Audit a Menaion entry.
- * Returns { status, missing, gaps, hasPlaceholder }
- */
-// Returns true if any stichera array in the entry has text items but no pointing markers.
-// Drives the gold 'needs review' state — not an error, but requires human PDF check.
-function entryNeedsPointingReview(entry) {
-  function arrayUnpointed(items) {
-    if (!Array.isArray(items)) return false;
-    const textItems = items.filter(s => s && s.text);
-    if (textItems.length === 0) return false;
-    const hasMarker = t => / \* /.test(t) || / \*\* /.test(t) || /\s\|\s/.test(t) || /\s\/\/\s/.test(t);
-    return !textItems.some(s => hasMarker(s.text));
-  }
-  return arrayUnpointed(entry.stichera_lord_i_call) || arrayUnpointed(entry.stichera_aposticha);
-}
-
-export function auditMenaionEntry(entry) {
-  // For multi-commemoration days (array), audit each sub-entry and return
-  // the worst status across all of them. The calendar badge must reflect
-  // any gap in any sub-entry, not just the primary (entry[0]).
-  if (Array.isArray(entry)) {
-    const results = entry.map(e => {
-      const { results, gaps, hasPlaceholder } = auditEntry(e, 'menaion');
-      const missing = gaps.map(g => g.field);
-      const status = deriveStatus(results, gaps, hasPlaceholder);
-      const needsReview = entryNeedsPointingReview(e);
-      return { status, missing, gaps, hasPlaceholder, needsReview };
-    });
-    // Worst status: structural > partial > complete
-    const rank = s => s === 'structural' ? 2 : s === 'partial' ? 1 : 0;
-    const worst = results.reduce((a, b) => rank(a.status) >= rank(b.status) ? a : b);
-    return {
-      status: worst.status,
-      needsReview: results.some(r => r.needsReview),
-      missing: results.flatMap(r => r.missing),
-      gaps: results.flatMap(r => r.gaps),
-      hasPlaceholder: results.some(r => r.hasPlaceholder),
-      subAudits: results,
-    };
-  }
-  const { results, gaps, hasPlaceholder } = auditEntry(entry, 'menaion');
-  const missing = gaps.map(g => g.field);
-  const status = deriveStatus(results, gaps, hasPlaceholder);
-  const needsReview = entryNeedsPointingReview(entry);
-  return { status, missing, gaps, hasPlaceholder, needsReview };
-}
+// The API used by pentecostarion-browser.jsx and scripts/audit.js.
 
 /**
  * Audit a Pentecostarion entry.

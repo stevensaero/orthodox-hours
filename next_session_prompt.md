@@ -1,11 +1,10 @@
-# Next-session kickoff — Menaion V2 wire-in (Vespers next) and November encoding
+# Next-session kickoff — encoding the Menaion (v0.53.0 and after)
 
-State at handoff: **v0.52.2**, nine gates green. The General Menaion is complete.
-`november.js` holds 11-14 through 11-30 (22 files). The consolidated state,
-rulings, patterns and the owed list are the FIRST block of `project_notes.md`
-("WHERE THINGS STAND"). V1 still drives the Hours tool until the wire-in; **no
-V1 encoding is done any more.** This prompt asserts nothing about unencoded
-files: measure them.
+State at handoff: **v0.53.0**. `v2-wirein` is merged; the summarized Menaion is
+deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
+the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
+list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
+MERGE"). This prompt asserts nothing about unencoded files: measure them.
 
 Paste the following (with the token filled in) to start the session:
 
@@ -13,116 +12,56 @@ Paste the following (with the token filled in) to start the session:
 
 I'm continuing the Orthodox Hours Tool (`stevensaero/orthodox-hours`). Token:
 [BILL: paste]. Clone with the header method, confirm the `hours-tool.jsx` badge
-matches the `project_notes.md` header, and run all nine gates on the clean tree.
-**Run gates in their own step and check exit codes before any commit** (a broken
-build reached main on 14 Nov because gates and push were chained).
+matches the `project_notes.md` header, and run every gate on the clean tree.
+**Run gates in their own step and check exit codes before any commit.**
 
-**Read first:** the "WHERE THINGS STAND" block at the top of `project_notes.md`;
+**Read first:** the top blocks of `project_notes.md`;
 `tools/encoding/menaion_v2/README.md`; `menaion_v2_spec.md` §§2, 5, 7, 12 and
-the two rulings at the end of §16.5; `encoding_rule_v2.md` §§1.1 and 3 (live);
-`src/data/open_questions.js` (the ladder is in its header);
-`bill_review_ledger.md`.
+the two rulings at the end of §16.5; `encoding_rule_v2.md` (live; v2.16) §§1.1,
+1.4, 1.5 and 3; `src/data/open_questions.js`; `bill_review_ledger.md`.
 
-**OCA service texts** for many 2026 dates are on Bill's computer in
-`Orthodox Hours/OCA_service_texts/` (`2026-MMDD-texts-tt.docx`; reference only,
-never in the repo). Check for the date before opening a liturgical question.
+**Sources on Bill's computer, never in the repo:** the St. Sergius Menaion PDFs;
+`Orthodox Hours/OCA_service_texts/` (`2026-MMDD-texts-tt.docx`); and Fekula
+volume III at `Orthodox Hours/Fekula_ODS_SOM_V3/intake/` (`ods_v3_index.json`,
+`entries/ods3-MMDD-*.md`, `ods_v3_full_repaired.txt`). Fekula is a copyrighted
+reference work: cite an entry by id and page, quote at most a short rubric
+phrase, store an order as STRUCTURE ONLY. Check EVERY date against the index
+before ranking: a printed rank is decisive, a deliberate blank means do not
+infer one. If a folder is not reachable, say so; do not work from memory of it.
 
-**The wire-in is a REWRITE on branch `v2-wirein`, and VESPERS IS NEXT.** Read the
-"V2 WIRE-IN IS A REWRITE OF THE LOGIC, NOT A SHIM" block of `project_notes.md`
-and `menaion_v2_wirein_spec.md` 6a-6b before touching anything. Bill's rule: no
-shims, props or bandages; fix the logic. The assemblers lay in PLANS from
-`src/data/menaion_v2/adapter.js`; selection logic lives in plain modules under
-`src/lib/` so the gates run the tool's own code.
+**The work: encode whole days**, one printed service at a time, by the README's
+per-file steps. For each date: the line map, the dismissal `name` (hand-entered;
+null on a feast itself), the vol. III order in `src/data/ods_v3/orders.js` if the
+index has one, and the OCA text into `src/data/oca_hymns/` if there is one. Then
+`node tools/build_temple_index.mjs`.
 
-- After cloning: `git fetch origin v2-wirein && git checkout v2-wirein && git merge main`.
-  Rewrite work is committed and pushed on the BRANCH (`... push <url> v2-wirein`);
-  encoding and project notes go on `main`, then `main` is merged into the branch.
-- Done on the branch: the Hours (`hoursPlan`, `src/lib/hours-propers.js`), the
-  General Menaion fallback (`general_fallback` on an entry), the OCA overlay.
-  Gates: `tools/test_menaion_v2_hours.mjs`, `tools/test_hours_mount.mjs`.
-- DONE for Vespers: the Glory and Both now at Lord I call (`resolveLicClosers` in
-  `src/lib/vespers-propers.js`; gate `tools/test_menaion_v2_vespers.mjs`, 24 of 24
-  places agree with the OCA texts) AND its stichera (`resolveLicStichera`, verse by
-  verse agreement on all 12 shared dates), AND the Aposticha (`resolveAposticha`; 34 of 36
-  places agree, 2 known), the Litiya, printed only (`resolveLitiya`), AND the troparia
-  (`resolveVespersTroparia`; NO kontakion at Vespers), the entrance and readings, and the
-  composed Litiya of Fekula 1F1. Vespers reads V2 throughout outside the Pentecostarion.
-  The Typica and Liturgy take their Menaion propers and readings from `liturgyPlan`.
-  Ruled: the full order is always rendered and each Liturgy item is marked "OCA: sung" or
-  "OCA: likely omitted" where an OCA text exists for the day (built). The Liturgy's
-  entrance troparia and kontakia and the Beatitudes read `entrancePlan` (built; gate
-  `tools/test_menaion_v2_liturgy.mjs`, order agrees with the OCA on all 12 dates; five
-  interpretive choices are on record in project_notes.md for Bill). NEXT: the dismissal
-  `name`, the bulletin, the Prefer OCA toggle and service chooser, the How-It-Works pass.
-  RULED: ODS vol. III's date-specific orders OVERRIDE the general rule. Built as
-  `src/data/ods_v3/orders.js` (structure only, no text of the book) and gated by
-  `tools/test_ods_v3_orders.mjs`; drives the Hours and the Liturgy. Owed: Vespers and
-  Matins of the orders. When encoding a date with a vol. III entry, enter its order
-  (encoding_rule_v2.md 1.4). RULED AND BUILT: the general rule for the Liturgy's
-  prokeimenon, Alleluia, communion hymn and readings is Fekula's by section
-  (`src/lib/liturgy-order.js`); the OCA mark shows only where the OCA text differs.
-  Vespers of the four vol. III orders is entered and gated (Matins and Compline are not
-  assembled by the tool, so not entered). The dismissal name (hand-entered on every
-  service; 29 names await Bill's read) and the bulletin (`src/lib/bulletin-day.js`) are
-  done. The Prefer OCA toggle and the V2 service chooser are
-  done. The How-It-Works pass and the three Menaion browser
-  items are done. NEXT: THE MERGE: re-base the gates that import V1, delete V1 whole (the
-  list is in project_notes.md), re-read the pop-up explainers, v0.53.0 and its release note.
-  RULED: at the switch the reader sees "The Menaion", never "V2" in a book TITLE or in the services;
-  "(V2)" may stand in the small cover line as on the Octoechos, and STAYS in file paths
-  and routes (no renames, no redirects). Details in project_notes.md.
-- **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
-  Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
-  (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
-  place it returns "printed here" (the node), "rubric only" (Octoechos, in the
-  tone the rubric names), or "nothing printed" (the rule for the section). Put
-  the Octoechos / Pentecostarion laying-in in a plain `src/lib/vespers-propers.js`.
-  Carry the Pentecostarion logic over UNCHANGED and mark it not reworked.
-- **Gate each section against the OCA texts before starting the next.** The OCA
-  headings in `src/data/oca_hymns/docs/` name the tone and kind at every Glory
-  and Both-now place: they are the answer key. A first comparison (10 dates)
-  showed V2 agrees wherever the page prints the closer; one unexplained
-  difference, 30 Nov aposticha Glory (Menaion Tone 2, OCA Tone 3).
-- Read Fekula ch. 1 (Sundays), ch. 2 (weekdays) and ch. 6 (theotokia) from the
-  project docs for each rule, and check ODS vol. III where it has an entry. How
-  Bill decides a doubtful rule: did the source state it, and is there evidence
-  it is done.
-- The Sunday Vespers and bulletin gates pin today's output; list every change
-  with the OCA text or Fekula section that justifies it, for Bill.
-- A Pentecostarion V2 pass is coming: `pentecostarion_v2_pass_notes.md` holds the gotchas.
-- OWED BEFORE THE MERGE (Bill): a full pass over "How the tool works" and the
-  explainers so they describe the tool as built (list in project_notes.md).
-- AFTER Vespers, raise with Bill: reading ODS vol. III's date-specific orders
-  (77 entries; `ods_v3_hours.pilot.json`) as a layer in the adapter.
-- Then: Typica and Liturgy propers, dismissal `name`, bulletin; the Prefer OCA
-  toggle and service chooser; merge; retire V1; v0.53.0. Also owed: the three
-  Menaion browser items (notes: "NEXT MENAION V2 BROWSER PASS").
+Order of work:
+1. 11-01 through 11-13 (re-list the folder for variant files).
+2. December onward as the calendar approaches.
+3. The 86 dates the retired summarized data served: 16 May–31 July (77; wanted
+   before next May), six in September, three in October.
 
-**Fekula volume III lives on Bill's computer, NOT in the repo.** It is a copyrighted
-reference work and is never committed here, in whole or in part (Bill, 14 Nov):
-cite an entry by id and page, quote at most a short rubric phrase. Folder
-`Orthodox Hours/Fekula_ODS_SOM_V3/intake/`: `ods_v3_index.json` (which dates are
-covered, printed rank, pages), `entries/ods3-MMDD-*.md` (the rubrics, quotable,
-page-anchored), `ods_v3_full_repaired.txt` (searchable whole), plus
-`HOURS_PILOT_NOTES.md` and `ods_v3_hours.pilot.json` (the Hours stated outright
-for six entries; schema settled, 71 entries not yet run). Stage the index at the
-start of the session and check EVERY date against it before ranking: a printed
-rank there is decisive, and a deliberate blank means do not infer one. The
-project_notes section "TWO FILES ON ONE DATE ARE TWO SERVICES" records what it
-gave for November and how to use it. If the folder is not reachable, say so;
-do not rank from memory of it.
+Standing rules: every printed line accounted for; never a partial capture; a
+canonical hymn only where every print site byte-matches; reading bodies never
+stored; a liturgical question goes Fekula, then OCA, then a named web source,
+then `open_questions.js`, and never stops the capture. A question that changes
+the SHAPE of the capture goes to Bill before any data is written. No shims: fix
+the logic.
 
-**Then encode whole days**, one file at a time, by the README's per-file steps.
-Standing rules: every printed line accounted for; a canonical hymn only where
-every print site byte-matches; reading bodies never stored; sic rows confirmed
-in a second extraction; a liturgical question goes Fekula, then OCA, then a
-named web source, then the register, and never stops the capture. A question
-that changes the SHAPE of the capture goes to Bill before any data is written.
+**Also owed (ask Bill which first):**
+- His read of the 29 dismissal names; open questions Q-0008 and Q-0009.
+- The 6 September bulletin now runs to 2 pages: tighten, or accept.
+- The dev-only in-context editor has no screen using it: keep or delete.
+- Festal antiphons for feasts of the Lord; the remaining 73 vol. III orders;
+  Matins (and with it a "Vigil is served tonight" switch); the Pentecostarion's
+  own full-capture pass (`pentecostarion_v2_pass_notes.md`), which is when the
+  last summarized-shape branches in the assemblers go.
+- Nothing has yet been checked in a real browser.
 
-Remaining in November: 11-01 through 11-13, with the variant files the folder
-holds (11-1A, 11-09A, 11-09B were listed; re-list the folder to be sure). After November: `adapter.js` and the
-switch of the Hours tool to V2 (no V1 fallback; "not encoded" where V2 has no
-entry).
-
-Gates: the eight in `project_notes.md` PLUS `node tools/test_menaion_v2_mount.mjs` (mounts the real V2 browser for every encoded day; added after a crash shipped on 14 Nov). Commit by concern. Push by
-`github_workflow_prompt.md` § "The push workflow"; scrub the remote after.
+Gates: `npm run gate`, `npm run validate`, and `node tools/<name>.mjs` for
+`validate_menaion_v2`, `validate_oca_hymns`, `validate_octoechos_v2`,
+`test_menaion_v2_hours`, `test_menaion_v2_vespers`, `test_menaion_v2_liturgy`,
+`test_ods_v3_orders`, `test_menaion_v2_render`, `test_menaion_v2_mount`,
+`test_edit_engine`, `test_hours_mount`; then `npx vite build`. Commit by
+concern. Push by `github_workflow_prompt.md` § "The push workflow"; scrub the
+remote after.

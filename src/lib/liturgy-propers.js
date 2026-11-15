@@ -31,6 +31,9 @@
 // separate decision because it changes what the Typica shows on some days.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { ods3Cite } from "../data/ods_v3/orders.js";
+import { fekulaProperOrder } from "./liturgy-order.js";
+
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const DAY_KEYS = ["", "mon", "tue", "wed", "thu", "fri", "sat"];
 
@@ -49,7 +52,35 @@ const textOf = (v) => (v && typeof v === "object" ? v.text : v) || null;
  * @returns {{ prokeimena: Array, alleluia: Array, communion: Array }}
  *   each item: { tone, text, stichoi:[], origin, source, note, fekula:{section,note}, path? }
  */
-export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pentEntry = null, menaionFirst = false, sources = {} }) {
+// ── OCA practice, noted beside the full order (Bill, 14 Nov 2026) ──────────────
+// The tool ALWAYS gives the full order Fekula appoints: the day's proper and the
+// Menaion's. The OCA service texts often print less (on 16 Nov 2026 only the
+// Apostle's; on a simple Sunday only the Sunday's), which Bill takes to be brevity.
+// So nothing is dropped. Where an OCA text exists for the day, each item is marked:
+// printed there (sung in OCA practice) or not printed there (likely omitted).
+export const OCA_SUNG = "";
+export const OCA_OMITTED = "The OCA service text for this day does not print this; Fekula's order appoints it.";
+const lesson = (ref) => { const m = String(ref || "").replace(/^(\d) /, "$1").match(/^([A-Za-z0-9]+) (\d+):/); return m ? (m[1] + " " + m[2]).toLowerCase() : null; };
+/** For an Epistle or Gospel reference: { oca: 'printed'|'not_printed', note } or null when there is no OCA text. */
+export function ocaReadingPractice(ocaPractice, kind, ref) {
+  const list = ocaPractice && ocaPractice[kind === "e" ? "epistles" : "gospels"];
+  if (!list || !list.length || !ref) return null;
+  const printed = list.some((x) => lesson(x.ref) === lesson(ref));
+  return { oca: printed ? "printed" : "not_printed", note: printed ? OCA_SUNG : OCA_OMITTED };
+}
+function markOcaPractice(items, ocaList) {
+  if (!ocaList || !ocaList.length) return;
+  const pool = ocaList.map((x) => ({ ...x }));
+  for (const it of items) {
+    // The Sunday's is matched to the heading the OCA labels "(Resurrection)"; otherwise by tone.
+    const i = pool.findIndex((o) => o.tone === it.tone && (o.sunday === undefined || o.sunday === (it.origin === "sunday")));
+    const j = i >= 0 ? i : pool.findIndex((o) => o.tone === it.tone);
+    if (j >= 0) { pool.splice(j, 1); it.oca = "printed"; }
+    else { it.oca = "not_printed"; it.note = (it.note ? it.note + " " : "") + OCA_OMITTED; }
+  }
+}
+
+export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, menaionPlan = null, ocaPractice = null, pentEntry = null, menaionFirst = false, order = null, sources = {} }) {
   const ld = liturgicalData || {};
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
@@ -123,7 +154,22 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pen
   }
 
   // ── the Menaion's proper — presence-gated, never rank-gated ──────────────
-  if (menaionEntry) {
+  // From the Menaion V2 service (liturgyPlan in src/data/menaion_v2/adapter.js):
+  // what the page prints for the Liturgy, in its order, feast and saint alike.
+  if (menaionPlan && menaionPlan.has) {
+    const src = "Menaion";
+    const fk = { section: menaionPlan.section ? "§" + menaionPlan.section : null,
+      note: "…and of the saint, if there be such. Present because the printed service appoints it; the gate is the Menaion's contents, not the saint's rank (cf. readings rule)." };
+    const of = (x) => (x.feast ? "the feast" : (x.who || menaionPlan.title || "the commemoration"));
+    menaionPlan.prokeimena.forEach((x) => men.prokeimena.push({ tone: x.tone, text: x.text, stichoi: x.stichoi, path: x.path,
+      origin: "menaion", feast: x.feast, source: src, note: "Prokeimenon of " + of(x) + ".", fekula: fk }));
+    menaionPlan.alleluia.forEach((x) => men.alleluia.push({ tone: x.tone, text: x.text, stichoi: x.stichoi, path: x.path,
+      origin: "menaion", feast: x.feast, source: src, note: "Alleluia of " + of(x) + ".", fekula: fk }));
+    menaionPlan.communion.forEach((x) => men.communion.push({ text: x.text, path: x.path,
+      origin: "menaion", feast: x.feast, source: src, note: "Communion hymn of " + of(x) + ".", fekula: fk }));
+  } else if (inPent && menaionEntry) {
+    // PENTECOSTARION — unchanged from v0.52.2, not yet reworked: the saint's propers
+    // inside the season still come from the old-shape entry.
     const saint = menaionEntry.saint || "the commemoration";
     const src = "Menaion · " + (menaionEntry.source_file || saint);
     const fk = { section: menaionEntry.fekula_section ? "§" + menaionEntry.fekula_section : null,
@@ -159,7 +205,41 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pen
   }
 
   const join = (k) => (menaionFirst ? [...men[k], ...day[k]] : [...day[k], ...men[k]]);
-  return { prokeimena: join("prokeimena"), alleluia: join("alleluia"), communion: join("communion"), menaionFirst };
+  const result = { prokeimena: join("prokeimena"), alleluia: join("alleluia"), communion: join("communion"), menaionFirst };
+  const pick = (k, who) => who === "day" ? day[k] : who === "menaion" ? men[k] : men[k].filter((x) => (who === "feast") === !!x.feast);
+  // THE GENERAL RULE IS FEKULA'S, BY SECTION (ruled 14 Nov 2026): whose prokeimenon,
+  // Alleluia and communion hymn, and in what order (src/lib/liturgy-order.js). It
+  // is not "the day's and the Menaion's wherever printed": at a polyeleos service
+  // they are "from the Menaion, only" (§2E), in a feast period of the feast or the
+  // saint (§2G). Outside the Pentecostarion, for an encoded Menaion service.
+  const pentSeason = inPent || ld.isPentecostarion || ld.season === "pentecostarion" || ld.season === "brightweek";
+  if (menaionPlan && !pentSeason) {
+    const rule = fekulaProperOrder({ ld, rank: menaionPlan.rank, kind: menaionPlan.kind,
+      saintReadings: [...(menaionPlan.epistles || []), ...(menaionPlan.gospels || [])].some((r) => !r.feast) });
+    const fk = { section: rule.section, note: rule.quote + " (ODS 2nd ed. " + rule.page + ")" };
+    const by = (k, whos) => {
+      const got = whos.flatMap((who) => pick(k, who)).map((x) => ({ ...x, fekula: fk }));
+      // Fekula names a source the page prints nothing for: the day's is given, and said so.
+      if (!got.length && day[k].length && !(k === "communion")) return day[k].map((x) => ({ ...x, fekula: { section: rule.section, note: rule.quote + " The Menaion service prints none here, so the day's is given." } }));
+      return got;
+    };
+    result.prokeimena = by("prokeimena", rule.prokeimenon); result.alleluia = by("alleluia", rule.alleluia); result.communion = by("communion", rule.communion);
+    result.rule = rule; result.menaionFirst = rule.prokeimenon[0] !== "day";
+  }
+  // ODS 3rd ed. vol. III prints whose prokeimenon, Alleluia and communion verse are
+  // sung on this date, and in what order: it overrides the general rule (ruled 14
+  // Nov 2026). `order` is the entry from src/data/ods_v3/orders.js. The general
+  // result is kept beside it (`general`) so the difference can be shown and tested.
+  const ol = order && order.liturgy;
+  if (ol && (ol.prokeimenon || ol.alleluia || ol.communion)) {
+    const cite = ods3Cite(order, "liturgy");
+    const by = (k, whos) => (whos ? whos.flatMap((who) => pick(k, who)).map((x) => ({ ...x, fekula: { section: cite, note: "Appointed for this date: " + whos.map((w) => (w === "day" ? "of the day" : w === "feast" ? "of the feast" : "of the saints")).join(", then ") + "." } })) : result[k]);
+    const general = { prokeimena: result.prokeimena, alleluia: result.alleluia, communion: result.communion };
+    result.prokeimena = by("prokeimena", ol.prokeimenon); result.alleluia = by("alleluia", ol.alleluia); result.communion = by("communion", ol.communion);
+    result.ods3 = { id: order.id, cite, general };
+  }
+  if (ocaPractice) { markOcaPractice(result.prokeimena, ocaPractice.prokeimena); markOcaPractice(result.alleluia, ocaPractice.alleluia); }
+  return result;
 }
 
 /** "Tone 4" / "Tone 4 · Tone 8" for an outline row. */
@@ -171,22 +251,31 @@ export function toneLabelFor(items) {
 // ── Liturgy-only substitutions ─────────────────────────────────────────────
 
 /** The hymn sung instead of the Trisagion, when the day appoints one. */
-export function trisagionReplacement({ menaionEntry, pentEntry }) {
-  const t = (pentEntry && pentEntry.trisagion_replacement) || (menaionEntry && menaionEntry.trisagion_replacement) || null;
-  if (!t) return null;
-  const from = pentEntry && pentEntry.trisagion_replacement ? "Pentecostarion" : "Menaion";
-  return { text: t, source: from + " · " + ((from === "Menaion" ? menaionEntry.source_file : pentEntry.source_file) || from),
+export function trisagionReplacement({ menaion = null, pentEntry }) {
+  // The Pentecostarion entry first, then the Menaion V2 service (entrancePlan.trisagion).
+  if (pentEntry && pentEntry.trisagion_replacement) return { text: pentEntry.trisagion_replacement, source: "Pentecostarion · " + (pentEntry.source_file || "Pentecostarion"),
     note: "Sung instead of the Trisagion, as the printed service appoints." };
+  if (menaion && menaion.trisagion) return { text: menaion.trisagion.text, source: "Menaion · " + menaion.saintName, srcPath: menaion.trisagion.path,
+    note: "Sung instead of the Trisagion, as the printed service appoints." };
+  return null;
 }
 
 /**
  * "Instead of It is truly meet": the refrain and irmos of Ode IX.
- * V1 carries two field pairs (decision 3): `instead_of_it_is_truly_meet_*`
- * is read first, `zadostoinik_*` as the fallback.
+ * The Menaion's service prints it (liturgyPlan). The Pentecostarion's entries
+ * carry two field pairs (decision 3): `instead_of_it_is_truly_meet_*` is read
+ * first, `zadostoinik_*` as the fallback.
  * Returns { refrain, irmos, source, suppressedOnly } or null.
  */
-export function zadostoinikFor({ menaionEntry, pentEntry }) {
-  for (const [entry, from] of [[pentEntry, "Pentecostarion"], [menaionEntry, "Menaion"]]) {
+export function zadostoinikFor({ menaionEntry, menaionPlan = null, pentEntry }) {
+  // The Menaion V2 service prints it as the refrain and irmos "Instead of It is truly meet".
+  if (!pentEntry && menaionPlan && menaionPlan.zadostoinik) {
+    const z = menaionPlan.zadostoinik;
+    return { refrain: z.refrain, irmos: z.irmos, source: "Menaion", path: z.path, suppressedOnly: false, legacyField: false };
+  }
+  // The Pentecostarion keeps the summarized entry shape. (`menaionEntry` is that
+  // shape too and is only ever the P+63 overlay, which also arrives as pentEntry.)
+  for (const [entry, from] of [[pentEntry, "Pentecostarion"], [menaionEntry, "Pentecostarion"]]) {
     if (!entry) continue;
     const refrain = entry.instead_of_it_is_truly_meet_refrain || entry.zadostoinik_refrain || null;
     const irmos = entry.instead_of_it_is_truly_meet_irmos || entry.zadostoinik_irmos || null;

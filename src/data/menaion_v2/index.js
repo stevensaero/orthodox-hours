@@ -2,11 +2,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // THE SINGLE POINT OF TRUTH for which months exist (§3.1).
 //
-// V1 duplicated this map — `_menaionLoaders` in hours-tool.jsx and
-// `MONTHS_WITH_DATA` in menaion-browser.jsx, with a comment admitting the
-// mirror — so adding a month meant editing two files and the browser could
-// silently disagree with the assembler. Here the tool and the browser both
-// import this; validate_menaion_v2.mjs asserts it matches the files on disk.
+// The tool and the Menaion browser both import this map, so they cannot disagree
+// about which months exist; validate_menaion_v2.mjs asserts it matches the files
+// on disk. (The summarized dataset retired at v0.53.0 kept two hand-mirrored
+// copies of such a map, and they drifted.)
 //
 // Nothing month-keyed is ever statically imported (§2.14).
 // ─────────────────────────────────────────────────────────────────────────────

@@ -58,6 +58,8 @@
  * The chapter-1 section governing readings for a Sunday at a given rank.
  * Returns { section, quote } — the quote is verbatim from Fekula.
  */
+import { fekulaProperOrder } from "./liturgy-order.js";
+
 function sundayRule(rank, inFeastPeriod) {
   if (inFeastPeriod) {
     return {
@@ -117,8 +119,12 @@ const SATURDAY_RULE = {
 export function readingsForDay({
   liturgicalData,
   menaionEntry = null,
+  rank: rankGiven = null,          // the service's rank, from the Menaion V2 service
   dailyReading = null,
   feastReading = null,
+  menaionRefs = null,              // { e: [{ display, feast }], g: [...] }: every reference the service prints (liturgyPlan)
+  kind = null,                     // the service's kind (forefeast, afterfeast, apodosis, feast, saint)
+  order = null,                    // ODS vol. III's order for this service on this day (src/data/ods_v3/orders.js)
 } = {}) {
   const ld = liturgicalData || {};
   const isSunday = ld.dow === 0 || ld.season === "sunday" || ld.isSunday === true;
@@ -126,7 +132,7 @@ export function readingsForDay({
   const inFeastPeriod = ["great_feast", "forefeast", "afterfeast", "apodosis"]
     .includes(ld.season);
 
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const rank = rankGiven || (menaionEntry && menaionEntry.rank) || "simple";
   const rule = isSunday
     ? sundayRule(rank, inFeastPeriod)
     : (isSaturday ? SATURDAY_RULE : WEEKDAY_RULE);
@@ -163,7 +169,48 @@ export function readingsForDay({
     return items.length ? { slot, label, items } : null;
   };
 
-  const groups = [build("e", "Epistle"), build("g", "Gospel")].filter(Boolean);
+  let groups = [build("e", "Epistle"), build("g", "Gospel")].filter(Boolean);
+
+  // THE GENERAL RULE IS FEKULA'S, BY SECTION (ruled 14 Nov 2026; src/lib/liturgy-order.js):
+  // whose Epistle and Gospel, in what order. Applied when the caller hands over every
+  // reference the Menaion service prints, outside the Pentecostarion.
+  const pentSeason = ld.isPentecostarion || ld.season === "pentecostarion" || ld.season === "brightweek";
+  const pickRefs = (slot, who, unbound) => {
+    if (who === "day") return dayItems[slot] ? [dayItems[slot]] : [];
+    const refs = (menaionRefs[slot] || []).filter((r) => who === "menaion" || (who === "feast") === !!r.feast);
+    if (!refs.length && unbound) unbound.push((slot === "e" ? "Epistle" : "Gospel") + " of the " + who);
+    return refs.map((r) => ({ source: "menaion", label: r.feast ? "Of the feast" : menaionLabel, ref: r.display, who: r.feast ? "feast" : "saint" }));
+  };
+  let fekula = null;
+  if (menaionRefs && !pentSeason) {
+    fekula = fekulaProperOrder({ ld: { ...ld, isSunday }, rank, kind, saintReadings: [...(menaionRefs.e || []), ...(menaionRefs.g || [])].some((r) => !r.feast) });
+    groups = ["e", "g"].map((slot) => {
+      let items = fekula[slot === "e" ? "epistle" : "gospel"].flatMap((who) => pickRefs(slot, who, null));
+      if (!items.length && dayItems[slot]) items = [dayItems[slot]];   // the Menaion prints none: the day's is read
+      return items.length ? { slot, label: slot === "e" ? "Epistle" : "Gospel", items } : null;
+    }).filter(Boolean);
+  }
+
+  // ODS 3rd ed. vol. III prints whose Epistle and Gospel are read on this date,
+  // and in what order (its own Saturday order where it prints one): it overrides
+  // the general rule (ruled 14 Nov 2026). Each name is bound to a reference the
+  // service prints; a name that binds to nothing is left out and reported.
+  const ol = order && order.liturgy;
+  if (ol && (ol.epistle || ol.gospel) && menaionRefs) {
+    const cite = "ODS 3rd ed. vol. III, p. " + (ol.page || order.pages[0]) + " (" + order.id + ")";
+    const unbound = [];
+    const pick = (slot, who) => pickRefs(slot, who, unbound);
+    const whos = (slot) => { const k = slot === "e" ? "epistle" : "gospel"; return (isSaturday && ol.saturday && ol.saturday[k]) || ol[k] || null; };
+    const made = ["e", "g"].map((slot) => { const w = whos(slot); if (!w) return groups.find((x) => x.slot === slot) || null;
+      const items = w.flatMap((who) => pick(slot, who)); return items.length ? { slot, label: slot === "e" ? "Epistle" : "Gospel", items } : null; }).filter(Boolean);
+    const ods3 = { id: order.id, cite, general: groups, unbound };
+    groups = made;
+    return { groups, order: (whos("e") || [])[0] === "day" || !whos("e") ? "day-first" : "menaion-first",
+      rule: { section: cite, quote: "The readings appointed for this date." }, hasMenaionReadings, ods3 };
+  }
+
+  if (fekula) return { groups, order: fekula.epistle[0] === "day" ? "day-first" : "menaion-first",
+    rule: { section: fekula.section, quote: fekula.quote }, hasMenaionReadings };
 
   return {
     groups,

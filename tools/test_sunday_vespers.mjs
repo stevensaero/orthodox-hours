@@ -95,96 +95,10 @@ for (let t = 1; t <= 8; t++) {
   ok(!!at && !!at.text, `resurrectional_theotokia[${t}].aposticha_theotokion must resolve`);
 }
 
-// 4. Build the combined Sunday LIC for the in-calendar acceptance saints using
-//    REAL data and assert the 10-slot split + slot provenance.
-console.log("4. Acceptance saints — rank + assembled split:");
-const june = await imp("src/data/menaion/june.js");
-const juneData = june.default || june[Object.keys(june).find(k => typeof june[k] === "object")];
-const entryFor = (key) => {
-  const e = juneData[key];
-  return Array.isArray(e) ? e[0] : e;
-};
-
-// Tone assignments are fixed by the 2026 calendar (spec acceptance set).
-const acceptance = [
-  { key: "06-21", tone: 2, rank: "simple" },
-  { key: "06-28", tone: 3, rank: "six_stichera" },
-];
-for (const a of acceptance) {
-  const e = entryFor(a.key);
-  ok(!!e, `${a.key}: Menaion entry must exist`);
-  if (!e) continue;
-  ok(e.rank === a.rank, `${a.key}: rank expected ${a.rank}, got ${e.rank}`);
-  const { resN, commN } = splitFor(e.rank || "simple");
-  const sat = tones[a.tone];
-  const res = (sat.lic || []).slice(0, resN);
-  ok(res.length === resN, `${a.key}: resurrection slice must be ${resN} (got ${res.length})`);
-  const commLen = expandedLength((e.stichera_lord_i_call || []).length, commN);
-  ok(res.length + commLen === 10,
-    `${a.key}: assembled LIC must be 10 (got ${res.length + commLen})`);
-  ok(!!sat.dogmatikon, `${a.key}: Both-now Dogmatikon (T${a.tone}) must resolve`);
-}
-
-// 5. §4A3 Pentecostarion + high-rank Menaion repeat marker resolution.
-//    Guards the fix where menaionLicStichera (not effectiveLicStichera) must be
-//    used to resolve Menaion repeatIndex markers in the combined array.
-//    Bug: undefined variable 'manaionLicStichera' (typo) crashed assembler → blank screen.
-//    Scenario: 05-21 Constantine & Helena at P+43 (afterfeast weekday, licCount=8).
-console.log("5. §4A3 Menaion repeat marker resolution (cross-source guard):");
-
-const may = await imp("src/data/menaion/may.js");
-const mayData = may.default || may[Object.keys(may)[0]];
-const pent43 = (await imp("src/data/pentecostarion.js")).default[43];
-const constEntry = mayData["05-21"];
-
-ok(!!constEntry, "05-21: Constantine & Helena entry must exist");
-ok(constEntry.stichera_lord_i_call_count === 8, "05-21: count must be 8");
-
-const menaionLicStichera = (constEntry.stichera_lord_i_call || [])
-  .map(s => ({ ...s, source: "Menaion" }));
-const pentStichera = (pent43.stichera_lord_i_call || [])
-  .map(s => ({ ...s, source: "Pentecostarion" }));
-
-ok(menaionLicStichera.length === 5, `05-21: Menaion array must be 5 items (got ${menaionLicStichera.length})`);
-ok(pentStichera.length === 3, `P+43: Pentecostarion array must be 3 items (got ${pentStichera.length})`);
-
-// Replicate the combined array the assembler builds
-const effectiveLicStichera = [...pentStichera, ...menaionLicStichera];
-ok(effectiveLicStichera.length === 8, `Combined array must be 8 (got ${effectiveLicStichera.length})`);
-
-// Replicate applyStichRepeat logic (copied from assembler)
-function applyStichRepeatTest(stich, array) {
-  if (!stich || stich.text) return stich;
-  if (typeof stich.repeatIndex === "number") {
-    const src = array[stich.repeatIndex];
-    if (src && src.text) return { ...stich, text: src.text };
-  }
-  return stich;
-}
-
-// Simulate rendering all 8 slots with the FIX applied
-const licCount = 8;
-let crossSourceError = false;
-for (let slotIndex = 0; slotIndex < licCount; slotIndex++) {
-  const stich = effectiveLicStichera[slotIndex];
-  if (!stich) continue;
-  // THE FIX: Menaion items resolve against menaionLicStichera
-  const resolveArray = stich.source === "Menaion" ? menaionLicStichera : effectiveLicStichera;
-  const resolved = applyStichRepeatTest(stich, resolveArray);
-  // If a Menaion repeat slot resolves to a Pentecostarion text, that's the bug
-  if (!stich.text && stich.repeatIndex !== undefined && resolved.source === "Pentecostarion") {
-    crossSourceError = true;
-  }
-}
-ok(!crossSourceError, "05-21 §4A3: Menaion repeat markers must not resolve to Pentecostarion texts");
-
-// Verify slots 3-4 (first Menaion text + its repeat) both resolve to Menaion text
-const slot3 = effectiveLicStichera[3]; // Menaion text0
-const slot4 = effectiveLicStichera[4]; // repeatIndex:0 → should resolve to Menaion[0]
-ok(slot3 && slot3.text && slot3.source === "Menaion", "Slot 3 must be Menaion text");
-const resolved4 = applyStichRepeatTest(slot4, menaionLicStichera);
-ok(resolved4 && resolved4.text === slot3.text,
-  "Slot 4 (repeatIndex:0) must resolve to same text as slot 3 (Menaion[0]), not Pentecostarion");
+// (Sections 4 and 5 read the summarized Menaion month files, retired at v0.53.0.
+// The ten-sticheron Saturday split by rank is now proved against the Menaion and
+// the OCA texts in tools/test_menaion_v2_vespers.mjs; section 5 guarded repeat
+// markers in the old entry shape, which no Menaion data carries any longer.)
 
 console.log(`\n${checks - failures}/${checks} checks passed.`);
 if (failures > 0) {

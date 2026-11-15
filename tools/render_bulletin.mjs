@@ -22,7 +22,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseRefString, spanLabel } from "../src/lib/scripture-ref.js";
 import { spansToVerses, readingIntro } from "../src/lib/scripture-text.js";
-import { readingsForDay, readingsInOrder } from "../src/lib/readings.js";
+import { readingsInOrder } from "../src/lib/readings.js";
+import { loadMenaionV2Month } from "../src/data/menaion_v2/index.js";
+import { servicesOf, entrancePlan, liturgyPlan } from "../src/data/menaion_v2/adapter.js";
+import { ods3OrderFor } from "../src/data/ods_v3/orders.js";
+import { buildBulletinDay } from "../src/lib/bulletin-day.js";
 import { paginateBest, buildPropersFlow, buildReadingsFlow } from "../src/lib/bulletin-layout.js";
 import { renderPage, renderMasthead } from "../src/lib/bulletin-html.js";
 import { BULLETIN_CSS } from "../src/lib/bulletin-css.js";
@@ -36,17 +40,10 @@ const argv = process.argv.slice(2);
 const dateArg = argv.find((a) => /^\d{4}-\d{2}-\d{2}$/.test(a)) || "2026-09-06";
 const wantReadings = argv.includes("--readings");
 
-const MONTHS = { "05": "may", "06": "june", "07": "july", "09": "september" };
-const [yy, mm, dd] = dateArg.split("-");
-const monthFile = MONTHS[mm];
-if (!monthFile) {
-  console.error(`No Menaion data for month ${mm}. Encoded months: ${Object.values(MONTHS).join(", ")}.`);
-  process.exit(1);
-}
-const menaion = (await import(`../src/data/menaion/${monthFile}.js`)).default;
-const entry = menaion[`${mm}-${dd}`] && (Array.isArray(menaion[`${mm}-${dd}`])
-  ? menaion[`${mm}-${dd}`][0] : menaion[`${mm}-${dd}`]);
-if (!entry) { console.error(`No entry encoded for ${mm}-${dd}.`); process.exit(1); }
+const [, mm, dd] = dateArg.split("-");
+const monthData = await loadMenaionV2Month(mm);
+const svc = monthData ? servicesOf(monthData[`${mm}-${dd}`], `${mm}-${dd}`)[0] : null;
+if (!svc) { console.error(`The Menaion is not yet encoded for ${mm}-${dd}.`); process.exit(1); }
 
 function loadBook(id) {
   const file = path.join(ROOT, "public", "bible", `${id.toLowerCase()}.json`);
@@ -54,60 +51,28 @@ function loadBook(id) {
 }
 
 // ── the day ─────────────────────────────────────────────────────────────────
+// Built by the tool's own code (src/lib/bulletin-day.js), as the app builds it.
 const date = new Date(`${dateArg}T12:00:00`);
 const dow = date.getDay();
 const isSunday = dow === 0;
 const tone = Number(process.env.OH_TONE || 5);   // 9/6/2026 is Tone 5
 await OctoV2.loadV2Tone(tone);
 
-const readings = readingsForDay({
-  liturgicalData: { dow, season: isSunday ? "sunday" : "ordinary", tone },
-  menaionEntry: entry,
-  dailyReading: isSunday
-    ? { e: "2 Corinthians 1:21-2:4", g: "Matthew 22:1-14" }
-    : null,
-  feastReading: entry.feast_e || entry.feast_g
-    ? { e: entry.feast_e, g: entry.feast_g } : null,
+const built = buildBulletinDay({
+  liturgicalData: { dow, season: isSunday ? "sunday" : "ordinary", tone }, service: svc,
+  entrance: entrancePlan(svc.c, svc.path, { order: ods3OrderFor(svc.path, dow) }), liturgy: liturgyPlan(svc.c, svc.path),
+  dailyReading: isSunday ? { e: "2 Corinthians 1:21-2:4", g: "Matthew 22:1-14" } : null,
+  sources: { resTroparion: (t) => OctoV2.getV2Troparion(t), sunKontakion: (t) => OctoV2.getV2Kontakion(t),
+             dismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t), hymnText },
 });
-
-const troparia = [];
-const kontakia = [];
-const extras = [];
-if (isSunday) {
-  const t = OctoV2.getV2Troparion(tone);
-  if (t) troparia.push({ label: "Of the Resurrection", tone, text: hymnText(t) });
-}
-if (entry.troparion) troparia.push({ label: "Of the commemoration", tone: entry.troparion.tone, text: hymnText(entry.troparion) });
-if (isSunday) {
-  const th = OctoV2.getV2DismissalTheotokion(tone);
-  if (th) troparia.push({ label: "Dismissal Theotokion", tone, text: hymnText(th) });
-}
-if (isSunday) {
-  const k = OctoV2.getV2Kontakion(tone);
-  if (k) kontakia.push({ label: "Of the Resurrection", tone, text: hymnText(k) });
-}
-const mk = entry.kontakion_ode6 || entry.kontakion_ode3;
-if (mk) kontakia.push({ label: "Of the commemoration", tone: mk.tone, text: hymnText(mk) });
-if (entry.aposticha_glory) extras.push({ label: "Glory at the Aposticha", tone: entry.aposticha_glory.tone, text: hymnText(entry.aposticha_glory) });
-if (entry.exapostilarion) extras.push({ label: "Exapostilarion", text: hymnText(entry.exapostilarion) });
-if (entry.prokeimenon_text) extras.push({ label: "Prokeimenon of the commemoration", tone: entry.prokeimenon_tone, text: entry.prokeimenon_text });
-if (entry.communion_verse) extras.push({ label: "Communion verse", text: entry.communion_verse });
+const { readings, rankLabel } = built;
 
 const dateLabel = date.toLocaleDateString("en-US",
   { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-const rankLabel = [
-  entry.rank && entry.rank.replace(/_/g, "-").replace(/\b\w/g, (c) => c.toUpperCase()),
-  entry.fekula_section && `Fekula §${entry.fekula_section}`,
-].filter(Boolean).join(" · ");
 const layer = isSunday ? "Fourteenth Sunday after Pentecost" : date.toLocaleDateString("en-US", { weekday: "long" });
 
 // ── pagination and markup ───────────────────────────────────────────────────
-const day = {
-  saint: entry.saint,
-  secondSaint: null,
-  readings,
-  troparia, kontakia, extras,
-};
+const day = built;
 
 const propers = paginateBest(buildPropersFlow(day));
 

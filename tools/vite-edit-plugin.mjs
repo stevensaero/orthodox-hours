@@ -18,7 +18,6 @@ import { spawnSync } from 'child_process';
 import { editSetValue } from './edit-engine.mjs';
 
 const ALLOW = [
-  /^src\/data\/menaion\/[a-z]+\.js$/,
   /^src\/data\/pentecostarion\.js$/,
   // octoechos_v2 joins at Phase C (edit-engine adapter, local_editing_spec);
   // the V1 src/data/octoechos/ allowance was retired at the Phase 5 cutover.

@@ -6,7 +6,6 @@ import Scripture from './components/scripture.jsx';
 import HoursReturnStrip from './components/hours-return-strip.jsx';
 
 // Dev/truthing tools — lazy-loaded, URL-only access
-const MenaionBrowser = lazy(() => import('./components/menaion-browser.jsx'));
 const PentecostarionBrowser = lazy(() => import('./components/pentecostarion-browser.jsx'));
 const OctoechosV2Browser = lazy(() => import('./components/octoechos-v2-browser.jsx'));
 const MenaionV2Browser = lazy(() => import('./components/menaion-v2-browser.jsx'));
@@ -55,7 +54,6 @@ function App() {
         <Route path="/psalter/:kathisma" element={<Psalter />} />
         <Route path="/scripture" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
         <Route path="/scripture/" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
-        <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><MenaionBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
         <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><PentecostarionBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
         {/* The V1 /octoechos browser retired at the Phase 5 cutover (v0.36.0);
             /octoechos redirects to the V2 reading view for old links,
@@ -64,7 +62,7 @@ function App() {
         {/* Octoechos V2 is fully responsive (mobile drawer + compact header), so
             unlike the desktop-only table browsers it carries no 760px min-width. */}
         <Route path="/octoechos-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OctoechosV2Browser /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
-        <Route path="/menaion-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><MenaionV2Browser /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
+        <Route path="/menaion-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip align="left" /><MenaionV2Browser /><HoursReturnStrip position="bottom" align="left" /></div></Suspense></ErrorBoundary>} />
         <Route path="/questions" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OpenQuestions /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><ToneTrainer /><HoursReturnStrip position="bottom" /></Suspense>} />
       </Routes>

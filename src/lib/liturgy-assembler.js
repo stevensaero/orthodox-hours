@@ -149,23 +149,17 @@ const EMPTY_HOOKS = Object.freeze({ before: {}, after: {}, replace: {}, skip: ne
 //                    dowTroparia, departedKontakion, protectress,
 //                    sundayBeatitudes(tone), weekdayBeatitudes(tone, dayKey) } }
 function planHooks(ctx, variant) {
-  const { liturgicalData: ld = {}, menaionEntry = null, pentEntry = null, dailyReading = null, feastReading = null, sources = {} } = ctx;
+  // menaionPlan (liturgyPlan) and menaionEntrance (entrancePlan) are the Menaion V2
+  // service; menaionEntry is the retired V1 entry, read only by the dismissal and
+  // the Pentecostarion paths until those are reworked.
+  const { liturgicalData: ld = {}, menaionEntry = null, menaionPlan = null, menaionEntrance = null, pentEntry = null, dailyReading = null, feastReading = null, sources = {} } = ctx;
   const h = { before: {}, after: {}, replace: {}, skip: new Set(), section: {} };
   const isSunday = ld.dow === 0 || ld.isSunday === true;
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
-  const isGreatFeast = ld.season === "great_feast";
+  const rank = ctx.menaionRank || (menaionEntrance && menaionEntrance.rank) || "simple";
+  const isGreatFeast = ld.season === "great_feast" || rank === "great_feast";
   const highRank = ["polyeleos", "vigil", "great_feast"].includes(rank) || isGreatFeast;
   const mov = (id, label, text, extra = {}) => ({ id, type: "movable", label, text, ...extra });
   const unresolved = (id, label, why, fekula) => ({ id, type: "movable", label, text: why, unresolved: true, unresolvedNote: "not yet encoded", source: "—", fekula });
-
-  // ── Antiphons: festal antiphons on a Great Feast — no V1 field yet ───────
-  if (isGreatFeast) {
-    const why = "On this Great Feast the festal antiphons replace the typical psalms and the Beatitudes. V1 has no field for them yet, so the typical antiphons are shown below as printed.";
-    h.section.antiphon_1 = { unresolved: true, open: [unresolved("lit-antiphons-festal", "Festal Antiphons", why,
-      { section: "ch.1 Liturgy order", note: "On Feast Days, special Antiphons are sung (the book's own footnote). Festal-antiphon fields are a known V1 capture gap." })] };
-    h.section.antiphon_2 = { unresolved: true };
-    h.section.antiphon_3 = { unresolved: true };
-  }
 
   // ── Little Entrance: the entrance verse's day-type clause (le-10) ────────
   {
@@ -188,15 +182,17 @@ function planHooks(ctx, variant) {
   // The book marks the verses "(on 12)", "(on 10)", "(on 8)": N troparia occupy
   // the last N of twelve slots — ten verses (a3-03…a3-12), then Glory…, then
   // Now and ever…. liturgy-entrance.js decides N and the sources (Fekula ch.1/2).
-  const beat = isGreatFeast ? null : resolveBeatitudes({ liturgicalData: ld, menaionEntry, pentEntry, sources });
-  if (beat && beat.festalAntiphons) {
-    // A Pentecostarion feast (Ascension, Pentecost) or Bright Week: festal antiphons, no Beatitudes.
+  const beat = resolveBeatitudes({ liturgicalData: ld, menaion: menaionEntrance, pentEntry, sources });
+  if (beat.festalAntiphons) {
+    // A feast of the Lord, a Pentecostarion feast (Ascension, Pentecost) or Bright
+    // Week: festal antiphons, no Beatitudes. A feast of the Theotokos keeps the
+    // Typika and its printed Beatitude troparia, and does not come here.
     const why = (beat.notes && beat.notes.join(" ")) || "Festal antiphons replace the Typika and Beatitudes.";
     h.section.antiphon_1 = { unresolved: true, open: [unresolved("lit-antiphons-festal", "Festal Antiphons", why + " Not encoded; the typical antiphons are shown below as printed.",
       { section: beat.section, note: beat.quote })] };
     h.section.antiphon_2 = { unresolved: true };
     h.section.antiphon_3 = { unresolved: true };
-  } else if (!isGreatFeast) {
+  } else {
     const b = beat;
     const VERSES = ["a3-03", "a3-04", "a3-05", "a3-06", "a3-07", "a3-08", "a3-09", "a3-10", "a3-11", "a3-12"];
     const cite = { section: b.section, note: [b.quote, ...(b.notes || [])].filter(Boolean).join(" ") };
@@ -219,14 +215,14 @@ function planHooks(ctx, variant) {
 
   // ── Troparia and kontakia after the Little Entrance (Fekula ch.1 / ch.2) ─
   {
-    const r = resolveEntrance({ liturgicalData: ld, menaionEntry, pentEntry, sources });
+    const r = resolveEntrance({ liturgicalData: ld, menaion: menaionEntrance, pentEntry, sources });
     h.after["tk-01"] = r.elements;
     h.section.troparia_kontakia = { toneLabel: r.toneLabel, unresolved: r.unresolved };
   }
 
   // ── Trisagion replacement ────────────────────────────────────────────────
   {
-    const t = trisagionReplacement({ menaionEntry, pentEntry });
+    const t = trisagionReplacement({ menaion: menaionEntrance, pentEntry });
     if (t) {
       const sub = (id, unitId, text) => ({ id, unitId, type: "liturgy_unit", kind: "line", movement: "trisagion", speaker: "choir",
         mode: null, cue: null, variantTag: null, markDiff: false, resolvedBlank: true, text,
@@ -244,9 +240,10 @@ function planHooks(ctx, variant) {
 
   // ── Readings, prokeimenon, Alleluia, communion ───────────────────────────
   const readings = sources.readingsForDay
-    ? sources.readingsForDay({ liturgicalData: ld, menaionEntry, dailyReading, feastReading })
+    ? sources.readingsForDay({ liturgicalData: ld, menaionEntry, rank: ctx.menaionRank || null, dailyReading, feastReading,
+        menaionRefs: menaionPlan && !(ld.namedDay && ld.namedDay.isSunday) ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null, kind: menaionPlan ? menaionPlan.kind : null, order: (menaionEntrance && menaionEntrance.order) || null })
     : { groups: [], order: "day-first", rule: { section: null, quote: "" }, hasMenaionReadings: false };
-  const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, pentEntry, menaionFirst: readings.order === "menaion-first", sources });
+  const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, menaionPlan, ocaPractice: ctx.ocaPractice || null, pentEntry, order: (menaionEntrance && menaionEntrance.order) || null, menaionFirst: readings.order === "menaion-first", sources });
 
   const prokEls = propers.prokeimena.map((p, i) => ({
     id: "lit-prokeimenon-" + i, type: "prokeimenon",
@@ -274,7 +271,7 @@ function planHooks(ctx, variant) {
     if (!g) return [];
     return g.items.map((it, i) => mov("lit-" + slot + "-" + i, g.label + " · " + it.label, it.ref, {
       readingRef: it.ref, source: it.source === "menaion" ? "Menaion" : "OCA lectionary",
-      fekula: { section: readings.rule.section, note: readings.rule.quote + (readings.order === "menaion-first" ? " — Saturday: Menaion first." : "") },
+      fekula: { section: readings.rule.section, note: readings.rule.quote },
     }));
   };
   const ep = readingEls("e"), go = readingEls("g");
@@ -331,7 +328,7 @@ function planHooks(ctx, variant) {
 
   // ── Hymn to the Theotokos: the zadostoinik ──────────────────────────────
   {
-    const z = zadostoinikFor({ menaionEntry, pentEntry });
+    const z = zadostoinikFor({ menaionEntry, menaionPlan, pentEntry });
     if (z && !z.suppressedOnly) {
       h.replace["cm-07"] = [
         mov("lit-zadostoinik", "Instead of It is truly meet", [z.refrain, z.irmos].filter(Boolean).join("\n\n"), {

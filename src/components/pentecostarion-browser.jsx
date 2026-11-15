@@ -10,7 +10,7 @@ import { getElParam, flashElIn } from '../lib/el-highlight.js';
 // Height (px) of the sticky "← Hours Tool" return strip when opened from the
 // tool, published as a CSS var by hours-return-strip.jsx (0 when no strip). The
 // header pins below the strip, so sticky offsets and scroll targets must clear
-// strip + header, not just the header. Mirrors menaion-browser.jsx.
+// strip + header, not just the header.
 function stripOffsetPx() {
   try {
     return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hours-return-strip-h')) || 0;

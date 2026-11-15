@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 // check-skeleton.mjs — Pre-encoding gate
-// Run before every commit that touches pentecostarion.js or Menaion data files.
+// Run before every commit that touches pentecostarion.js. (The Menaion has its
+// own gate, tools/validate_menaion_v2.mjs.)
 // Exits 0 only when every entry passes the full FIELD_REGISTRY skeleton.
 // Exits 1 with a gap report when anything is missing.
 //
 // Usage:
-//   node scripts/check-skeleton.mjs              # all data
-//   node scripts/check-skeleton.mjs pentecostarion
-//   node scripts/check-skeleton.mjs may
-//   node scripts/check-skeleton.mjs june july
+//   node scripts/check-skeleton.mjs
 //
 // Add to your session close-out:
 //   node scripts/check-skeleton.mjs all
@@ -23,21 +21,6 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const root = join(__dir, '..');
 
 // ── Load data ─────────────────────────────────────────────────────────────────
-
-async function loadMenaion(month) {
-  const url = pathToFileURL(join(root, `src/data/menaion/${month}.js`)).href;
-  const mod = await import(url);
-  const data = mod.default;
-  const entries = [];
-  for (const [key, raw] of Object.entries(data)) {
-    if (Array.isArray(raw)) {
-      raw.forEach((entry, i) => entries.push({ key: `${key}[${i}]`, entry, type: 'menaion' }));
-    } else {
-      entries.push({ key, entry: raw, type: 'menaion' });
-    }
-  }
-  return entries;
-}
 
 async function loadPentecostarion() {
   const url = pathToFileURL(join(root, 'src/data/pentecostarion.js')).href;
@@ -76,7 +59,7 @@ function checkEntries(label, entries) {
 
 const args = process.argv.slice(2);
 const targets = args.length === 0 || args[0] === 'all'
-  ? ['may', 'june', 'july', 'pentecostarion']
+  ? ['pentecostarion']
   : args;
 
 let totalGaps = 0;
@@ -92,12 +75,7 @@ for (const target of targets) {
       console.log(`⚠  pentecostarion.js — not found (${e.message})`);
     }
   } else {
-    try {
-      const entries = await loadMenaion(target);
-      totalGaps += checkEntries(`Menaion/${target}.js`, entries);
-    } catch (e) {
-      console.log(`⚠  Menaion/${target}.js — not found`);
-    }
+    console.log(`⚠  ${target} — unknown target (only "pentecostarion")`);
   }
 }
 
@@ -112,10 +90,10 @@ const validator = new URL('../tools/validate_entries.mjs', import.meta.url);
 const conformance = spawnSync(process.execPath, [validator.pathname], { stdio: 'inherit' });
 const conformanceFailed = conformance.status !== 0;
 
-// ── Octoechos drift gate (tools/validate_octoechos.mjs) ──────────────────────
+// ── Octoechos drift gate (tools/validate_octoechos_v2.mjs) ──────────────────────
 // Nested per-tone schema (src/data/octoechos/schema.js): vocabulary guard +
 // required-per-section gated by each tone's _encoded marker + cross-tone uniformity.
-const octoValidator = new URL('../tools/validate_octoechos.mjs', import.meta.url);
+const octoValidator = new URL('../tools/validate_octoechos_v2.mjs', import.meta.url);
 const octo = spawnSync(process.execPath, [octoValidator.pathname], { stdio: 'inherit' });
 const octoFailed = octo.status !== 0;
 

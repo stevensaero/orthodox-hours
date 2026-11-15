@@ -32,31 +32,26 @@ App.jsx imports this file. There is also a `src/hours-tool.jsx` — ignore it.
 
 **Menaion data — single point of truth for encoding:**
 ```
-src/data/menaion/may.js       — May entries
-src/data/menaion/june.js      — June entries
-src/data/menaion/july.js      — July entries
+tools/encoding/menaion_v2/d_MM_DD.py   — one line map per printed service (hand-entered)
+tools/encoding/menaion_v2/build_month.py — builds a month from its line maps and the PDFs
+src/data/menaion_v2/{month}.js         — GENERATED month files (do not hand-edit)
+src/data/menaion_v2/index.js           — the one map of which months exist
+src/data/ods_v3/orders.js              — Fekula vol. III orders, structure only
+src/data/oca_hymns/                    — OCA service texts, captured whole
 ```
-Encoding sessions edit these files directly. **Adding a new month takes FOUR
-edits, not one** — this was previously documented as "one line" and that was
-wrong; September v0.43.0 shipped half-wired because of it:
+(The summarized month files in `src/data/menaion/`, their browser and their
+validator checks were retired at v0.53.0; they are in the git history only.)
 
-1. Create `src/data/menaion/{month}.js`
-2. Add one line to `_menaionLoaders` in `src/components/hours-tool.jsx`
-3. Add one line to `MONTHS_WITH_DATA` in `src/components/menaion-browser.jsx`
-   — a hand-maintained mirror of (2); miss it and the Hours tool serves the
-   month correctly while the Menaion browser reports "No data file exists"
-4. Add the import, comment-map entry and `walk()` call in
-   `tools/validate_entries.mjs`, and add the filename to
-   `VALIDATOR_MONTH_FILES`
-5. Run `node tools/build_temple_index.mjs` and commit the regenerated
-   `src/data/temple_index.js` — every encoded commemoration with a troparion
-   becomes a choosable temple dedication. **Do this after ANY encoding
-   session, not only a new month**: `npm run gate` and `npm run validate`
-   fail while the index is stale.
+An encoding session writes the day's line map, rebuilds the month
+(`MENAION_PDF_DIR=... python3 tools/encoding/menaion_v2/build_month.py MM`), and
+runs `node tools/validate_menaion_v2.mjs`. A new month is registered once, in
+`src/data/menaion_v2/index.js`; the validator fails if that map and the files on
+disk disagree. Full rules: `encoding_rule_v2.md` and `menaion_v2_spec.md`.
 
-`validate_entries.mjs` **Check H** now gates the first four against the contents
-of `src/data/menaion/` and fails the build on drift, so a half-wired month cannot
-ship again; `build_temple_index.mjs --check` gates the fifth. No placeholders needed for unencoded months.
+After ANY encoding session run `node tools/build_temple_index.mjs` and commit the
+regenerated `src/data/temple_index.js`: every captured saint's or feast's service
+that prints a troparion becomes a choosable temple dedication, and `npm run gate`
+and `npm run validate` fail while the index is stale.
 
 **Pentecostarion data — single point of truth:**
 ```
@@ -130,13 +125,12 @@ git config user.email "bill@stevensaero.com"
 git config user.name "Stevens Aero"
 
 # 3. Edit files directly in the clone (do NOT copy from /mnt/user-data/outputs)
-#    Encoding: edit src/data/menaion/may.js (or june.js, july.js, etc.)
+#    Encoding: write tools/encoding/menaion_v2/d_MM_DD.py and rebuild the month
 #    Assembler changes: edit src/components/hours-tool.jsx
 #    Notes: edit project_notes.md
 
-# 4. Run skeleton gate — MANDATORY for any encoding session
-# Must exit 0 before committing. If it exits 1, resolve all gaps first.
-node scripts/check-skeleton.mjs all
+# 4. Run the gates — MANDATORY for any encoding session. All must exit 0.
+node tools/validate_menaion_v2.mjs && npm run gate
 
 # 5. Build to verify before committing
 node_modules/.bin/vite build
@@ -154,8 +148,8 @@ echo "Token scrubbed"
 
 **Multiple commits in one session** (e.g. encoding then notes update):
 ```bash
-git add src/data/menaion/may.js
-git commit -m "data: Priority 3 set 1 — 05-16, 05-17, 05-18"
+git add tools/encoding/menaion_v2 src/data/menaion_v2 src/data/temple_index.js
+git commit -m "data: Menaion 12-01 to 12-03"
 
 git add project_notes.md
 git commit -m "docs: project notes — Priority 3 complete, architecture refactor"
