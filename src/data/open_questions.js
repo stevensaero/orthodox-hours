@@ -229,4 +229,32 @@ export default [
     provisional: 'Both are captured exactly: "^" is stored in the text as printed and stripped wherever the text is shown or sung; a passage underlined end to end is flagged `underlined` and given no syllable brackets, so it is treated as unpointed (ruled 14 Nov 2026).',
     impact: 'If "^" marks a different melodic treatment of that accent, the Tone Trainer should read it instead of ignoring it. If whole-passage underline means "optional" or "not yet pointed", the tool should say so beside those hymns.',
   },
+  {
+    id: 'Q-0008', source: 'menaion', subject: 'other',
+    title: 'Dismissal on 6 September: how is the miracle of the Archangel Michael named?',
+    path: '09-06.c0.name', status: 'open', opened: '2026-11-14',
+    question: 'On 6 September the day keeps the miracle of the Archangel Michael at Colossae (Chonae), with the Martyr Eudoxius and those with him. How does the priest name the day at the dismissal: the Archangel himself, the miracle, or both, and are the martyrs named with him?',
+    printed: 'The Menaion title: "Commemoration of the miracle performed by the Archangel Michael at Colossae, which is also known as Chonae. Commemoration of the Martyr Eudoxius and those with him." The OCA text for 6 September 2026 is titled "Commemoration of the Miracle of the Archangel Michael at Colossae" and does not name the martyrs. Neither prints a dismissal.',
+    consulted: {
+      fekula: 'Not addressed. The Order of Divine Services says the priest "gives the dismissal" and, for the Presanctified, that he commemorates the saint of the day; it gives no wording for a day that keeps an event.',
+      oca: 'The OCA service text for the day prints no dismissal. Not yet searched on oca.org.',
+      web: 'Not yet searched.',
+    },
+    provisional: 'The tool says "and of the holy Archangel Michael and the holy Martyr Eudoxius and those with him, whose memory we celebrate". The name is hand-entered, so it is changed in one place.',
+    impact: 'The wording of the dismissal at the Hours, Vespers, Typica and Liturgy on 6 September, and the name shown on the bulletin. The same question will come up for other days that keep an event (a translation of relics, a dedication, an icon).',
+  },
+  {
+    id: 'Q-0009', source: 'menaion', subject: 'combination',
+    title: 'Dismissal on 29 November: which saints are named?',
+    path: '11-29.c0.name', status: 'open', opened: '2026-11-14',
+    question: 'On 29 November the Menaion commemorates the Martyr Paramon and the Venerable Acacius; the OCA titles the day "Martyr Paramon and 370 Martyrs in Bithynia" and does not name Acacius. Whom does the priest name at the dismissal in an OCA parish?',
+    printed: 'The Menaion title: "Commemoration of the holy Martyr Paramon, commemoration of the venerable Acacius, who is mentioned in The Ladder." The OCA text for 29 November 2026 (a Sunday): "Martyr Paramon and 370 Martyrs in Bithynia"; its troparion and kontakion are of the martyrs, in the plural. The Menaion page prints no troparion or kontakion of its own.',
+    consulted: {
+      fekula: 'Not addressed: no wording is given for the saint of the day at the dismissal. ODS vol. III has no entry for 29 November.',
+      oca: 'The OCA service text names Paramon and the 370 martyrs and prints hymns for them; it prints no dismissal. Not yet searched on oca.org for the day\'s full list of saints.',
+      web: 'Not yet searched.',
+    },
+    provisional: 'The tool follows the Menaion\'s two: "and of the holy Martyr Paramon and our venerable father Acacius, whose memory we celebrate". With Prefer OCA texts on, the troparion and kontakion shown are the OCA\'s, of the martyrs in the plural, so the hymns and the dismissal do not name the same company.',
+    impact: 'The dismissal and the bulletin name on 29 November. More widely: when the OCA\'s title for a day differs from the Menaion\'s, which one the dismissal follows. The names are hand-entered per service, so the answer is applied date by date.',
+  },
 ];
