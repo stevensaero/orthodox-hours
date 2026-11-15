@@ -6,7 +6,7 @@
 //   node tools/test_menaion_v2_vespers.mjs [--table]
 import { loadMenaionV2Month } from '../src/data/menaion_v2/index.js';
 import { servicesOf } from '../src/data/menaion_v2/adapter.js';
-import { resolveLicClosers } from '../src/lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera } from '../src/lib/vespers-propers.js';
 import { loadOcaDoc, ocaStems } from '../src/data/oca_hymns/index.js';
 import { OCA_SLOTS } from '../src/data/oca_hymns/slots.js';
 import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
@@ -17,6 +17,8 @@ const octo = {
   dogmatikon: (t) => OctoV2.getV2Dogmatikon(t),
   doxTheotokion: (t, eve) => OctoV2.getV2DoxasticonTheotokion(t, eve),
   evening: (t, eve) => OctoV2.getV2WeekdayVespers(t, eve)?.lic_theotokion ?? null,
+  sundayLic: (t) => OctoV2.getV2SundayVespers(t)?.lic ?? [],
+  eveningLic: (t, eve) => OctoV2.getV2WeekdayVespers(t, eve)?.lic ?? [],
 };
 // Tone of the week in 2026, anchored on a Sunday the OCA titles "TONE 7" and checked
 // below against every Sunday title the OCA documents print.
@@ -49,6 +51,25 @@ function ocaLic(doc) {
   }
   return out;
 }
+// The OCA's stichera at "Lord I Call", verse by verse: whose and in what tone. A verse
+// with no hymn heading of its own repeats the one before ("(Repeat: ...)").
+function ocaLicStichera(doc) {
+  const out = []; let inLic = false, cur = null, pending = null;
+  for (const b of doc.blocks) {
+    const t = b.text.replace(/[[\]]/g, '');
+    if (b.k === 'heading' && /Lord I Call/i.test(t)) { inLic = true; continue; }
+    if (!inLic) continue;
+    if (b.k === 'heading' && !/^Tone \d/.test(t) && !/^\(/.test(t)) break;
+    if (b.k !== 'heading' && /^Glory to the Father/i.test(t)) break;
+    const h = b.k === 'heading' && t.match(/^Tone (\d)\s*(.*)$/);
+    if (h) cur = { tone: Number(h[1]), group: /Resurrection/i.test(h[2]) ? 'resurrection' : /Feast|Forefeast/i.test(h[2]) ? 'feast' : 'saint' };
+    const vm = t.match(/^V\. \((\d+)\)/);
+    if (vm) { if (pending) out.push({ n: pending, ...(cur ?? {}) }); pending = Number(vm[1]); }
+  }
+  if (pending) out.push({ n: pending, ...(cur ?? {}) });
+  // A verse is recorded when the NEXT verse arrives, so its hymn heading has been seen.
+  return out;
+}
 // Disagreements that are understood and accepted. Each needs a reason.
 const KNOWN = {};
 const rows = []; let checked = 0;
@@ -72,6 +93,16 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
     rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | ${place} | ${show(g)}${g ? ' (' + g.basis + ')' : ''} | ${show(w)} | ${ok ? 'agree' : KNOWN[id] ? 'KNOWN: ' + KNOWN[id] : 'DIFFER'} |`);
   }
   if (!got.bothNow?.node?.text) fail(`${key}: no Both now hymn resolved`);
+  // The stichera: how many, whose, and in what tone, verse by verse.
+  const st = resolveLicStichera({ c: svc.c, base: svc.path, eveDow, tone, octo });
+  const ocaSt = ocaLicStichera(doc); checked++;
+  const g = (x) => (x.group === 'octoechos' ? 'resurrection' : x.group === 'feast' && svc.c.kind === 'feast' ? 'saint' : x.group);
+  const mine = st.stichera.map((x) => `T${x.tone}${g(x)[0]}`).join(' ');
+  const theirs = ocaSt.map((x) => `T${x.tone}${(x.group ?? '?')[0]}`).join(' ');
+  const id = `${key} lic stichera`;
+  if (mine !== theirs && !KNOWN[id]) fail(`${id}:\n      tool ${st.stichera.length}: ${mine}\n      OCA  ${ocaSt.length}: ${theirs}`);
+  if (st.stichera.some((x) => !x.text)) fail(`${id}: a sticheron with no text`);
+  rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Stichera | ${st.stichera.length}: ${mine} | ${ocaSt.length}: ${theirs} | ${mine === theirs ? 'agree' : KNOWN[id] ? 'KNOWN: ' + KNOWN[id] : 'DIFFER'} |`);
 }
 if (table) { console.log('| Date | Day | Tone | Rank | Place | Tool | OCA | |\n|---|---|---|---|---|---|---|---|'); rows.forEach((r) => console.log(r)); }
 console.log(`Menaion V2 Vespers vs OCA: ${checked} places on ${Object.keys(OCA_SLOTS).length} dates, ${bad} error(s)`);

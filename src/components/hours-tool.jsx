@@ -11,7 +11,7 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
-import { resolveLicClosers } from '../lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera } from '../lib/vespers-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -973,6 +973,8 @@ const VESPERS_OCTO = {
   dogmatikon: (t) => OctoV2.getV2Dogmatikon(t),
   doxTheotokion: (t, eve) => OctoV2.getV2DoxasticonTheotokion(t, eve),
   evening: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.lic_theotokion : null; },
+  sundayLic: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.lic : []; },
+  eveningLic: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.lic : []; },
 };
 // The Menaion V2 service of a date, { c, path }, or null when not encoded.
 function getMenaionV2Service(date, serviceIndex) {
@@ -3064,94 +3066,6 @@ function applyStichRepeat(stich, array, idx) {
   return stich;
 }
 
-// expandSticheraToCount(items, count, opts): expand one source's printed texts to
-// exactly `count` slots. Cases, in priority order (see spec §3.1):
-//   exact     items.length === count          → use as printed
-//   explicit  any item carries repeat markers  → honor via applyStichRepeat
-//   uniform   repeat count % length === 0      → repeat each in order ×(count/length)
-//             (Fekula §2A Friday "doubling each")
-//   mismatch  length>0, count%length!==0       → fill, flag remainder w/ diagnostic
-//   repeat-first (opts.fillRule)  n<count      → front-loaded even fill: each sung
-//             floor(count/n)×, first (count mod n) once more (3→8 = [3,3,2]).
-//             (Sunday saint LIC + §2C–§2F; OCA docs 2026-0628 / 2026-0629)
-//   empty     length === 0                     → all unresolved (ordinary placeholder)
-// Returns a length-`count` array of {text,tone,source,resolved,repeatNote?,unresolved?,diagnostic?}.
-function expandSticheraToCount(items, count, opts = {}) {
-  const source = opts.source || "Menaion";
-  const out = [];
-  const n = items ? items.length : 0;
-
-  if (n === 0) {
-    for (let i = 0; i < count; i++) out.push({ text: null, source, resolved: false });
-    return out;
-  }
-
-  // Explicit per-item markers present (festal/Triodion data-as-rubric): the array is
-  // authored at full length with marker entries; resolve each in place.
-  const hasMarkers = items.some(s => s && (s.repeat || typeof s.repeatIndex === "number"));
-  if (hasMarkers || n === count) {
-    for (let i = 0; i < count; i++) {
-      const raw = items[i];
-      const stich = applyStichRepeat(raw, items, i);
-      out.push(stich && stich.text
-        ? { text: stich.text, tone: stich.tone, source, resolved: true, repeatNote: stich.repeatNote }
-        : { text: null, source, resolved: false });
-    }
-    return out;
-  }
-
-  if (n < count && count % n === 0) {
-    // Uniform doubling: one source owns all slots, count is a clean multiple.
-    const reps = count / n;
-    for (let i = 0; i < n; i++) {
-      for (let r = 0; r < reps; r++) {
-        out.push({
-          text: items[i].text, tone: items[i].tone, source, resolved: true,
-          repeatNote: r > 0 ? "(Repeat)" : undefined,
-        });
-      }
-    }
-    return out;
-  }
-
-  // Front-loaded even fill (opt-in via opts.fillRule === 'repeat-first'). When the printed
-  // stichera (n) are fewer than the appointed slots (count), distribute the slots across the
-  // texts as evenly as possible, front-loading the remainder: every sticheron is sung
-  // base = floor(count/n) times, and the first (count mod n) are sung once more.
-  //   3 -> 4 = [2,1,1] = [#1,#1,#2,#3]      (06-28 Cyrus & John on a Sunday)
-  //   3 -> 6 = [2,2,2]                       (clean multiple — same as uniform doubling)
-  //   3 -> 8 = [3,3,2] = [#1×3,#2×3,#3×2]    (06-29 Peter & Paul vigil, 8 LIC slots)
-  // Slot count is contextual (the weekday/vigil rank fixes it; the Sunday engine computes
-  // its own commN at runtime), so the fill must be derived here, not frozen into the data.
-  // Rubric source: OCA Dept. of Liturgical Music & Translations service docs
-  // 2026-0628-texts-tt.json and 2026-0629-texts-tt.json. Opted into by the Sunday Vespers
-  // engine and the §2C–§2F Menaion LIC path; callers without the flag still fall through to
-  // the clean-multiple branch above (or the mismatch diagnostic) unchanged.
-  if (opts.fillRule === "repeat-first" && n < count) {
-    const base = Math.floor(count / n);
-    const extra = count % n; // the first `extra` stichera are sung one extra time
-    for (let i = 0; i < n; i++) {
-      const reps = base + (i < extra ? 1 : 0);
-      for (let r = 0; r < reps; r++) {
-        out.push({
-          text: items[i].text, tone: items[i].tone, source, resolved: true,
-          repeatNote: r > 0 ? "(Repeat)" : undefined,
-        });
-      }
-    }
-    return out;
-  }
-
-  // Mismatch: fill what we have, flag the remainder with a precise diagnostic.
-  const diag = "[Stichera count " + count + " is not a multiple of " + n +
-    " provided text(s). Needs repeat markers or a corrected stichera_lord_i_call_count.]";
-  for (let i = 0; i < count; i++) {
-    if (i < n) out.push({ text: items[i].text, tone: items[i].tone, source, resolved: true });
-    else out.push({ text: null, source, resolved: false, diagnostic: diag });
-  }
-  return out;
-}
-
 // assembleVespers — all fixed texts from HTM Order of Vespers.
 // LIC and Aposticha stichera: §2A weekday/Saturday fully assembled from Octoechos (FW-23 Track A).
 // §2C/§2D Menaion stichera filled via expandSticheraToCount (uniform doubling); see stichera_repeat_spec.md.
@@ -3606,7 +3520,19 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     // Ordinary time high-rank → menaionEntry count governs if encoded.
     // Simple/six_stichera always 6 (Fekula §2A/§2C; encoded count=3 on simple = unique text count,
     // not slot count — do not use it here).
-    const licCount = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside)
+    // Outside the Pentecostarion the stichera and their count are chosen printed-first
+    // in src/lib/vespers-propers.js from the Menaion V2 service, and gated verse by
+    // verse against the OCA texts (tools/test_menaion_v2_vespers.mjs).
+    const licPlan = !isPentecostarion
+      ? resolveLicStichera({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO })
+      : null;
+    const licPlanned = licPlan ? licPlan.stichera.map((x) => ({
+      text: x.text, tone: x.tone || tone, source: x.source, resolved: true,
+      srcPath: x.path || (x.node ? hymnProvenance(x.node).srcPath : undefined),
+      repeatNote: x.of > 1 ? "(" + x.nth + " of " + x.of + ")" : "",
+    })) : null;
+    const licCount = licPlan ? licPlan.count
+      : (isPentecostarion && pentEntry && pentEntry.menaion_set_aside)
       // Great Feast: Pentecostarion governs entirely
       ? (pentEntry.stichera_lord_i_call_count ?? (isHighRank ? (rank === "vigil" ? 10 : 8) : 6))
       : (isPentecostarion && isHighRank && menaionEntry?.stichera_lord_i_call_count
@@ -3702,21 +3628,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       // 10 stichera = resurrection (Octoechos, tone of week) + commemoration
       // (Menaion saint), split by the commemoration's rank. See sunday_vespers_spec.md §3.
       // resurrection N: simple 7 / six-stichera·doxology 6 / polyeleos·vigil 4.
-      const SUN_RES_N = { simple: 7, six_stichera: 6, doxology: 6, polyeleos: 4, vigil: 4, great_feast: 4 };
-      const resN = SUN_RES_N[rank] ?? 7;
-      const commN = 10 - resN;
-      const sunSat = srcVespersDay(tone, "sat");
-      const resStichera = (sunSat && sunSat.lic ? sunSat.lic.slice(0, resN) : [])
-        .map(entry => ({ text: hymnText(entry), tone, source: "Octoechos", resolved: true, ...hymnProvenance(entry) }));
-      // commemoration: expand the saint's printed texts to fill commN. When the saint's
-      // count is not a clean multiple of commN (e.g. 3 stichera into 4 Sunday slots), the
-      // first sticheron is doubled per the OCA service doc (2026-0628 Cyrus & John):
-      // [#1, #1, #2, #3]. fillRule 'repeat-first' applies that; clean multiples still double each.
-      const commStichera = expandSticheraToCount(menaionLicStichera, commN, { source: "Menaion", fillRule: "repeat-first" });
-      const sunStichera = [...resStichera, ...commStichera]; // length 10
+      const sunStichera = licPlanned; // ten: resurrection first, then the Menaion's
       const sunCount = 10;
-      const sunNote = resN + " resurrection (Octoechos, Tone " + tone + ") + " + commN +
-        " " + effSaint + " — Sunday Great Vespers. Fekula Ch.1 / §4B6; split by commemoration rank " + fekulaSection + ".";
+      const sunNote = licPlan.rule + (licPlan.notes.length ? " " + licPlan.notes.join(" ") : "");
       // Verses V.10 → V.1, each followed by its sticheron
       LIC_VERSES.forEach((v) => {
         const slotIndex = sunCount - v.n; // 0 = V.10
@@ -3742,25 +3656,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       });
       emitLicClosers();
       licRendered = true;
-    } else if (!isPentecostarion && rank === "simple" && octoDay && octoDay.lic) {
-      // §2A: first 3 from Octoechos
-      const octoLic = octoDay.lic.slice(0, 3);
-      octoLic.forEach((entry, i) => licStichera.push({text: hymnText(entry), source:"Octoechos", resolved:true, ...hymnProvenance(entry)}));
-      // Slots 4-6: Menaion — use encoded stichera if available, else unresolved
-      for (let i = octoLic.length; i < 6; i++) {
-        const ms = menaionLicStichera[i - octoLic.length];
-        licStichera.push(ms
-          ? {text: ms.text, source:"Menaion", resolved:true}
-          : {text:null, source:"Menaion", resolved:false});
-      }
     } else if (!isPentecostarion) {
-      // §2C/§2D/§2E/§2F: all Menaion. The appointed count comes from the entry's rank
-      // (six-stichera/doxology 6, polyeleos 8, vigil 8/10). When the source prints fewer
-      // texts than the count, fill them front-loaded and evenly (3 texts ×2 = 6; 3 → 8 =
-      // [3,3,2], e.g. 06-29 Peter & Paul). fillRule 'repeat-first' derives that from the
-      // texts so the same data also serves the Sunday engine's runtime slot count.
-      // See stichera_repeat_spec.md; OCA docs 2026-0628 / 2026-0629.
-      licStichera = expandSticheraToCount(menaionLicStichera, licCount, { source: "Menaion", fillRule: "repeat-first" });
+      licStichera = licPlanned;
     } else if (isPentecostarion && menaionLicStichera.length > 0) {
       // Pentecostarion + Menaion (§4A3 — Polyeleos/Vigil Menaion saint):
       // 3 slots from Pentecostarion Octoechos, remaining from Menaion.
@@ -3989,7 +3886,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             rubric:"Tone "+stichTone+(stich.repeatNote ? " "+stich.repeatNote : "")+":",
             text:stich.text, source:stichSource,
             ...(stich.srcPath ? { srcPath: stich.srcPath } : {}),
-            fekula:{section:fekulaSection, note:stichSource+" sticheron at V.("+v.n+"), Tone "+stichTone+"."+(stich.repeatNote ? " Repeated to fill the appointed count (Fekula §2A/§2C)." : "")}});
+            fekula:{section:fekulaSection, note:(licPlan ? licPlan.rule + " " : "")+stichSource+" sticheron at V.("+v.n+"), Tone "+stichTone+"."+(stich.repeatNote ? " Repeated to fill the appointed count (Fekula §2A/§2C)." : "")}});
         } else {
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
             unresolved:true,

@@ -29,8 +29,8 @@ const CASES = [
   ['2026-11-14', '1st_hour', ['entreat the merciful God'], ['not yet encoded']],                      // Saturday, polyeleos, OCA troparion
   ['2026-11-23', '3rd_hour', ['Today is the prelude', 'O God of our fathers'], ['not yet encoded']],  // Monday afterfeast: feast, Glory, saint
   ['2026-11-10', '1st_hour', ['not yet encoded'], []],                                                // a weekday V2 does not hold
-  ['2026-11-15', 'vespers', ['When Christ called thee', 'Prophet David, the ancestor of God'], []],   // Sunday evening for 11-16: Glory and the printed dogmaticon
-  ['2026-11-21', 'vespers', ['Let heaven rejoice today'], []],                                        // Saturday evening for 11-22: Glory of the feast, then the dogmaticon
+  ['2026-11-15', 'vespers', ['When He who trieth our hearts', '(1 of 2)', 'When Christ called thee', 'Prophet David, the ancestor of God'], ['not yet entered']],   // Sunday evening for 11-16: 8 stichera with repeats, Glory, the printed dogmaticon
+  ['2026-11-21', 'vespers', ['O most glorious wonder', 'As a branch of the Vine of life', 'Let heaven rejoice today'], ['not yet entered']],                                        // Saturday evening for 11-22: feast and saint stichera, Glory of the feast
 ];
 let bad = 0;
 for (const [iso, service, must, mustNot] of CASES) {
