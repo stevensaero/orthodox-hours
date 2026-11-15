@@ -521,8 +521,9 @@ DONE on the branch — Typica and Liturgy, FIRST PART (14 Nov):
   (`src/lib/liturgy-entrance.js`, by rank and temple), the Beatitudes troparia,
   the Trisagion substitute. These still read V1 fields.
 
-**RULED (Bill, 14 Nov): THE TOOL ALWAYS RENDERS THE FULL ORDER AND NOTES OCA
-PRACTICE.** The tool's presence rule (the day's proper, and the Menaion's
+**SUPERSEDED LATER THE SAME DAY (see "THE GENERAL RULE FOR THE LITURGY'S PROPERS
+AND READINGS IS FEKULA'S"). Kept for the record:** RULED (Bill, 14 Nov): THE TOOL
+ALWAYS RENDERS THE FULL ORDER AND NOTES OCA PRACTICE. The tool's presence rule (the day's proper, and the Menaion's
 wherever the page prints one) is the more correct order. The OCA texts print
 less, which Bill takes to be brevity: 16 Nov (Monday, Apostle Matthew) only the
 Apostle's; 6 Sep (a six-stichera Sunday) only the Sunday's; 22 Nov (Sunday in
@@ -645,25 +646,45 @@ DONE on the branch — the VOL. III ORDER LAYER (14 Nov):
   bulletin's readings (still the V1 path); the other 73 entries, each entered
   when its date is encoded (encoding_rule_v2.md 1.4).
 
-**TO PUT TO BILL — THE GENERAL RULE FOR THE SUNG PROPERS IS NOT FEKULA'S.**
-`resolveLiturgyPropers` is "presence-gated, never rank-gated": the day's
-prokeimenon, Alleluia and communion verse, plus the Menaion's wherever printed.
-Fekula says otherwise, in the 2nd edition itself:
-- 2E (polyeleos, weekday, p. 50): "Prokeimenon: From the Menaion, only";
-  Epistle and Gospel for the day and from the Menaion; Alleluia and communion
-  hymn from the Menaion only. Saturday: all from the Menaion, then the day.
-- 2G1 (feast period, weekday): forefeast, of the saint; afterfeast, of the feast
-  (and of the saint). Not the day's.
-- 2A and 2D do appoint "for the day and from the Menaion".
-Vol. III agrees with these on every order entered. And **the OCA texts agree
-with Fekula, not with the tool**: 16 Nov (Monday, polyeleos) the Apostle's only.
-So the ruling earlier today (render the full order, mark "OCA: likely omitted")
-rested on my statement that the tool's order was the more correct one, and for
-polyeleos and feast-period days that statement was wrong: what the mark calls
-"likely omitted" Fekula does not appoint at all. Proposed: make the general rule
-Fekula's by section (2A/2D day and Menaion; 2E, 2F Menaion only; 2G by its
-table; ch. 1 for Sundays), keep the OCA mark only where the tool and the OCA
-text still differ. Awaiting Bill.
+**RULED (Bill, 14 Nov) AND BUILT — THE GENERAL RULE FOR THE LITURGY'S PROPERS AND
+READINGS IS FEKULA'S, BY SECTION.** This REPLACES the "presence-gated, never
+rank-gated" rule (v0.49.2) and the earlier ruling of the same day to render the
+full order always. That ruling rested on my statement that the tool's fuller
+order was the more correct one; for polyeleos and feast-period days it was
+wrong, and Bill reversed it on the evidence:
+- 2E (polyeleos weekday, p. 50): prokeimenon, Alleluia, communion hymn "from the
+  Menaion, only"; Epistle and Gospel for the day and from the Menaion; Saturday
+  all from the Menaion and then for the day.
+- 2G1/2G2 (feast periods): of the feast or the saint, not the day's.
+- Vol. III agrees on every order entered; the OCA text of 16 Nov agrees.
+Built:
+- `src/lib/liturgy-order.js`, `fekulaProperOrder({ ld, rank, kind,
+  saintReadings })`: for each of prokeimenon, Epistle, Alleluia, Gospel and
+  communion hymn, whose and in what order (`day`, `menaion`, `feast`, `saint`),
+  for 1A-1E, 1F1-1F3, 2A-2F, 2G1-2G4, each with its section, page and a short
+  phrase. A feast of the Lord on its own day: from the Menaion alone.
+- `resolveLiturgyPropers` and `readingsForDay` apply it for an encoded Menaion
+  service outside the Pentecostarion; a vol. III order still overrides. Where
+  Fekula names a source the page prints nothing for, the day's is given and the
+  note says so. `liturgyPlan` now carries `rank` and `kind`.
+- The Typica renders its Epistles and Gospels from the rule's groups (every
+  Epistle, the Alleluia, every Gospel); it used to print the day's pair and then
+  the commemoration's pair regardless.
+- **The OCA mark now stands only where the tool and the OCA text differ**:
+  "· OCA: not in the OCA text". "OCA: sung" is gone.
+- A named Sunday still keeps only its own proper (no Menaion references passed).
+- With the rule and the orders, the prokeimena agree with the OCA text on 7 of
+  the 12 shared dates (before: far fewer). The five that differ, each real:
+  6 Sep and 15 Nov (Sundays: Fekula 1C/1A add the Menaion's, the OCA sings the
+  Sunday's only); 14 Nov (Saturday: the tool adds the Saturday prokeimenon for
+  the departed); 22 Nov (Fekula 1F1: Sunday and saint, because the saint has
+  readings; the OCA sings Sunday and feast); 25 Nov (vol. III: feast and
+  hieromartyrs; the OCA the feast only).
+- After this the vol. III orders change the general rule in 11 places, not 17:
+  the sung propers on 5 Sep (both days) and 25 Nov (Sunday) now agree unaided.
+- NOT YET: the bulletin's readings still go through the old path (no Menaion
+  references passed); it moves with the bulletin work. The Pentecostarion keeps
+  its own order (chapter 4), unchanged.
 
 NEXT on the branch: dismissal `name`; bulletin; Prefer OCA toggle and service
 chooser; the How-It-Works pass; merge and retire V1. Still V1 in the Liturgy:
@@ -744,9 +765,10 @@ before `v2-wirein` is merged. It must cover at least:
 - The Hours rules by Fekula section, including Sundays and feast periods.
 - **No kontakion at Vespers**; how the Both now at the troparia is chosen
   (Fekula ch. 6), with the Friday-evening exception.
-- **OCA practice marks at the Liturgy and Typica** ("OCA: sung" / "OCA: likely
-  omitted"): the full order is always rendered; the mark only reports what
-  the OCA text for that day prints. How this differs from Prefer OCA.
+- **Whose prokeimenon and readings at the Liturgy**: Fekula's rule by section
+  (polyeleos: the Menaion's only; feast periods: the feast's and the saint's),
+  and the mark "OCA: not in the OCA text" shown only where the OCA text for the
+  day differs. How this differs from Prefer OCA.
 - **The Liturgy's troparia and kontakia**: Fekula's order by temple; that a
   saint slot holds every hymn the page prints for the day's saints; which
   kontakion is taken when two are printed; the Beatitudes following the page's
