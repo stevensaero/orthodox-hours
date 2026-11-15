@@ -360,8 +360,16 @@ export function resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }
 // An entrance is made when the page says so ("Entrance. Prokeimenon of the day.
 // Three lessons:"), and always on a Saturday evening. A doxology service has none:
 // its page prints no entrance, and ODS vol. III says of 25 November "No entrance".
-// Returns { entrance, entranceRubric, readings: [{ display, ref, heading, basis, note, path }] }.
-export function resolveVespersReadings({ c, base, eveDow }) {
+// ocaReadings (Prefer OCA): the references the OCA text appoints, in order. An OCA
+//   reading takes the place of the Menaion's at the same position only when it is a
+//   DIFFERENT lesson (another book, or another chapter of the book): the Apostles
+//   Philip and Matthew, for whom the Menaion prints 1 John and the OCA reads 1 Peter.
+//   Where it is the same lesson the Menaion's citation stands, so a slip in one text
+//   is not carried into the other.
+// Returns { entrance, entranceRubric, readings: [{ display, ref, heading, basis, source, note, path }] }.
+const lessonKey = (ref) => { const m = String(ref).replace(/^(\d) /, '$1').match(/^([A-Za-z0-9. ]+?) (\d+):/); if (!m) return ref;
+  const b = m[1].toLowerCase().replace(/ of solomon/, ''); return `${{ 'exod.': 'exodus', '3kings': '1kings', '4kings': '2kings' }[b] ?? b} ${m[2]}`; };
+export function resolveVespersReadings({ c, base, eveDow, ocaReadings = null }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const rubric = isText(v.entrance_rubric) ? v.entrance_rubric.text : null;
   const readings = (v.readings ?? []).filter((r) => r && r.citation).map((r, i) => {
@@ -373,5 +381,15 @@ export function resolveVespersReadings({ c, base, eveDow }) {
       // "(Book c:v)" is the form the scripture link reads the reference from.
       display: `${r.heading ?? 'A reading'} (${ref})${identified ? ' — the page prints no reference; this one is identified from the opening words' : ''}` };
   });
-  return { entrance: eveDow === 6 || /entrance/i.test(rubric ?? ''), entranceRubric: rubric, readings };
+  readings.forEach((r) => { r.source = 'menaion'; });
+  if (ocaReadings && ocaReadings.length && (ocaReadings.length === readings.length || !readings.length)) {
+    ocaReadings.forEach((o, i) => {
+      const mine = readings[i];
+      if (mine && lessonKey(mine.ref) === lessonKey(o.ref)) return;       // the same lesson: the Menaion's citation stands
+      readings[i] = { ref: o.ref, heading: null, basis: 'printed', source: 'oca', path: null, menaionRef: mine?.ref ?? null,
+        note: mine ? `The Menaion prints ${mine.ref} here.` : null,
+        display: `The reading appointed by the OCA (${o.ref})${mine ? ` — the Menaion prints ${mine.ref}` : ''}` };
+    });
+  }
+  return { entrance: eveDow === 6 || /entrance/i.test(rubric ?? '') || readings.length > 0, entranceRubric: rubric, readings };
 }

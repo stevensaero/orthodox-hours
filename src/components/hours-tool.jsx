@@ -12,7 +12,7 @@ import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_tro
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
-import { stripCaret } from '../data/oca_hymns/index.js';
+import { stripCaret, ocaVespersReadingsFor } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -991,11 +991,13 @@ function getMenaionV2Service(date, serviceIndex) {
   return list.length ? list[Math.min(serviceIndex, list.length - 1)] : null;
 }
 const _ocaHymnCache = {};
+const _ocaReadingsCache = {}; // date key -> the readings the OCA text appoints at Vespers
 let _menaionV2General = null; // the General Menaion, read for a service that names its fallback
 const PREFER_OCA_DEFAULT = true; // ruling 11; the reader's toggle arrives with the switch
 async function _loadMenaionV2(month, key) {
   if (!_menaionV2Cache[month]) _menaionV2Cache[month] = (await loadMenaionV2Month(month)) || {};
   if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = await v2OcaFor(key);
+  if (key && !(key in _ocaReadingsCache)) _ocaReadingsCache[key] = await ocaVespersReadingsFor(key);
   const day = key && _menaionV2Cache[month][key];
   if (!_menaionV2General && day && day.commemorations.some(c => c.general_fallback)) _menaionV2General = await loadMenaionV2General();
 }
@@ -3087,7 +3089,9 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright, mena
   // first; src/lib/vespers-propers.js). No rank test: the page decides.
   if (!isPent && !isBright) {
     if (!menaionV2) return null;
-    const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0 }).readings;
+    const key = menaionV2.path.slice(0, 5);
+    const ocaReadings = PREFER_OCA_DEFAULT && menaionV2.c.oca_primary ? (_ocaReadingsCache[key] || null) : null;
+    const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0, ocaReadings }).readings;
     return r.length ? r.map((x) => x.display) : null;
   }
   // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
