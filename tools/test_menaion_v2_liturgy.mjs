@@ -27,7 +27,7 @@ const known = [];
 
 // key|what -> reason. Each was checked against the page or the OCA text.
 const KNOWN = {
-  '10-04|kontakion tone': 'FOR RULING. The OCA prints at the Liturgy its Tone 8 kontakion, which is the Menaion\'s kontakion after Ode III; the tool takes the Tone 4 kontakion after Ode VI (ODS Appendix A-V note, by the same reasoning). The two witnesses differ on which kontakion the Liturgy takes.',
+  '10-04|kontakion tone': 'Q-0011 (open). The OCA prints at the Liturgy its Tone 8 kontakion, which is the Menaion\'s kontakion after Ode III; the tool takes the Tone 4 kontakion after Ode VI (ODS Appendix A-V note, by the same reasoning). The two witnesses differ on which kontakion the Liturgy takes.',
   '09-27|troparion tone': 'Different hymns: the Menaion prints the general troparion of martyrs (Tone 4, "In their sufferings"); the OCA prints a troparion of St. Callistratus (Tone 3).',
   '10-04|troparion tone': 'Different hymns: the Menaion prints "Having learned goodness" (Tone 4); the OCA prints "We the faithful all praise Hierotheus" (Tone 1).',
   '11-29|kontakion tone': 'Different hymns: the page prints no kontakion, so the General Menaion\'s for a martyr is read (Tone 2); the OCA prints a kontakion of the martyrs (Tone 4).',

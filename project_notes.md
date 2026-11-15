@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.56.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.56.4** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,25 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.56.4 — archive notice reworded; the open rulings are questions Q-0010..13 (15 Nov 2026)
+
+- **Bill, 15 Nov:** the warning must not say the document cannot be used liturgically
+  outside its year: "The hymns can certainly find homes outside of the date the document
+  was published." It is the ORDERING / ASSEMBLY that belongs to the one date. Notice now:
+  "ARCHIVE. Published by the OCA for <date>. Do not use the order and assembly of this
+  service on any other date. ... The hymns themselves are not bound to the date and may
+  be sung wherever they are appointed." (`oca-doc-view.jsx`; rail tooltip to match.)
+- **"send all the other open rulings to review"** -> rows in `open_questions.js`, on the
+  Questions for review page, each with its e-mail link:
+  Q-0010 Vespers lessons for the Apostles Philip and Matthew, 1 John (Menaion) or
+  1 Peter (OCA); Q-0011 two kontakia for one saint, which the Liturgy takes (10-04;
+  09-27 is the same shape); Q-0012 09-27 troparion/kontakion, Menaion's general v the
+  OCA's own of St. Callistratus; Q-0013 10-04 troparion. The tests' KNOWN lists cite the
+  ids. Rungs say plainly what was not searched (oca.org, web) and that ODS vol. III's
+  order for these dates is not among the four captured.
+- Q-0009's `provisional` corrected: it still said Prefer OCA shows the OCA's hymns on
+  11-29; since v0.56.0 the General Menaion's are read.
 
 ### v0.56.3 — the OCA badge opens the OCA text; 09-06 plural "O Commanders" rejected (15 Nov 2026)
 

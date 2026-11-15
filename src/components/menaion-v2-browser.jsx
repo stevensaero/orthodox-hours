@@ -507,7 +507,7 @@ export default function MenaionV2Browser() {
           ))}
           {ocaToday.filter(d => d.year !== year).map(d => (
             <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }}
-                 title={`Published for this date in ${d.year} only. Not the service for ${year}.`}
+                 title={`The order of service the OCA assembled for this date in ${d.year}. It is not the service for ${year}; its hymns may still be appointed on other days.`}
                  style={{ ...railItem(d.stem === ocaDoc), color: C.red, borderColor: d.stem === ocaDoc ? C.red : "transparent" }}>
               Archive: OCA text for {ocaLabel(d)}
             </div>

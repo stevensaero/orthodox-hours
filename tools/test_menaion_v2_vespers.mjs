@@ -151,11 +151,11 @@ const KNOWN = {
   '11-16 litiya Both now': 'as 14 Nov: the OCA adds a Both now (Tone 2) the page does not print.',
 
   // FOR RULING (15 Nov 2026). Until that day the tool showed the OCA's hymn or reading here by date;
-  // it now shows only its own, and the difference stands here for Bill to rule on.
-  '09-27 troparia': 'FOR RULING: different hymns. The Menaion prints the general troparion of martyrs (Tone 4); the OCA a troparion of St. Callistratus (Tone 3).',
-  '10-04 troparia': 'FOR RULING: different hymns. The Menaion prints "Having learned goodness" (Tone 4); the OCA "We the faithful all praise Hierotheus" (Tone 1).',
-  '11-14 readings': 'FOR RULING: the Menaion prints three lessons from 1 John; the OCA appoints three from 1 Peter.',
-  '11-16 readings': 'FOR RULING: as 14 Nov: 1 John in the Menaion, 1 Peter in the OCA text.',
+  // it now shows only its own, and each difference is a row in the open-question register (open_questions.js).
+  '09-27 troparia': 'Q-0012 (open): different hymns. The Menaion prints the general troparion of martyrs (Tone 4); the OCA a troparion of St. Callistratus (Tone 3).',
+  '10-04 troparia': 'Q-0013 (open): different hymns. The Menaion prints "Having learned goodness" (Tone 4); the OCA "We the faithful all praise Hierotheus" (Tone 1).',
+  '11-14 readings': 'Q-0010 (open): the Menaion prints three lessons from 1 John; the OCA appoints three from 1 Peter.',
+  '11-16 readings': 'Q-0010 (open): as 14 Nov: 1 John in the Menaion, 1 Peter in the OCA text.',
 
   '11-30 aposticha Glory': 'the OCA sings a different doxasticon here (Tone 3, "by Germanos"); the Menaion prints one in Tone 2. An OCA-layer matter, not a rule.',
   '11-30 aposticha Both now': 'follows from the Glory above: the OCA\'s Both now is in Tone 3, the Menaion\'s in Tone 2; both are of the forefeast.',

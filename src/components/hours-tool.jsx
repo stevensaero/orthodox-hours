@@ -8525,6 +8525,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.56.4",
+    date: "November 2026",
+    summary: "The archive notice on OCA service texts says what it means; four new questions for review",
+    items: [
+      "The notice on an OCA service text of another year now says that it is the ORDER AND " +
+      "ASSEMBLY of the service that belongs to its one date. The hymns themselves are not " +
+      "bound to the date and may be sung wherever they are appointed.",
+      "Four places where the OCA service text and the Menaion differ are now open questions " +
+      "on the Questions for review page: the Vespers lessons for the Apostles Philip and " +
+      "Matthew (1 John or 1 Peter), which of two kontakia the Liturgy takes (4 October), and " +
+      "the troparia of 27 September and 4 October.",
+    ],
+  },
+  {
     version: "v0.56.3",
     date: "November 2026",
     summary: "The OCA badge opens the OCA service text; 6 September troparion corrected",

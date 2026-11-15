@@ -54,8 +54,9 @@ export default function OcaDocView({ stem, focusId = null, year = new Date().get
                                    position: "sticky", top: stickyTop, zIndex: 1, boxShadow: "0 -8px 0 #fff" }}>
           <div style={{ fontWeight: 700, fontSize: "0.9rem", letterSpacing: "0.04em" }}>ARCHIVE. Published by the OCA for {when}.</div>
           <div style={{ fontSize: "0.8rem" }}>
-            This text was assembled for that day in that year only. The same date in another year will usually call for a
-            different service. <strong>Do not use it liturgically outside {info.year}.</strong>
+            <strong>Do not use the order and assembly of this service on any other date.</strong> It was put together
+            for that one day; the same date in another year will usually call for a different service. The hymns
+            themselves are not bound to the date and may be sung wherever they are appointed.
           </div>
         </div>
       )}

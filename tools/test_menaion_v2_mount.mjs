@@ -107,9 +107,9 @@ await visit(u, '11-15 prefer OCA on', null, { preferOca: true, wait: 400,
 await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2027-11-15', '11-15 in 2027: rail', null, { preferOca: true, wait: 400,
   must: ['Archive: OCA text for Nov 15, 2026', 'OCA 2026'], mustNot: ['OCA text for this day'] });
 await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-tt-&date=2027-11-15', '11-15 in 2027: the text', null, { wait: 300,
-  must: ['ARCHIVE. Published by the OCA for November 15, 2026.', 'Do not use it liturgically outside 2026.'] });
+  must: ['ARCHIVE. Published by the OCA for November 15, 2026.', 'Do not use the order and assembly of this service on any other date.', 'The hymns themselves are not bound to the date'] });
 await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-tt-&date=2026-11-15', '11-15 in 2026: the text', null, { wait: 300,
-  must: ['OCA service text for November 15, 2026', 'It was issued for this day in 2026'], mustNot: ['ARCHIVE.', 'Do not use it liturgically'] });
+  must: ['OCA service text for November 15, 2026', 'It was issued for this day in 2026'], mustNot: ['ARCHIVE.', 'Do not use the order and assembly'] });
 // The OCA badge on a hymn opens the OCA service text it came from, at that hymn.
 await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2026-11-15', '11-15: the OCA badge', null, { preferOca: true, wait: 400,
   clickOca: ['the hymn you came from', 'OCA service text for', 'back to the Menaion'] });
