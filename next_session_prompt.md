@@ -1,4 +1,4 @@
-# Next-session kickoff — Menaion V2 DAILY encoding (November, continued)
+# Next-session kickoff — Menaion V2 wire-in (Vespers next) and November encoding
 
 State at handoff: **v0.52.2**, nine gates green. The General Menaion is complete.
 `november.js` holds 11-14 through 11-30 (22 files). The consolidated state,
@@ -27,10 +27,42 @@ the two rulings at the end of §16.5; `encoding_rule_v2.md` §§1.1 and 3 (live)
 `Orthodox Hours/OCA_service_texts/` (`2026-MMDD-texts-tt.docx`; reference only,
 never in the repo). Check for the date before opening a liturgical question.
 
-**The wire-in is under way.** `menaion_v2_wirein_spec.md` holds the rulings, the
-slot map and the plan; sections 1-5 are done (six overlap dates are encoded in
-V2 `september.js` / `october.js`), sections 6-9 await Bill's confirmation.
-Read it, and section 5a in particular, before any adapter work.
+**The wire-in is a REWRITE on branch `v2-wirein`, and VESPERS IS NEXT.** Read the
+"V2 WIRE-IN IS A REWRITE OF THE LOGIC, NOT A SHIM" block of `project_notes.md`
+and `menaion_v2_wirein_spec.md` 6a-6b before touching anything. Bill's rule: no
+shims, props or bandages; fix the logic. The assemblers lay in PLANS from
+`src/data/menaion_v2/adapter.js`; selection logic lives in plain modules under
+`src/lib/` so the gates run the tool's own code.
+
+- After cloning: `git fetch origin v2-wirein && git checkout v2-wirein && git merge main`.
+  Rewrite work is committed and pushed on the BRANCH (`... push <url> v2-wirein`);
+  encoding and project notes go on `main`, then `main` is merged into the branch.
+- Done on the branch: the Hours (`hoursPlan`, `src/lib/hours-propers.js`), the
+  General Menaion fallback (`general_fallback` on an entry), the OCA overlay.
+  Gates: `tools/test_menaion_v2_hours.mjs`, `tools/test_hours_mount.mjs`.
+- **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
+  Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
+  (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
+  place it returns "printed here" (the node), "rubric only" (Octoechos, in the
+  tone the rubric names), or "nothing printed" (the rule for the section). Put
+  the Octoechos / Pentecostarion laying-in in a plain `src/lib/vespers-propers.js`.
+  Carry the Pentecostarion logic over UNCHANGED and mark it not reworked.
+- **Gate each section against the OCA texts before starting the next.** The OCA
+  headings in `src/data/oca_hymns/docs/` name the tone and kind at every Glory
+  and Both-now place: they are the answer key. A first comparison (10 dates)
+  showed V2 agrees wherever the page prints the closer; one unexplained
+  difference, 30 Nov aposticha Glory (Menaion Tone 2, OCA Tone 3).
+- Read Fekula ch. 1 (Sundays), ch. 2 (weekdays) and ch. 6 (theotokia) from the
+  project docs for each rule, and check ODS vol. III where it has an entry. How
+  Bill decides a doubtful rule: did the source state it, and is there evidence
+  it is done.
+- The Sunday Vespers and bulletin gates pin today's output; list every change
+  with the OCA text or Fekula section that justifies it, for Bill.
+- AFTER Vespers, raise with Bill: reading ODS vol. III's date-specific orders
+  (77 entries; `ods_v3_hours.pilot.json`) as a layer in the adapter.
+- Then: Typica and Liturgy propers, dismissal `name`, bulletin; the Prefer OCA
+  toggle and service chooser; merge; retire V1; v0.53.0. Also owed: the three
+  Menaion browser items (notes: "NEXT MENAION V2 BROWSER PASS").
 
 **Fekula volume III lives on Bill's computer, NOT in the repo.** It is a copyrighted
 reference work and is never committed here, in whole or in part (Bill, 14 Nov):
