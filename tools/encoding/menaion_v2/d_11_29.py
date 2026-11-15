@@ -111,6 +111,13 @@ def build():
         'troparion': ABS('No troparion is printed anywhere in 11-29.pdf, for either saint.'),
         'kontakion': ABS('No kontakion is printed anywhere in 11-29.pdf; after Ode VI the page appoints "the '
                          'Martyricon from the Oktoechos".'),
+        'general_fallback': {
+            'type': 'Martyr', 'name': 'Paramon',
+            'basis': ('The page heads the service "the holy martyr Paramon" (singular) and its stichera address him '
+                      'alone, so the General Menaion service to one martyr is taken. The OCA commemorates Paramon '
+                      'with the 370 martyrs and Philumenus and sings a troparion to martyrs in the plural; that is '
+                      'held in the OCA layer, not here.'),
+        },
         'vespers': vespers, 'compline': compline, 'matins': matins,
     }
     return s, entry, ['identity', 'vespers', 'compline', 'matins']
