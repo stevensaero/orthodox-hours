@@ -987,17 +987,19 @@ const VESPERS_OCTO = {
   dailyDismissalTheotokion: (t, eve) => OctoV2.getV2DailyDismissalTheotokion(t, eve),
 };
 // The Menaion V2 service of a date, { c, path }, or null when not encoded.
-function getMenaionV2Service(date, serviceIndex) {
+// The handle carries the reader's "Prefer OCA texts" choice, so every assembler
+// that takes the service reads the same setting.
+function getMenaionV2Service(date, serviceIndex, preferOca = PREFER_OCA_DEFAULT) {
   const mo = String(date.getMonth() + 1).padStart(2, "0");
   const key = `${mo}-${String(date.getDate()).padStart(2, "0")}`;
   const list = v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
-  return list.length ? list[Math.min(serviceIndex, list.length - 1)] : null;
+  return list.length ? { ...list[Math.min(serviceIndex, list.length - 1)], preferOca } : null;
 }
 const _ocaHymnCache = {};
 const _ocaReadingsCache = {}; // date key -> the readings the OCA text appoints at Vespers
 const _ocaLiturgyCache = {};  // date key -> what the OCA text prints for the Liturgy (for the OCA-practice notes)
 let _menaionV2General = null; // the General Menaion, read for a service that names its fallback
-const PREFER_OCA_DEFAULT = true; // ruling 11; the reader's toggle arrives with the switch
+const PREFER_OCA_DEFAULT = true; // ruling 11: on by default; the reader's toggle is `preferOca` in the component
 async function _loadMenaionV2(month, key) {
   if (!_menaionV2Cache[month]) _menaionV2Cache[month] = (await loadMenaionV2Month(month)) || {};
   if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = await v2OcaFor(key);
@@ -1006,15 +1008,29 @@ async function _loadMenaionV2(month, key) {
   const day = key && _menaionV2Cache[month][key];
   if (!_menaionV2General && day && day.commemorations.some(c => c.general_fallback)) _menaionV2General = await loadMenaionV2General();
 }
+// The services Menaion V2 holds for a date, the OCA's first (the order the chooser
+// lists them in and `serviceIndex` counts in), and how the context card shows one.
+function v2ServicesFor(date) {
+  if (!date) return [];
+  const mo = String(date.getMonth() + 1).padStart(2, "0");
+  const key = `${mo}-${String(date.getDate()).padStart(2, "0")}`;
+  return v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
+}
+function v2CardService(svc) {
+  const c = svc.c; const title = [].concat(c.title || []).map(t => t.text || t).join(" ");
+  const name = c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : title.charAt(0) + title.slice(1).toLowerCase();
+  return { saint: name, rank: c.rank, oca_primary: c.oca_primary === true, fekula_section: c.fekula_section,
+    note: typeof c.note === "string" ? c.note : null, source_file: c.source_file || null, path: svc.path };
+}
 // The Hours plans for a date's chosen service: by the day's own rule, and by the
 // weekday rule (which the Pentecostarion branch reads). Null when not encoded.
-function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday) {
+function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday, preferOca = PREFER_OCA_DEFAULT) {
   const mo = String(date.getMonth() + 1).padStart(2, "0");
   const key = `${mo}-${String(date.getDate()).padStart(2, "0")}`;
   const list = v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
   if (!list.length) return { plan: null, weekdayPlan: null };
   const svc = list[Math.min(serviceIndex, list.length - 1)];
-  const oca = PREFER_OCA_DEFAULT && svc.c.oca_primary ? (_ocaHymnCache[key] || null) : null;
+  const oca = preferOca && svc.c.oca_primary ? (_ocaHymnCache[key] || null) : null;
   const general = _menaionV2General;
   // ODS vol. III's order for this service on this day overrides the general rule.
   const order = ods3OrderFor(svc.path, date.getDay());
@@ -3097,7 +3113,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright, mena
   if (!isPent && !isBright) {
     if (!menaionV2) return null;
     const key = menaionV2.path.slice(0, 5);
-    const ocaReadings = PREFER_OCA_DEFAULT && menaionV2.c.oca_primary ? (_ocaReadingsCache[key] || null) : null;
+    const ocaReadings = menaionV2.preferOca !== false && menaionV2.c.oca_primary ? (_ocaReadingsCache[key] || null) : null;
     const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0, ocaReadings }).readings;
     return r.length ? r.map((x) => x.display) : null;
   }
@@ -4681,7 +4697,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const vKey = menaionV2 ? menaionV2.path.slice(0, 5) : null;
     const vOwn = (() => {
       if (!menaionV2) return {};
-      const oca = PREFER_OCA_DEFAULT && menaionV2.c.oca_primary ? (_ocaHymnCache[vKey] || null) : null;
+      const oca = menaionV2.preferOca !== false && menaionV2.c.oca_primary ? (_ocaHymnCache[vKey] || null) : null;
       const h = v2HoursPlan(menaionV2.c, menaionV2.path, { oca, general: _menaionV2General }).hours["1st_hour"];
       const isFeast = menaionV2.c.kind === "feast";
       return { saint: h.troparia.find((x) => x.role !== "feast" || isFeast), feast: isFeast ? null : h.troparia.find((x) => x.role === "feast") };
@@ -15559,7 +15575,10 @@ export default function App() {
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showBulletin, setShowBulletin] = useState(false);
-  const [contextOpen, setContextOpen] = useState(false);
+  const [contextOpen, setContextOpen] = useState(() => {
+    try { return window.sessionStorage.getItem("hours.contextOpen") === "1"; } catch (e) { return false; }
+  });
+  React.useEffect(() => { try { window.sessionStorage.setItem("hours.contextOpen", contextOpen ? "1" : "0"); } catch (e) { /* no-op */ } }, [contextOpen]);
   const [copyrightExpanded, setCopyrightExpanded] = useState(false);
   const [selectedServiceKey, setSelectedServiceKey] = useState(() => {
     try {
@@ -15625,6 +15644,12 @@ export default function App() {
   const [tbOpen, setTbOpen] = useState(false);
   const [voOpen, setVoOpen] = useState(false);
   const [readerMode, setReaderMode] = useState(false);
+  // "Prefer OCA texts" (ruling 11): on by default. Where the OCA publishes a text for
+  // the day, its hymn stands in the place of its own counterpart in the Menaion.
+  const [preferOca, setPreferOcaState] = useState(() => {
+    try { const v = localStorage.getItem('prefer_oca'); return v === null ? PREFER_OCA_DEFAULT : v === '1'; } catch (e) { return PREFER_OCA_DEFAULT; }
+  });
+  const togglePreferOca = () => setPreferOcaState(v => { try { localStorage.setItem('prefer_oca', v ? '0' : '1'); } catch (e) { /* unavailable */ } return !v; });
   // Service of the Psalter (FW-24, Slice 1)
   const [psalterMode, setPsalterMode] = useState('normal');   // 'normal' | 'departed'
   const [departedName, setDepartedName] = useState('N.');
@@ -15775,13 +15800,13 @@ export default function App() {
     !selectedMenaionEntry.feast_g.startsWith('absent');
   // The Menaion's Liturgy material: what the V2 service prints (liturgyPlan). The
   // Epistle and Gospel "of the commemoration" are its first printed references.
-  const v2DaySvc = getMenaionV2Service(date, selectedServiceIndex);
+  const v2DaySvc = getMenaionV2Service(date, selectedServiceIndex, preferOca);
   const v2Liturgy = v2DaySvc ? v2LiturgyPlan(v2DaySvc.c, v2DaySvc.path) : null;
   const v2Rank = v2DaySvc ? v2DaySvc.c.rank : null;
   // What the service gives the Little Entrance and the Beatitudes (entrancePlan),
   // with the OCA hymn in the place of its own counterpart when Prefer OCA is on.
   const v2Entrance = v2DaySvc ? v2EntrancePlan(v2DaySvc.c, v2DaySvc.path, {
-    oca: PREFER_OCA_DEFAULT && v2DaySvc.c.oca_primary ? (_ocaHymnCache[v2DaySvc.path.slice(0, 5)] || null) : null,
+    oca: preferOca && v2DaySvc.c.oca_primary ? (_ocaHymnCache[v2DaySvc.path.slice(0, 5)] || null) : null,
     general: _menaionV2General, order: ods3OrderFor(v2DaySvc.path, date.getDay()) }) : null;
   // What the OCA text for this day prints at the Liturgy, to NOTE OCA practice beside
   // the full order (nothing is dropped). Null when there is no OCA text for the day.
@@ -15815,12 +15840,15 @@ export default function App() {
   // Reset Typical Beginning when service changes
   React.useEffect(() => { setTbOpen(false); setVoOpen(false); }, [selectedServiceKey, selectedDate]);
 
-  // When the date changes, reset saint selector to OCA primary
+  // When the date changes, reset the service chooser to the default service. On a
+  // date Menaion V2 holds, the chooser lists ITS services with the OCA's first, so
+  // the default is 0; it is re-set when that month's data arrives.
   const ocaPrimaryIndex = services.findIndex(s => s.oca_primary === true);
-  const defaultIndex = ocaPrimaryIndex >= 0 ? ocaPrimaryIndex : 0;
+  const v2Count = v2ServicesFor(date).length;
+  const defaultIndex = v2Count ? 0 : (ocaPrimaryIndex >= 0 ? ocaPrimaryIndex : 0);
   React.useEffect(() => {
     setSelectedServiceIndex(defaultIndex);
-  }, [selectedDate]);
+  }, [selectedDate, v2Count]);
 
   // Scroll to top whenever the selected service changes.
   // Future work (FW-14): Exception: the 3rd → 6th Hour continuation button handles its own scroll
@@ -15885,7 +15913,7 @@ export default function App() {
     const vIsBright = vLit.season === "brightweek";
     const vPent = vIsAllSaintsNA ? vMenaion
       : ((vIsPent || vIsBright) ? getPentecostarionEntry(vLit.paschaOffset) : null);
-    const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright, getMenaionV2Service(vDate, selectedServiceIndex));
+    const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright, getMenaionV2Service(vDate, selectedServiceIndex, preferOca));
     const vDailyReading = getDailyReading(vDate);
     const vNamedDaySunday = !!(vLit.namedDay && vLit.namedDay.isSunday);
     const vHasFeastE = vMenaion && vMenaion.feast_e && !vMenaion.feast_e.startsWith('absent');
@@ -15922,7 +15950,7 @@ export default function App() {
   // - All other cases: no paroemias
   // Selected-day (D) paroemias — feeds the day-summary context card. The Vespers
   // SERVICE computes its own paroemias for the day it opens (D+1); see FW-26 below.
-  const paroemias = computeVespersParoemias(selectedMenaionEntry, pentEntry, isPentecostarion, isBrightWeek, getMenaionV2Service(date, selectedServiceIndex));
+  const paroemias = computeVespersParoemias(selectedMenaionEntry, pentEntry, isPentecostarion, isBrightWeek, getMenaionV2Service(date, selectedServiceIndex, preferOca));
   // Current service metadata from registry
   // ?preview=<key>[,<key>] unlocks a built:false service for development
   // review without shipping it (liturgy_assembler_spec.md decision 5: the
@@ -15956,7 +15984,7 @@ export default function App() {
       liturgicalData, service: v2DaySvc, entrance: v2Entrance, liturgy: v2Liturgy,
       otherName: other ? (other.c.name || null) : ((!v2DaySvc && services.length > 1 && services[1] && services[1].saint) || null),
       legacy: v2DaySvc ? null : (selectedMenaionEntry || null), dailyReading, feastReading,
-      sources: { resTroparion: srcResTroparion, sunKontakion: srcSunKontakion, dismissalTheotokion: srcDismissalTheot, hymnText },
+      sources: { resTroparion: srcResTroparion, sunKontakion: srcSunKontakion, dismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t), hymnText },
     });
     return {
       dateLabel: date.toLocaleDateString("en-US",
@@ -15970,9 +15998,15 @@ export default function App() {
     };
   })();
 
+  // What the page says about the day's service above the texts: its name, rank and
+  // the Fekula section applied, from the Menaion V2 service where the date has one
+  // (the retired V1 entry otherwise).
+  const shownSvc = (svc, sunday) => (svc ? { entry: v2CardService(svc), cited: "§" + v2HoursPlan(svc.c, svc.path, { sunday, general: _menaionV2General }).cited } : null);
+  const shownDay = shownSvc(v2DaySvc, isSunday);
+  const shownEve = shownSvc(getMenaionV2Service(vespersNext.vDate, selectedServiceIndex, preferOca), vespersNext.vLit.season === "sunday");
   const peekName = getPeekName(
     peekIsVesperlike ? vespersNext.vLit : liturgicalData,
-    peekIsVesperlike ? vespersNext.vMenaion : menaionEntry
+    peekIsVesperlike ? (shownEve ? shownEve.entry : vespersNext.vMenaion) : (shownDay ? shownDay.entry : menaionEntry)
   );
 
   // Assemble elements for the current service
@@ -15990,16 +16024,16 @@ export default function App() {
       if (vespersNext.vIsAllSaintsNA) {
         const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
         vMen = sel; vPnt = sel;
-        vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright, getMenaionV2Service(vespersNext.vDate, selectedServiceIndex));
+        vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright, getMenaionV2Service(vespersNext.vDate, selectedServiceIndex, preferOca));
       } else if (vespersNext.vServices.length > 1) {
         // Ordinary multi-service day (e.g. June 15: Amos + Jerome + Jonah):
         // apply selectedServiceIndex so radio selection actually changes what assembles.
         const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
         vMen = sel;
-        vPar = computeVespersParoemias(sel, vPnt, vespersNext.vIsPent, vespersNext.vIsBright, getMenaionV2Service(vespersNext.vDate, selectedServiceIndex));
+        vPar = computeVespersParoemias(sel, vPnt, vespersNext.vIsPent, vespersNext.vIsBright, getMenaionV2Service(vespersNext.vDate, selectedServiceIndex, preferOca));
       }
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
-        getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex));
+        getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex, preferOca));
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank, ocaPractice, v2Entrance);
     } else if (currentService.key === 'pre_communion') {
@@ -16069,7 +16103,7 @@ export default function App() {
           fekula: { section: '10', note: 'Reader\'s services: the Typica stands in for the Divine Liturgy.' } }, ...els];
       }
     } else {
-      const _hp = getMenaionHoursPlans(date, selectedServiceIndex, liturgicalData.season === 'sunday');
+      const _hp = getMenaionHoursPlans(date, selectedServiceIndex, liturgicalData.season === 'sunday', preferOca);
       els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode, templeDedication, _hp.plan, _hp.weekdayPlan);
     }
     // Patch psalterHref onto any element that has kathismaNum
@@ -16408,8 +16442,11 @@ export default function App() {
             const cNamedSunday = isVesp ? vespersNext.vNamedDaySunday : namedDayIsSunday;
             const cDayLabel = isVesp ? vespersNext.vDayLabel : dayLabel;
             const cSelDate = isVesp ? vespersNext.vDateStr : selectedDate;
-            const cServices = isVesp ? vespersNext.vServices : services;
+            // On a date Menaion V2 holds, the card and the chooser show ITS services.
+            const cV2 = v2ServicesFor(isVesp ? vespersNext.vDate : date).map(v2CardService);
+            const cServices = cV2.length ? cV2 : (isVesp ? vespersNext.vServices : services);
             const cMulti = cServices.length > 1;
+            const cShown = cV2.length ? cV2[Math.min(selectedServiceIndex, cV2.length - 1)] : cMen;
             // All Saints NA/Russia is an alternate-usage overlay, not co-commemoration:
             // its Vespers texts differ by usage, so the selector is offered at Vespers too.
             const cAllSaintsOverlay = isVesp ? vespersNext.vIsAllSaintsNA : isAllSaintsNA;
@@ -16428,6 +16465,7 @@ export default function App() {
               >
                 ×
               </span>
+              <span style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "flex-end" }}>
               {/* Reader's Service — right of the first content line, within the context chip */}
               <button
                 onClick={() => setReaderMode(v => !v)}
@@ -16443,6 +16481,22 @@ export default function App() {
               >
                 {readerMode ? "☩ Reader's Service" : "Reader's Service"}
               </button>
+              {/* Prefer OCA texts: the OCA hymn in the place of its own counterpart, where the OCA publishes one */}
+              <button
+                onClick={togglePreferOca}
+                style={{
+                  background: preferOca ? "rgba(90,122,138,0.15)" : "transparent",
+                  border: `1px solid ${preferOca ? "#5A7A8A" : "#8B6914"}`,
+                  color: preferOca ? "#5A7A8A" : "#8B6914",
+                  borderRadius: "3px", padding: "3px 10px", fontSize: "0.73rem",
+                  letterSpacing: "0.06em", cursor: "pointer", fontFamily: "Georgia, serif",
+                  flexShrink: 0,
+                }}
+                title={"Where the OCA publishes a service text for the day, its troparion, kontakion or reading is shown in the place of the Menaion's own. Off: the St. Sergius Menaion throughout. " + (ocaPractice || _ocaHymnCache[selectedDate.slice(5)] ? "The OCA has a text for this day." : "The OCA has no text captured for this day, so this changes nothing here.")}
+              >
+                {preferOca ? "☩ Prefer OCA texts" : "Prefer OCA texts"}
+              </button>
+              </span>
             </div>
             {isVesp && (
               <div style={{ marginTop: "0.4rem", marginBottom: "0.4rem", padding: "0.45rem 0.7rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0", fontSize: "0.82rem", color: "#3C2E14", lineHeight: 1.5 }}>
@@ -16620,11 +16674,11 @@ export default function App() {
             <div>
               <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
                 <strong>Saint:</strong>
-                <span>{(cMen && cMen.saint) || 'Saint of the day'} —{" "}
-                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[cMen && cMen.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
+                <span>{(cShown && cShown.saint) || 'Saint of the day'} —{" "}
+                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[cShown && cShown.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
                 </span>
-                <RankExplainer menaionEntry={cMen} isSunday={cIsSunday} />
-                {cMen && cMen.oca_primary === true && (
+                <RankExplainer menaionEntry={cShown} isSunday={cIsSunday} />
+                {cShown && cShown.oca_primary === true && (
                   <span style={{ fontSize: "0.68rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 6px", color: "#6B4E10", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>OCA primary</span>
                 )}
               </div>
@@ -16654,19 +16708,19 @@ export default function App() {
                   </span>
                 </label>
               ))}
-              {cMen && cMen.note && (() => {
-                const isAbsent = (cMen.note || '').toLowerCase().includes("not listed") || (cMen.note || '').toLowerCase().includes("not on the oca");
+              {cShown && cShown.note && (() => {
+                const isAbsent = (cShown.note || '').toLowerCase().includes("not listed") || (cShown.note || '').toLowerCase().includes("not on the oca");
                 return (
                   <div style={{ marginTop: "0.6rem", padding: "0.5rem 0.75rem", background: isAbsent ? "rgba(180,120,20,0.1)" : "rgba(139,105,20,0.07)", border: `1px solid ${isAbsent ? "rgba(180,120,20,0.4)" : "rgba(139,105,20,0.25)"}`, borderRadius: "4px", fontSize: "0.78rem", color: "#5C4A1E", lineHeight: "1.55" }}>
                     <span style={{ marginRight: "5px", color: "#8B6914" }}>ⓘ</span>
-                    {cMen.note}
+                    {cShown.note}
                   </div>
                 );
               })()}
             </div>
           )}
-          {cMen && !cMulti && cMen.note && (
-            <div style={{ fontSize: "0.78rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.15rem" }}>{cMen.note}</div>
+          {cShown && !cMulti && cShown.note && (
+            <div style={{ fontSize: "0.78rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.15rem" }}>{cShown.note}</div>
           )}
           {cServices.length === 0 && inScope && (
             <div style={{ color: "#B43C1E", fontStyle: "italic" }}>
@@ -16838,10 +16892,10 @@ export default function App() {
                       ? <><Tooltip term="octoechos">Octoechos</Tooltip> + <Tooltip term="menaion">Menaion</Tooltip> content</>
                       : <Tooltip term="menaion">Menaion</Tooltip>}{" "}
                     · <Tooltip term="service rank">
-                        {isSunday ? "Sunday" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label : "Simple")} service
+                        {isSunday ? "Sunday" : ((shownEve ? shownEve.entry : menaionEntry) ? (RANK_EXPLANATIONS[(shownEve ? shownEve.entry : menaionEntry).rank] || RANK_EXPLANATIONS.simple).label : "Simple")} service
                       </Tooltip>
-                      <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
-                      {" "}· Assembled per Fekula {isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A")}
+                      <RankExplainer menaionEntry={shownEve ? shownEve.entry : menaionEntry} isSunday={isSunday} />
+                      {" "}· Assembled per Fekula {shownEve ? shownEve.cited : (isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A"))}
                   </div>
                 ) : currentService.key === 'typica' ? (
                   <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
@@ -16886,10 +16940,10 @@ export default function App() {
                     ? <><Tooltip term="octoechos">Octoechos</Tooltip> + <Tooltip term="menaion">Menaion</Tooltip> content</>
                     : <Tooltip term="menaion">Menaion</Tooltip>}{" "}
                   · <Tooltip term="service rank">
-                      {isSunday ? "Sunday" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label : "Simple")} service
+                      {isSunday ? "Sunday" : ((shownDay ? shownDay.entry : menaionEntry) ? (RANK_EXPLANATIONS[(shownDay ? shownDay.entry : menaionEntry).rank] || RANK_EXPLANATIONS.simple).label : "Simple")} service
                     </Tooltip>
-                    <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
-                    {" "}· Assembled per Fekula {isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A")}
+                    <RankExplainer menaionEntry={shownDay ? shownDay.entry : menaionEntry} isSunday={isSunday} />
+                    {" "}· Assembled per Fekula {shownDay ? shownDay.cited : (isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A"))}
                 </div>
                 )
               ) : (

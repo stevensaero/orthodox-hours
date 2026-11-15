@@ -40,12 +40,17 @@ const CASES = [
   ['2026-11-25', '6th_hour', ['Today is the prelude', 'thou didst gloriously amaze'], ['not yet encoded']],     // feast, Glory, St. Clement (OCA text) (the vol. III order; its citation is behind the Fekula badge)
   ['2026-11-30', 'typica', ['the holy and all-praised Apostle Andrew the First-called, whose memory we celebrate'], ['COMMEMORATION OF']], // the dismissal names the saint by the hand-entered name
   ['2026-11-21', 'typica', ['have mercy upon us and save us'], ['whose memory we celebrate']],                                         // a feast of the Theotokos: no saint is added
+  ['2026-11-14', '1st_hour', ['Multiple services available', 'Gregory Palamas', 'The holy and all-praised Apostle Philip', 'Prefer OCA texts', 'Polyeleos', 'Assembled per Fekula §2E'], ['COMMEMORATION OF', 'Assembled per Fekula §2A']], // the chooser lists the V2 services by name, the OCA's first
+  ['2026-11-14', '1st_hour', ['Prefer OCA texts'], ['entreat the merciful God', 'not yet encoded'], { prefer_oca: '0' }],                                         // Prefer OCA off: the Menaion's troparion, not the OCA's
+  ['2026-11-14', '1st_hour', ['O wonderworker Gregory, instructor in Orthodoxy'], ['not yet encoded'], null, 1],   // choosing the second service re-assembles the Hour for it
 ];
 let bad = 0;
-for (const [iso, service, must, mustNot] of CASES) {
+for (const [iso, service, must, mustNot, local, pick] of CASES) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url: 'http://localhost/orthodox-hours/', pretendToBeVisual: true });
   const { window } = dom;
   window.sessionStorage.setItem('hours.date', iso); window.sessionStorage.setItem('hours.serviceKey', service);
+  for (const [k, v] of Object.entries(local ?? {})) window.localStorage.setItem(k, v);   // a reader's saved setting
+  window.sessionStorage.setItem('hours.contextOpen', '1');   // the context card open, as a reader leaves it
   for (const k of Object.getOwnPropertyNames(window)) { if (k in globalThis) continue; try { Object.defineProperty(globalThis, k, { value: window[k], configurable: true, writable: true }); } catch { /* skip */ } }
   for (const k of ['window', 'document', 'navigator', 'localStorage', 'sessionStorage']) Object.defineProperty(globalThis, k, { value: k === 'window' ? window : window[k], configurable: true, writable: true });
   class Obs { observe() {} unobserve() {} disconnect() {} takeRecords() { return []; } }
@@ -54,8 +59,10 @@ for (const [iso, service, must, mustNot] of CASES) {
   const errs = []; const ce = console.error; console.error = (...a) => errs.push(a.map(String).join(' ').slice(0, 200));
   let text = '';
   try {
-    const mod = await import(join(OUT, bundle) + '?d=' + iso + service);
+    const mod = await import(join(OUT, bundle) + '?d=' + iso + service + (local ? JSON.stringify(local) : ''));
     mod.mount(window.document.getElementById('root'));
+    // `pick`: choose the n-th service in the chooser, as a reader would, once it is drawn.
+    if (pick != null) { for (let i = 0; i < 40; i++) { await sleep(100); const r = window.document.querySelectorAll('input[name="serviceSelector"]'); if (r.length > pick) { r[pick].click(); break; } } }
     for (let i = 0; i < 40; i++) { await sleep(100); text = window.document.body.textContent; if (must.every((m) => text.includes(m))) break; }
   } catch (e) { errs.push('THREW ' + (e.stack || e).toString().slice(0, 400)); }
   console.error = ce;

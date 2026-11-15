@@ -30,7 +30,8 @@ const isText = (n) => !!n && typeof n.text === "string";
  * @param args.legacy          V1 / Pentecostarion entry, read only when service is null
  * @param args.dailyReading    { e, g }
  * @param args.feastReading    { e, g } (legacy path only)
- * @param args.sources         { resTroparion(tone), sunKontakion(tone), dismissalTheotokion(tone), hymnText(node) }
+ * @param args.sources         { resTroparion(tone), sunKontakion(tone), hymnText(node),
+ *                               dismissalTheotokion(tone): the resurrectional dismissal theotokion of ANY tone }
  * @returns { saint, secondSaint, rankLabel, readings, troparia, kontakia, extras }
  */
 export function buildBulletinDay({ liturgicalData: ld = {}, service = null, entrance = null, liturgy = null, otherName = null,
@@ -50,9 +51,15 @@ export function buildBulletinDay({ liturgicalData: ld = {}, service = null, entr
     res(troparia, sources.resTroparion, "Of the Resurrection");
     if (entrance.feast.troparion) troparia.push(hymn(entrance.feast.troparion, "Of the feast"));
     entrance.saints.troparia.forEach((sl, i, a) => troparia.push(hymn(sl, ownFeast ? "Of the feast" : who(sl, i, a.length))));
-    // The dismissal theotokion closes the troparia on an ordinary Sunday; in a feast
-    // period the troparion of the feast stands there (Fekula ch. 1).
-    if (!entrance.feast.troparion && !ownFeast) res(troparia, sources.dismissalTheotokion, "Dismissal Theotokion");
+    // The dismissal theotokion closes the troparia on an ordinary Sunday, "in the tone
+    // of the last troparion" (Fekula ch. 1 §1C, ch. 6 §I): the Menaion troparion's tone
+    // when there is one, not the tone of the week. This is what Vespers sings, and the
+    // Vespers gate holds it against the OCA texts. In a feast period the troparion of
+    // the feast stands there instead.
+    if (sunday && !entrance.feast.troparion && !ownFeast && sources.dismissalTheotokion && troparia.length) {
+      const t = troparia[troparia.length - 1].tone ?? tone; const n = sources.dismissalTheotokion(t);
+      if (n) troparia.push({ label: "Dismissal Theotokion", tone: t, text: text(n) });
+    }
     res(kontakia, sources.sunKontakion, "Of the Resurrection");
     entrance.saints.kontakia.forEach((sl, i, a) => kontakia.push(hymn(sl, ownFeast ? "Of the feast" : who(sl, i, a.length))));
     if (entrance.feast.kontakion) kontakia.push(hymn(entrance.feast.kontakion, "Of the feast"));

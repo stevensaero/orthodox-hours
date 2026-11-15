@@ -82,7 +82,7 @@ const day = buildBulletinDay({
   liturgicalData, service: svc, entrance: entrancePlan(svc.c, svc.path, {}), liturgy: liturgyPlan(svc.c, svc.path),
   dailyReading: { e: "2 Corinthians 1:21-2:4", g: "Matthew 22:1-14" },
   sources: { resTroparion: (t) => OctoV2.getV2Troparion(t), sunKontakion: (t) => OctoV2.getV2Kontakion(t),
-             dismissalTheotokion: (t) => OctoV2.getV2DismissalTheotokion(t), hymnText },
+             dismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t), hymnText },
 });
 const resolved = day.readings;
 
@@ -113,6 +113,11 @@ check("troparia on the sheet", day.troparia.map((x) => x.label.replace(/^Of the 
 check("kontakia on the sheet", day.kontakia.length, 2);
 for (const h of [...day.troparia, ...day.kontakia]) checkTruthy(`${h.label}: text`, h.text && h.text.length > 20);
 check("Sunday hymns are in the tone of the week", day.troparia[0].tone, 5);
+// Fekula §1C / ch. 6 §I: the dismissal theotokion "in the tone of the last troparion".
+// The Archangel's troparion is Tone 4, so the theotokion is Tone 4, not the week's Tone 5.
+check("the commemoration's troparion tone", day.troparia[1].tone, 4);
+check("dismissal theotokion follows the last troparion's tone", day.troparia[2].tone, 4);
+checkTruthy("dismissal theotokion is the Tone 4 one", day.troparia[2].text && day.troparia[2].text !== hymnText(OctoV2.getV2ResDismissalTheotokion(5)));
 check("the commemoration is named by its short name, not the printed title",
       day.saint, "The holy Archangel Michael and the holy Martyr Eudoxius and those with him");
 check("rank line", day.rankLabel, "Six-Stichera · Fekula §2C");

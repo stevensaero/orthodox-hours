@@ -235,7 +235,7 @@ export function hoursPlan(c, base, opts = {}) {
     }
   }
   for (const hr of HOURS) for (const t of hours[hr].troparia) if (t.node && t.node.tone == null) notes.push(`The ${t.role} troparion is printed here with no tone.`);
-  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, dismissal: dismissalOf(c), hours, ods3, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
+  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, name: c.name ?? null, dismissal: dismissalOf(c), hours, ods3, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
 }
 
 // What a service prints for the Liturgy, in print order: prokeimena, Alleluia,

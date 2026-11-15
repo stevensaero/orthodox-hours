@@ -11,11 +11,13 @@
 import { stripCaret } from '../data/oca_hymns/index.js';
 
 const shownNode = (slot) => (slot?.node ? { ...slot.node, text: stripCaret(slot.node.text) } : null);
+// Whose hymn: the service's short hand-entered name, else its printed title.
+const who = (plan) => (plan?.name ? plan.name.charAt(0).toUpperCase() + plan.name.slice(1) : plan?.saintName);
 const label = (slot, plan, tone, kind) => {
   if (!slot) return '';
   if (slot.role === 'sunday') return `Octoechos — Tone ${tone} (Sunday ${kind === 'k' ? 'kontakion' : 'resurrectional'})`;
-  const of = slot.role === 'feast' ? 'of the feast' : plan.saintName;
-  if (slot.source === 'general') return `General Menaion — ${slot.node.generalType} (${plan.saintName})`;
+  const of = slot.role === 'feast' ? 'of the feast' : (slot.node?.saint && slot.source === 'menaion' ? slot.node.saint : who(plan));
+  if (slot.source === 'general') return `General Menaion — ${slot.node.generalType} (${who(plan)})`;
   return `${slot.source === 'oca' ? 'OCA' : 'Menaion'} — ${of}`;
 };
 
@@ -33,7 +35,7 @@ export function resolveHoursPropers({ hourKey, plan, weekdayPlan, tone, isOrdina
     const wd = weekdayPlan?.hours[hourKey];
     const saintSlot = wd?.troparia.find((t) => t.role !== 'sunday' && t.node) ?? null;
     const menaionTrop = shownNode(saintSlot);
-    const menaionSaint = weekdayPlan?.saintName ?? 'saint of the day';
+    const menaionSaint = who(weekdayPlan) ?? 'saint of the day';
     if (pentEntry.troparion) {
       out.primaryTrop = pentEntry.troparion;
       out.primaryTropSource = `Pentecostarion — ${pentEntry.name}`;
