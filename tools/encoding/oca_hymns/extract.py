@@ -5,7 +5,8 @@ non-empty paragraph of the docx lands in exactly one block, in print order.
 Text is lifted from word/document.xml, never retyped.
 
   heading  a paragraph carrying bold type
-  note     a paragraph wholly in italic (psalm verses, rubrics, Glory / Both now)
+  note     a paragraph wholly in italic (psalm verses, rubrics, Glory / Both now),
+           and any paragraph that begins "V. " (a psalm verse), italic or not
   text     consecutive plain paragraphs: one printed line each, joined ' | ';
            a line ending '//' joins with ' // ' (encoding_rule_v2.md 3.1)
 
@@ -70,6 +71,10 @@ def marked(segs):
 
 def kind(segs):
     ink = [x for x in segs if x[0].strip()]
+    # A psalm verse ("V. (4) From the morning watch ...") is a note whatever its type
+    # face: where one is printed in roman directly under a hymn, with no blank line
+    # between, it would otherwise be read as one more line of that hymn.
+    if re.match(r'V\.\s', ''.join(x[0] for x in segs).lstrip()): return 'note'
     if any(x[2] for x in ink): return 'heading'
     if all(x[3] for x in ink): return 'note'
     return 'text'
