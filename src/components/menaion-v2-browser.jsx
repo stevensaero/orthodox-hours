@@ -243,6 +243,8 @@ export default function MenaionV2Browser() {
   const [showRubrics, setShowRubrics] = useState(() => (typeof localStorage === 'undefined' || localStorage.getItem('menRdgRub') !== '0'));
   const [narrow, setNarrow] = useState(typeof window !== 'undefined' && window.innerWidth < 720);
   const [railOpen, setRailOpen] = useState(false);
+  // The General Menaion list in the rail: null = decide by what is on the page.
+  const [generalOpen, setGeneralOpen] = useState(null);
   const [headerH, setHeaderH] = useState(0);
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
@@ -342,6 +344,13 @@ export default function MenaionV2Browser() {
     color: active ? C.gold : C.inkMid, fontWeight: active ? 700 : 400,
   });
   const railLabel = { fontSize: "0.62rem", letterSpacing: "0.12em", color: C.gold, margin: "12px 0 5px" };
+  // A commemoration in the rail: its title as printed, in sentence case, and the short name.
+  const commTitle = (c) => [].concat(c.title ?? []).map(t => (typeof t === 'string' ? t : (t?.text ?? ''))).join(' ');
+  const commLabel = (c) => {
+    if (c.name) return c.name.charAt(0).toUpperCase() + c.name.slice(1);
+    const t = commTitle(c); return t ? t.charAt(0) + t.slice(1).toLowerCase() : c.kind;
+  };
+  const generalShown = generalOpen ?? (comms.length === 0 || !!generalType);
   const railItem = (active) => ({
     fontSize: "0.8rem", color: active ? C.gold : C.inkMid, cursor: "pointer",
     padding: "2px 8px", margin: "0 -8px", borderRadius: "4px",
@@ -416,7 +425,7 @@ export default function MenaionV2Browser() {
   );
 
   const Rail = (
-    <div style={{ width: "168px", flexShrink: 0, borderRight: narrow ? "none" : `1px solid ${C.border}`,
+    <div style={{ width: narrow ? "auto" : "236px", flexShrink: 0, borderRight: narrow ? "none" : `1px solid ${C.border}`,
                   paddingRight: narrow ? 0 : "14px", ...railStickyStyle }}>
       <div style={railLabel}>MONTH</div>
       {MonthStrip}
@@ -429,9 +438,10 @@ export default function MenaionV2Browser() {
           <div style={railLabel}>COMMEMORATION</div>
           <div>
             {comms.map((c, i) => (
-              <div key={i} onClick={() => setCIdx(i)} style={railItem(i === cIdx)}>
-                {/* `title` is a TEXT NODE in the data (general.js and the daily months), not a string. */}
-                {c.kind === 'saint' ? String(typeof c.title === 'string' ? c.title : (c.title?.text ?? '')).slice(0, 28) : c.kind}
+              <div key={i} onClick={() => setCIdx(i)} title={commTitle(c)}
+                   style={{ ...railItem(i === cIdx), lineHeight: 1.35, padding: "4px 8px", marginBottom: "2px" }}>
+                {/* The short hand-entered name, whole and wrapping; on a feast (no name) its title. */}
+                {commLabel(c)}
               </div>
             ))}
           </div>
@@ -443,8 +453,14 @@ export default function MenaionV2Browser() {
           <a href="/orthodox-hours/questions?from=tool" style={{ ...railItem(false), display: "block", textDecoration: "none" }}>
             Questions for review ↗
           </a>
-          <div style={railLabel}>GENERAL MENAION</div>
-          <div>
+          {/* Folded away while a day's own service is on the page; open when none is, or
+              when one of its services is being read. Click the heading to fold or unfold. */}
+          <div style={{ ...railLabel, cursor: "pointer", userSelect: "none" }} role="button" aria-expanded={generalShown}
+               title={generalShown ? "Hide the General Menaion list" : "Show the General Menaion list"}
+               onClick={() => setGeneralOpen(!generalShown)}>
+            {generalShown ? "▾" : "▸"} GENERAL MENAION <span style={{ letterSpacing: 0, color: C.inkLight }}>({generalTypes.length})</span>
+          </div>
+          <div style={{ display: generalShown ? "block" : "none" }}>
             {generalTypes.map(k => (
               <div key={k} onClick={() => { setGeneralType(k === generalType ? null : k); setSharedTable(null); setRailOpen(false); }}
                    style={railItem(k === generalType)}>{k}</div>
