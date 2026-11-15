@@ -37,6 +37,7 @@ for (const [key, map] of Object.entries(OCA_SLOTS)) {
   if (!/^\d\d-\d\d$/.test(key)) E(`slots ${key}: key`);
   for (const [slot, ref] of Object.entries(map)) {
     slots++; const d = await loadOcaDoc(ref.doc);
+    if (ref.replaces && !(slot === 'kontakion' && ['ode3', 'ode6', 'all'].includes(ref.replaces))) E(`slots ${key}.${slot}: replaces '${ref.replaces}'`);
     if (!d) { E(`slots ${key}.${slot}: no document ${ref.doc}`); continue; }
     if (d.key !== key) E(`slots ${key}.${slot}: document is dated ${d.key}`);
     const hits = ocaTexts(d).filter((t) => t.head === ref.head && t.n > 1);

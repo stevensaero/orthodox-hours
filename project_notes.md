@@ -377,8 +377,24 @@ then Typica and Liturgy propers, dismissal `name`, bulletin; then the Prefer
 OCA toggle, the service chooser, merge, retire V1. Sized in
 `menaion_v2_wirein_spec.md` 6b.
 
-Open for Bill: with Prefer OCA on and two Menaion kontakia (10-04), is OCA's
-one kontakion read at every Hour? (Currently yes.)
+**RULED (Bill, 14 Nov, on the evidence):**
+- **An OCA hymn replaces its own counterpart and nothing else.** 10-04: the OCA
+  kontakion is the Menaion's Ode III kontakion in another translation (both
+  Tone 8), so it is read at the 1st and 6th Hours and the Menaion's Ode VI
+  kontakion stays at the 3rd and 9th (as V1 did). Where the OCA kontakion is
+  neither of the Menaion's two (09-27), the OCA's one kontakion is read at
+  every Hour. `slots.js` records this as `replaces: 'ode3' | 'ode6' | 'all'`;
+  the Hours gate fails if a two-kontakia day lacks it.
+- **11-29 takes the General Menaion service to ONE martyr.** Its Tone 4
+  troparion ("In his sufferings, Thy martyr ...") is the singular of the
+  troparion the OCA sings that day; the service to several martyrs has a
+  different troparion (Tone 1).
+- **11-29 kontakion at the Hours: the General Menaion's.** The page appoints
+  "the Martyricon from the Oktoechos" after Ode VI; Fekula 2A note 30 gives
+  both that (the Typicon) and "the appropriate kontakion and ikos from the
+  General Menaion" (the Octoechos; always so on Saturdays). The Martyricon is a
+  sessional hymn, and the Hours call for a kontakion. Matins shows the page's
+  rubric as printed.
 
 **DECIDED ON THE EVIDENCE (14 Nov): ODS 2nd ed. note 25 is NOT applied.** The
 note (ch. 1, 1F3) reasons that nothing of the feast ought to be read at the
