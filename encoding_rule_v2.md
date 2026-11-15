@@ -324,6 +324,17 @@ across 154 of its 235 pages, and checking them all by eye is not the same task.
 
 ---
 
+### 1.5 THE DISMISSAL NAME — hand-entered on every service (ruling 12)
+
+Every line map carries `'name'` above `'title'`: how the dismissal names the
+day's saints. It reads after "and of" and before ", whose memory we celebrate",
+so: sentence case, beginning "the ..." or "our ...", no closing stop
+("the holy Apostle and Evangelist Matthew"; "our father among the saints
+Innocent, Bishop of Irkutsk"). Take it from the title line; where the OCA
+publishes a text for the day, follow its title. Two saints in one service are
+joined with "and". On a feast itself (of the Lord, of the Theotokos, of an icon)
+it is `None`. The validator fails a service without it.
+
 ### 1.4 ODS vol. III ORDERS OVERRIDE THE GENERAL RULE (ruled by Bill, 14 Nov 2026)
 
 Vol. III prints, for 77 entries, the whole order of the day's services. Where it
