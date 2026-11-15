@@ -65,6 +65,7 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   it is done.
 - The Sunday Vespers and bulletin gates pin today's output; list every change
   with the OCA text or Fekula section that justifies it, for Bill.
+- A Pentecostarion V2 pass is coming: `pentecostarion_v2_pass_notes.md` holds the gotchas.
 - OWED BEFORE THE MERGE (Bill): a full pass over "How the tool works" and the
   explainers so they describe the tool as built (list in project_notes.md).
 - AFTER Vespers, raise with Bill: reading ODS vol. III's date-specific orders
