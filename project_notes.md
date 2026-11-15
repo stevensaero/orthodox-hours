@@ -715,8 +715,8 @@ DONE — THE DISMISSAL NAME (ruling 12; data on main, code on the branch, 14 Nov
   From the title line; the OCA title where there is one (14 Nov "all-praised
   Apostle Philip", 15 Nov "Martyrs and Confessors"). `null` on a feast itself
   (8 Sep, 21 Nov, the Kursk-Root icon), where no saint is added. The validator
-  requires it. **29 names entered; they are editorial and Bill has not read
-  them.** Two worth his eye: 6 Sep ("the holy Archangel Michael and the holy
+  requires it. **29 names entered; Bill read and approved them (14 Nov); the two
+  uncertain ones are open questions Q-0008 and Q-0009.** Two worth his eye: 6 Sep ("the holy Archangel Michael and the holy
   Martyr Eudoxius and those with him": the day keeps a miracle, not the
   Archangel's own feast) and 29 Nov ("the holy Martyr Paramon and our venerable
   father Acacius": the Menaion's two, not the OCA's "370 Martyrs in Bithynia").
@@ -770,8 +770,36 @@ DONE — PREFER OCA TOGGLE AND SERVICE CHOOSER (14 Nov):
 - Mount test: the chooser by name; Prefer OCA off; CLICKING the second service
   re-assembles the Hour for it (St. Gregory Palamas).
 
+**RULED (Bill, 14 Nov): AT THE SWITCH THE READER SEES "THE MENAION", NEVER "V2".**
+"We only had a V1 V2 in the browser tools so I could compare our layouts and
+progress. The retiring of V1 sees V2 replacing it and the V2 vanishes from the
+output, only to be found referenced in our devlogs." So "V2" stays in
+RELEASE_NOTES, project_notes.md and the specs, and nowhere a reader looks.
+What a reader sees today that must change AT THE MERGE (inventory, 14 Nov):
+- Library shelf: two books, "The Menaion" (V1, `/menaion`) and "The Menaion
+  (V2)" (`/menaion-v2`). After: ONE book, "The Menaion", opening the new browser.
+- The address bar: `/menaion-v2`. After: the new browser is served at
+  `/menaion`; `/menaion-v2` redirects there so saved links keep working.
+- `open_questions.js` SOURCES links point at `/menaion-v2`: repoint to `/menaion`.
+- The new browser's own headings carry no "V2" (checked). The How-It-Works pass
+  must not introduce the word.
+- Messages in the services already say "the Menaion" ("the Menaion is not yet
+  encoded for this date").
+Not decided, to ask at the merge: (a) whether code names follow (the directory
+`src/data/menaion_v2`, `menaion-v2-*.jsx`, the gate file names); (b) the
+Octoechos, which was cut over earlier and STILL shows "V2" to the reader:
+Library cover "Tones 1-8 · complete (V2)", the help line "Octoechos reading
+view (V2)", the route `/octoechos-v2` (`/octoechos` redirects TO it), and
+"no V2 data yet" in its browser.
+
+**OPEN QUESTIONS ADDED (Bill: "fire off any uncertainties"):** Q-0008, how the
+dismissal names 6 September (a miracle of the Archangel, with the Martyr
+Eudoxius); Q-0009, whom it names on 29 November (the Menaion's Paramon and
+Acacius, or the OCA's Paramon and the 370 martyrs). The other names stand as
+entered: Bill read the list and approved it.
+
 NEXT on the branch: the How-It-Works pass; the Menaion browser items; merge and
-retire V1; v0.53.0. Still V1 in the Liturgy:
+retire V1 (with the naming change above); v0.53.0. Still V1 in the Liturgy:
 only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
 the Lord are still flagged, not assembled (no such day is in V2 yet).
 

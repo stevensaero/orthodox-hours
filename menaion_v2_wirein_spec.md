@@ -37,6 +37,9 @@ are the plan and await Bill's confirmation before any assembler code changes.**
     the OCA publishes service texts: it does not publish one for every day.
 12. A hand-entered short `name` per commemoration for the dismissal, checked
     against the OCA title line.
+13. (14 Nov) At the switch the reader sees "The Menaion" and never "V2": one
+    Library book, the new browser at `/menaion`, `/menaion-v2` redirecting to
+    it. "V2" lives on only in the devlogs (release notes, project notes, specs).
 
 ## 1. The fact that shapes the work
 
