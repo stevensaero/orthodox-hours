@@ -11,7 +11,7 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
-import { loadMenaionV2Month } from '../data/menaion_v2/index.js';
+import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
@@ -967,10 +967,13 @@ const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
 // V1 until their own rewrites land, then V1 and its loader are deleted together).
 const _menaionV2Cache = {};
 const _ocaHymnCache = {};
+let _menaionV2General = null; // the General Menaion, read for a service that names its fallback
 const PREFER_OCA_DEFAULT = true; // ruling 11; the reader's toggle arrives with the switch
 async function _loadMenaionV2(month, key) {
   if (!_menaionV2Cache[month]) _menaionV2Cache[month] = (await loadMenaionV2Month(month)) || {};
   if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = await v2OcaFor(key);
+  const day = key && _menaionV2Cache[month][key];
+  if (!_menaionV2General && day && day.commemorations.some(c => c.general_fallback)) _menaionV2General = await loadMenaionV2General();
 }
 // The Hours plans for a date's chosen service: by the day's own rule, and by the
 // weekday rule (which the Pentecostarion branch reads). Null when not encoded.
@@ -981,8 +984,9 @@ function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday) {
   if (!list.length) return { plan: null, weekdayPlan: null };
   const svc = list[Math.min(serviceIndex, list.length - 1)];
   const oca = PREFER_OCA_DEFAULT && svc.c.oca_primary ? (_ocaHymnCache[key] || null) : null;
-  return { plan: v2HoursPlan(svc.c, svc.path, { oca, sunday: isOrdinarySunday }),
-           weekdayPlan: v2HoursPlan(svc.c, svc.path, { oca, sunday: false }) };
+  const general = _menaionV2General;
+  return { plan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: isOrdinarySunday }),
+           weekdayPlan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: false }) };
 }
 
 async function _loadMenaionMonth(month) {

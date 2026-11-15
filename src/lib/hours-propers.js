@@ -15,6 +15,7 @@ const label = (slot, plan, tone, kind) => {
   if (!slot) return '';
   if (slot.role === 'sunday') return `Octoechos — Tone ${tone} (Sunday ${kind === 'k' ? 'kontakion' : 'resurrectional'})`;
   const of = slot.role === 'feast' ? 'of the feast' : plan.saintName;
+  if (slot.source === 'general') return `General Menaion — ${slot.node.generalType} (${plan.saintName})`;
   return `${slot.source === 'oca' ? 'OCA' : 'Menaion'} — ${of}`;
 };
 

@@ -59,6 +59,10 @@ export function hymnsOf(c, base) {
 //   "Prefer OCA" is on (ruling 11), else null. An OCA hymn takes the place of the
 //   Menaion hymn; the Menaion node is kept beside it as `menaion`.
 //
+// opts.general: the General Menaion (loadMenaionV2General). Read only where the
+//   service prints no troparion or kontakion of its own AND names its fallback
+//   (`general_fallback`, hand-entered): encoding_rule_v2.md 2.1.
+//
 // Returns { section, cited, rank, kind, rule, saintName, hours: { <hour>: { troparia:
 // [slot...], kontakion: slot } }, troparion_alt, notes }.
 // slot = { role: 'sunday'|'feast'|'saint', source: 'octoechos'|'menaion'|'oca'|'none', node }.
@@ -66,7 +70,7 @@ const SUNDAY = Object.freeze({ role: 'sunday', source: 'octoechos', node: null }
 const SUNDAY_SECTION = { simple: '1A', six_stichera: '1C', doxology: '1C', polyeleos: '1D', vigil: '1E', great_feast: '1E' };
 
 export function hoursPlan(c, base, opts = {}) {
-  const { oca = null, sunday = false } = opts;
+  const { oca = null, sunday = false, general = null } = opts;
   const h = hymnsOf(c, base); const notes = [];
   const feastDay = FEAST_KINDS.includes(c.kind);
   const section = c.fekula_section;
@@ -83,9 +87,20 @@ export function hoursPlan(c, base, opts = {}) {
     if (o) return { role, source: 'oca', node: o, menaion: node ?? null };
     return node ? { role, source: 'menaion', node } : null;
   };
+  // General Menaion fallback: the named service's hymn, with the printed
+  // placeholder replaced by the saint's name in this copy only. The tone is the
+  // one printed at the end of Vespers when the sites differ (ruling 3).
+  const fromGeneral = (field, role) => {
+    const g = c.general_fallback; const src = g && general?.[g.type]?.[field];
+    if (!h.absent[field] || !isText(src)) return null;
+    const text = src.text.replace(/\((name|names|Names)\)/g, g.name ?? '$&');
+    const tone = src.tone ?? src.verified_sites?.[0]?.tone ?? null;
+    notes.push(`${field}: the page prints none; taken from the General Menaion, ${g.type}.`);
+    return { role, source: 'general', node: { ...src, text, tone, path: `general.${g.type}.${field}`, generalType: g.type } };
+  };
   const gap = (what, absent) => {
     notes.push(absent
-      ? `${what}: the Menaion prints none (${absent.reason}); General Menaion fallback not yet wired.`
+      ? `${what}: the Menaion prints none (${absent.reason}) and the entry names no General Menaion service for it.`
       : `${what}: none found in this service.`);
     return { role: what, source: 'none', node: null };
   };
@@ -101,7 +116,15 @@ export function hoursPlan(c, base, opts = {}) {
     const apodosis = section === '2G3';
     const high = section === '2G2' || section === '2G4';
     if (!sunday) {
-      if (apodosis) { trop = () => [feast]; kont = () => fk; rule = '§2G3: troparion and kontakion of the feast.'; }
+      if (apodosis) {
+        // 2G3 reads "troparion and kontakion of the feast". Where the day also prints a
+        // troparion of its saints, ODS vol. III adds it at Glory (25 Nov, weekday: "At
+        // each Hour: troparion of the feast; Glory, troparion of the Hieromartyrs ...
+        // kontakion of the feast"). Printed first: it is read when the page prints one.
+        trop = () => [feast, ...(saint ? [saint] : [])]; kont = () => fk;
+        rule = saint ? '§2G3: troparion of the feast, Glory, of the saints (ODS vol. III, 25 November); kontakion of the feast.'
+                     : '§2G3: troparion and kontakion of the feast.';
+      }
       else {
         trop = () => [feast, ...(saint ? [saint] : [])];
         if ((high || c.rank === 'doxology') && sk) {
@@ -112,10 +135,13 @@ export function hoursPlan(c, base, opts = {}) {
       }
     } else if (apodosis) {
       cited = '1F3';
-      // Note 25: the apodosis ends with the Liturgy, so nothing of the feast at the 9th Hour.
-      trop = (hr) => (hr === '9th_hour' ? [SUNDAY] : [SUNDAY, feast]);
+      // ODS 2nd ed. note 25 reasons that nothing of the feast ought to be read at the
+      // 9th Hour. It is NOT applied (ruled on the evidence, 14 Nov 2026): the 3rd
+      // edition, vol. III, appoints the feast "at each Hour" or by name at the Ninth
+      // in every apodosis entry it prints (8 of 8), Sunday and weekday alike.
+      trop = () => [SUNDAY, feast];
       kont = (hr) => (firstSixth(hr) ? fk : SUNDAY);
-      rule = '§1F3: Sunday troparion and troparion of the feast; kontakion of the feast at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th. Nothing of the feast at the 9th Hour (note 25).';
+      rule = '§1F3: Sunday troparion and troparion of the feast; kontakion of the feast at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th.';
     } else {
       const four = high || c.rank === 'doxology';
       cited = high ? '1F2' : '1F1';
@@ -126,7 +152,7 @@ export function hoursPlan(c, base, opts = {}) {
       rule = `§${cited}: Sunday troparion, with the troparion of the feast at the 1st and 6th Hours and of the saint at the 3rd and 9th; kontakion: ${four ? '1st feast, 3rd Sunday, 6th saint, 9th feast' : 'of the feast at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th'}.`;
     }
   } else {
-    const first = slot(saintTrops[0] ?? feastTrop, 'troparion', own) ?? gap('troparion', h.absent.troparion);
+    const first = slot(saintTrops[0] ?? feastTrop, 'troparion', own) ?? fromGeneral('troparion', own) ?? gap('troparion', h.absent.troparion);
     const second = saintTrops[1] ? { role: 'saint', source: 'menaion', node: saintTrops[1] } : null;
     const double = section === '2B' && second;
     if (second && !double) notes.push(`${saintTrops.length} troparia are printed; the first is shown.`);
@@ -136,7 +162,7 @@ export function hoursPlan(c, base, opts = {}) {
     const o = oca?.kontakion ? { role: own, source: 'oca', node: oca.kontakion, menaion: k6 ?? k3 ?? null } : null;
     const m6 = k6 ? { role: own, source: 'menaion', node: k6 } : null;
     const m3 = k3 ? { role: own, source: 'menaion', node: k3 } : null;
-    const one = o ?? m6 ?? m3 ?? null;
+    const one = o ?? m6 ?? m3 ?? fromGeneral('kontakion', own) ?? null;
     const lordsFeast = c.rank === 'great_feast' && !/THEOTOKOS/i.test(title);
     if (sunday && lordsFeast) notes.push('A feast of the Lord on a Sunday supersedes the Sunday service (ODS ch. 5): the weekday order is given.');
     if (!sunday || lordsFeast) {
