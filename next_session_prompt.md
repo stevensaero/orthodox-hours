@@ -54,7 +54,12 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   `tools/test_menaion_v2_liturgy.mjs`, order agrees with the OCA on all 12 dates; five
   interpretive choices are on record in project_notes.md for Bill). NEXT: the dismissal
   `name`, the bulletin, the Prefer OCA toggle and service chooser, the How-It-Works pass.
-  Vespers is done, so RAISE NOW: reading ODS vol. III's date-specific orders as a layer.
+  RULED: ODS vol. III's date-specific orders OVERRIDE the general rule. Built as
+  `src/data/ods_v3/orders.js` (structure only, no text of the book) and gated by
+  `tools/test_ods_v3_orders.mjs`; drives the Hours and the Liturgy. Owed: Vespers and
+  Matins of the orders. When encoding a date with a vol. III entry, enter its order
+  (encoding_rule_v2.md 1.4). OPEN WITH BILL: the general rule for the sung propers at
+  the Liturgy is not Fekula's (project_notes.md, "TO PUT TO BILL").
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
