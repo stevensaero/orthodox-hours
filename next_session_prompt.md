@@ -45,8 +45,9 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   places agree with the OCA texts) AND its stichera (`resolveLicStichera`, verse by
   verse agreement on all 12 shared dates), AND the Aposticha (`resolveAposticha`; 34 of 36
   places agree, 2 known), the Litiya, printed only (`resolveLitiya`), AND the troparia
-  (`resolveVespersTroparia`; NO kontakion at Vespers). NEXT: Vespers readings and prokeimenon,
-  then Typica. Later, as its own step, the Saturday-evening Litiya by Fekula ch. 1.
+  (`resolveVespersTroparia`; NO kontakion at Vespers), the entrance and readings, and the
+  composed Litiya of Fekula 1F1. Vespers reads V2 throughout outside the Pentecostarion.
+  NEXT: Typica and the Liturgy propers, then the dismissal and the bulletin.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
