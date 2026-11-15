@@ -428,14 +428,21 @@ DONE on the branch — Vespers, the APOSTICHA (14 Nov):
 - `assembleVespers`: three Aposticha branches replaced by one; Pentecostarion
   unchanged. Mount test checks the Aposticha on the page.
 
-NEXT on the branch, in order: Litiya, then the troparia at the end of Vespers.
-The Litiya needs care: on Saturday evening Fekula builds it from the temple's
-sticheron and from Aposticha stichera, and the OCA prints its own choice
-(14 and 16 Nov differ from the page; 8 Sep, 21 Nov, 30 Nov agree). Original sizing: Vespers section by section (Lord I call, Litiya,
-Aposticha, troparia; ~1,400 of 1,920 lines), each gated against the OCA texts;
-then Typica and Liturgy propers, dismissal `name`, bulletin; then the Prefer
-OCA toggle, the service chooser, merge, retire V1. Sized in
-`menaion_v2_wirein_spec.md` 6b.
+DONE on the branch — Vespers, the LITIYA, PRINTED ONLY (ruled by Bill, 14 Nov):
+- `resolveLitiya`: a Litiya is shown when the V2 page prints one, with the
+  stichera, Glory and Both now it prints; nothing is supplied where the page
+  is silent. Two stored shapes are read (a list, or `{ rubric, stichera }`).
+- Gate: where both print a Litiya the stichera tones agree on all five dates;
+  8 Sep, 21 Nov, 30 Nov agree throughout. KNOWN and listed: 14 and 16 Nov the
+  OCA adds a Glory and Both now (both Tone 2) the page does not print; 22 Nov
+  the OCA has the Saturday-evening Litiya Fekula ch. 1 composes, which is NOT
+  BUILT (to be its own step, checked against 22 Nov). Whole gate: 88 checks.
+- At Vespers the rank and Fekula section now come from the V2 service.
+- Mount test: the Litiya for 30 Nov is found on the page.
+
+NEXT on the branch: the troparia at the end of Vespers (with the dismissal
+theotokion: the OCA has it in the tone of the last troparion, and on Friday
+evening 14 Nov in the tone of the week; check Fekula ch. 6 before coding).
 
 **RULED (Bill, 14 Nov, on the evidence):**
 - **An OCA hymn replaces its own counterpart and nothing else.** 10-04: the OCA
