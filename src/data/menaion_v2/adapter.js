@@ -1,8 +1,9 @@
 // Menaion V2 adapter — what the services read from a V2 day.
 // Plan and rulings: menaion_v2_wirein_spec.md (0, 3, 6). Pure functions, no React.
 //
-// STATUS: the HOURS slice (identity, troparia, kontakia) and the V1-shaped view of
-// those fields. Vespers, Typica and the dismissal are not built yet.
+// STATUS: the HOURS plan. Vespers, Typica and the dismissal are not built yet.
+// RULE (Bill, 14 Nov 2026): no shims. The assemblers read these plans as they
+// are; nothing here is flattened into the retired V1 field names.
 //
 // A V2 day is { commemorations: [c0, c1...] }. Each commemoration is ONE printed
 // service (ruling 4); saints sharing a service are tagged `saint` on its hymns.
@@ -47,29 +48,40 @@ export function hymnsOf(c, base) {
   return out;
 }
 
-// What the four Hours read on a WEEKDAY, by Fekula's rule for the section
-// (ODS ch. 2; project doc "fekula hours rules"). The Sunday rule (1A: the
-// resurrectional troparion first, the Sunday kontakion only) is laid over this
-// by the assembler, which knows the day of the week.
+// What each of the four Hours reads from the Menaion, by Fekula's rule for the
+// section. ODS ch. 2 (weekdays) and ch. 1 (Sundays); the rule applied is returned
+// in `rule` with its section number.
 //
-// `oca`: { troparion, kontakion, feast_troparion, ... } from the OCA layer when
-// "Prefer OCA" is on (ruling 11), else null. An OCA hymn replaces the Menaion
-// hymn in the same place; the Menaion node is kept beside it as `menaion`.
-export function hoursPlan(c, base, oca = null) {
+// opts.sunday: an ordinary Sunday (outside the Pentecostarion). A slot with role
+//   'sunday' stands for the resurrectional troparion or kontakion of the tone; the
+//   caller supplies it from the Octoechos.
+// opts.oca: { troparion, kontakion, feast_troparion, ... } from the OCA layer when
+//   "Prefer OCA" is on (ruling 11), else null. An OCA hymn takes the place of the
+//   Menaion hymn; the Menaion node is kept beside it as `menaion`.
+//
+// Returns { section, cited, rank, kind, rule, saintName, hours: { <hour>: { troparia:
+// [slot...], kontakion: slot } }, troparion_alt, notes }.
+// slot = { role: 'sunday'|'feast'|'saint', source: 'octoechos'|'menaion'|'oca'|'none', node }.
+const SUNDAY = Object.freeze({ role: 'sunday', source: 'octoechos', node: null });
+const SUNDAY_SECTION = { simple: '1A', six_stichera: '1C', doxology: '1C', polyeleos: '1D', vigil: '1E', great_feast: '1E' };
+
+export function hoursPlan(c, base, opts = {}) {
+  const { oca = null, sunday = false } = opts;
   const h = hymnsOf(c, base); const notes = [];
   const feastDay = FEAST_KINDS.includes(c.kind);
   const section = c.fekula_section;
+  const title = [].concat(c.title ?? []).map((t) => t.text ?? t).join(' ');
   const feastTrop = h.troparia.find(ofFeast) ?? null;
   const saintTrops = h.troparia.filter((n) => !ofFeast(n));
-  const kont = (list, feast) => list.find((n) => ofFeast(n) === feast) ?? null;
-  const feastKont = kont(h.ode6, true) ?? kont(h.ode3, true);
-  const saintOde3 = kont(h.ode3, false); const saintOde6 = kont(h.ode6, false);
+  const pick = (list, feast) => list.find((n) => ofFeast(n) === feast) ?? null;
+  const feastKont = pick(h.ode6, true) ?? pick(h.ode3, true);
+  const saintOde3 = pick(h.ode3, false); const saintOde6 = pick(h.ode6, false);
+  const own = c.kind === 'feast' ? 'feast' : 'saint';
 
-  const over = (node, slot, role) => {
-    const o = oca?.[slot];
+  const slot = (node, ocaSlot, role) => {
+    const o = ocaSlot ? oca?.[ocaSlot] : null;
     if (o) return { role, source: 'oca', node: o, menaion: node ?? null };
-    if (node) return { role, source: 'menaion', node };
-    return null;
+    return node ? { role, source: 'menaion', node } : null;
   };
   const gap = (what, absent) => {
     notes.push(absent
@@ -77,49 +89,79 @@ export function hoursPlan(c, base, oca = null) {
       : `${what}: none found in this service.`);
     return { role: what, source: 'none', node: null };
   };
+  const firstSixth = (hr) => hr === '1st_hour' || hr === '6th_hour';
+  let trop; let kont; let rule; let cited = section;
 
-  let troparia; let byHour; let rule;
   if (feastDay) {
-    const feast = over(feastTrop, 'feast_troparion', 'feast');
-    const saint = over(saintTrops[0], 'troparion', 'saint');
-    const fk = over(feastKont, 'feast_kontakion', 'feast');
-    const sk = over(saintOde6 ?? saintOde3, 'kontakion', 'saint');
-    if (section === '2G3') {
-      troparia = [feast ?? gap('troparion of the feast')];
-      byHour = () => fk; rule = '2G3: troparion and kontakion of the feast.';
-    } else {
-      troparia = [feast ?? gap('troparion of the feast'), ...(saint ? [saint] : [])];
-      if (saintTrops.length > 1) notes.push(`${saintTrops.length} troparia of saints are printed; "if there be troparia for two saints, they are alternated" (2G1). The first is shown.`);
-      const alternate = section === '2G2' || section === '2G4' || c.rank === 'doxology';
-      if (alternate && sk) {
-        const saintFirst = section === '2G4';
-        byHour = (hr) => ((hr === '1st_hour' || hr === '6th_hour') === saintFirst ? sk : fk);
-        rule = `${section}: troparion of the feast, Glory, of the saint; kontakion of the ${saintFirst ? 'saint' : 'feast'} at the 1st and 6th Hours, of the ${saintFirst ? 'feast' : 'saint'} at the 3rd and 9th.`;
-      } else {
-        byHour = () => fk;
-        rule = `${section}: troparion of the feast, Glory, of the saint; kontakion of the feast only.`;
+    const feast = slot(feastTrop, 'feast_troparion', 'feast') ?? gap('troparion of the feast');
+    const saint = slot(saintTrops[0], 'troparion', 'saint');
+    const fk = slot(feastKont, 'feast_kontakion', 'feast') ?? gap('kontakion of the feast');
+    const sk = slot(saintOde6 ?? saintOde3, 'kontakion', 'saint');
+    if (saintTrops.length > 1) notes.push(`${saintTrops.length} troparia of saints are printed; "if there be troparia for two saints, they are alternated" (2G1). The first is shown.`);
+    const apodosis = section === '2G3';
+    const high = section === '2G2' || section === '2G4';
+    if (!sunday) {
+      if (apodosis) { trop = () => [feast]; kont = () => fk; rule = '§2G3: troparion and kontakion of the feast.'; }
+      else {
+        trop = () => [feast, ...(saint ? [saint] : [])];
+        if ((high || c.rank === 'doxology') && sk) {
+          const saintFirst = section === '2G4';
+          kont = (hr) => (firstSixth(hr) === saintFirst ? sk : fk);
+          rule = `§${section}: troparion of the feast, Glory, of the saint; kontakion of the ${saintFirst ? 'saint' : 'feast'} at the 1st and 6th Hours, of the ${saintFirst ? 'feast' : 'saint'} at the 3rd and 9th.`;
+        } else { kont = () => fk; rule = `§${section}: troparion of the feast, Glory, of the saint; kontakion of the feast only.`; }
       }
+    } else if (apodosis) {
+      cited = '1F3';
+      // Note 25: the apodosis ends with the Liturgy, so nothing of the feast at the 9th Hour.
+      trop = (hr) => (hr === '9th_hour' ? [SUNDAY] : [SUNDAY, feast]);
+      kont = (hr) => (firstSixth(hr) ? fk : SUNDAY);
+      rule = '§1F3: Sunday troparion and troparion of the feast; kontakion of the feast at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th. Nothing of the feast at the 9th Hour (note 25).';
+    } else {
+      const four = high || c.rank === 'doxology';
+      cited = high ? '1F2' : '1F1';
+      trop = (hr) => [SUNDAY, firstSixth(hr) ? feast : (saint ?? feast)];
+      kont = four
+        ? (hr) => ({ '1st_hour': fk, '3rd_hour': SUNDAY, '6th_hour': sk ?? fk, '9th_hour': fk }[hr])
+        : (hr) => (firstSixth(hr) ? fk : SUNDAY);
+      rule = `§${cited}: Sunday troparion, with the troparion of the feast at the 1st and 6th Hours and of the saint at the 3rd and 9th; kontakion: ${four ? '1st feast, 3rd Sunday, 6th saint, 9th feast' : 'of the feast at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th'}.`;
     }
   } else {
-    const own = c.kind === 'feast' ? 'feast' : 'saint';
-    const first = over(saintTrops[0] ?? feastTrop, 'troparion', own);
-    troparia = [first ?? gap('troparion', h.absent.troparion)];
-    if (saintTrops.length > 1 && section === '2B') {
-      troparia.push({ role: 'saint', source: 'menaion', node: saintTrops[1] });
-    } else if (saintTrops.length > 1) notes.push(`${saintTrops.length} troparia are printed; the first is shown.`);
+    const first = slot(saintTrops[0] ?? feastTrop, 'troparion', own) ?? gap('troparion', h.absent.troparion);
+    const second = saintTrops[1] ? { role: 'saint', source: 'menaion', node: saintTrops[1] } : null;
+    const double = section === '2B' && second;
+    if (second && !double) notes.push(`${saintTrops.length} troparia are printed; the first is shown.`);
     // Two kontakia (after Ode III and after Ode VI): V1's rule is kept (ruling 10):
-    // the Ode III kontakion at the 1st and 6th Hours, the Ode VI at the 3rd and 9th.
+    // Ode III at the 1st and 6th Hours, Ode VI at the 3rd and 9th.
     const k6 = saintOde6 ?? feastKont; const k3 = saintOde3;
     const o = oca?.kontakion ? { role: own, source: 'oca', node: oca.kontakion, menaion: k6 ?? k3 ?? null } : null;
     const m6 = k6 ? { role: own, source: 'menaion', node: k6 } : null;
     const m3 = k3 ? { role: own, source: 'menaion', node: k3 } : null;
-    if (o) { byHour = () => o; rule = `${section}: troparion and kontakion (OCA prints one kontakion; it is read at every Hour).`; }
-    else if (m3 && m6) { byHour = (hr) => (hr === '1st_hour' || hr === '6th_hour' ? m3 : m6); rule = `${section}: troparion from the Menaion; two kontakia are printed: Ode III at the 1st and 6th Hours, Ode VI at the 3rd and 9th.`; }
-    else { const only = m6 ?? m3; byHour = () => only; rule = `${section}: troparion and kontakion from the Menaion.`; }
+    const one = o ?? m6 ?? m3 ?? null;
+    const lordsFeast = c.rank === 'great_feast' && !/THEOTOKOS/i.test(title);
+    if (sunday && lordsFeast) notes.push('A feast of the Lord on a Sunday supersedes the Sunday service (ODS ch. 5): the weekday order is given.');
+    if (!sunday || lordsFeast) {
+      trop = () => (double ? [first, second] : [first]);
+      if (o) { kont = () => o; rule = `§${section}: troparion and kontakion (the OCA prints one kontakion; it is read at every Hour).`; }
+      else if (m3 && m6) { kont = (hr) => (firstSixth(hr) ? m3 : m6); rule = `§${section}: troparion from the Menaion; two kontakia are printed: that after Ode III at the 1st and 6th Hours, that after Ode VI at the 3rd and 9th.`; }
+      else { kont = () => one ?? gap('kontakion', h.absent.kontakion); rule = `§${section}: troparion and kontakion from the Menaion.`; }
+    } else {
+      cited = double ? '1B' : (SUNDAY_SECTION[c.rank] ?? '1A');
+      trop = (hr) => [SUNDAY, double && !firstSixth(hr) ? second : first];
+      if (c.rank === 'great_feast') {
+        kont = (hr) => (firstSixth(hr) ? SUNDAY : (one ?? SUNDAY));
+        rule = '§1E, feast of the Theotokos: Sunday troparion, Glory, of the feast; the Sunday kontakion at the 1st and 6th Hours, that of the feast at the 3rd and 9th.';
+      } else if (['doxology', 'polyeleos', 'vigil'].includes(c.rank)) {
+        kont = (hr) => (firstSixth(hr) ? (one ?? SUNDAY) : SUNDAY);
+        rule = `§${cited}: Sunday troparion, Glory, the troparion from the Menaion; the kontakion from the Menaion at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th.`;
+      } else {
+        kont = () => SUNDAY;
+        rule = `§${cited}: Sunday troparion, Glory, the troparion ${double ? 'of the first saint at the 1st and 6th Hours, of the second at the 3rd and 9th' : 'from the Menaion'}; only the Sunday kontakion is read.`;
+      }
+    }
   }
-  for (const t of troparia) if (t.node && t.node.tone == null) notes.push(`The ${t.role} troparion is printed here with no tone.`);
-  const kontakion = Object.fromEntries(HOURS.map((hr) => [hr, byHour(hr) ?? gap('kontakion', h.absent.kontakion)]));
-  return { section, rank: c.rank, kind: c.kind, rule, troparia, kontakion, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
+  const hours = Object.fromEntries(HOURS.map((hr) => [hr, { troparia: trop(hr), kontakion: kont(hr) }]));
+  for (const hr of HOURS) for (const t of hours[hr].troparia) if (t.node && t.node.tone == null) notes.push(`The ${t.role} troparion is printed here with no tone.`);
+  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, hours, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
 }
 
 // The OCA hymns for a date, as { slot: node }, or null when there are none.
@@ -133,17 +175,3 @@ export async function ocaFor(key) {
 
 // Text as shown or sung: the undefined OCA '^' mark hidden (Q-0007).
 export const shown = (node) => (node ? stripCaret(node.text) : null);
-
-// The V1 field names the present assemblers read, filled from V2 for the Hours.
-export function toV1Hours(c, base, oca = null) {
-  const p = hoursPlan(c, base, oca);
-  const v1 = (slot) => (slot?.node ? { ...slot.node, text: shown(slot.node), _source: slot.source } : null);
-  return {
-    saint: [].concat(c.title ?? []).map((t) => t.text ?? t).join(' '),
-    rank: c.rank, fekula_section: c.fekula_section, oca_primary: !!c.oca_primary, note: c.note,
-    ...(FEAST_KINDS.includes(c.kind) ? { fekula_section_override: c.fekula_section } : {}),
-    troparion: v1(p.troparia[0]), troparion_second: v1(p.troparia[1]),
-    kontakion_ode3: v1(p.kontakion['1st_hour']), kontakion_ode6: v1(p.kontakion['3rd_hour']),
-    _plan: p, _path: base,
-  };
-}

@@ -10,6 +10,9 @@ import { readingsForDay } from '../lib/readings.js';
 import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/liturgy-assembler.js';
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
+import { resolveHoursPropers } from '../lib/hours-propers.js';
+import { loadMenaionV2Month } from '../data/menaion_v2/index.js';
+import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
 
@@ -959,6 +962,28 @@ const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
 // srcTypicaWeekdayProk retired at v0.49.2 — the Typica reads the daily Liturgy
 // propers through resolveLiturgyPropers() (src/lib/liturgy-propers.js).
 
+
+// Menaion V2 (branch v2-wirein: the Hours read V2; the other services still read
+// V1 until their own rewrites land, then V1 and its loader are deleted together).
+const _menaionV2Cache = {};
+const _ocaHymnCache = {};
+const PREFER_OCA_DEFAULT = true; // ruling 11; the reader's toggle arrives with the switch
+async function _loadMenaionV2(month, key) {
+  if (!_menaionV2Cache[month]) _menaionV2Cache[month] = (await loadMenaionV2Month(month)) || {};
+  if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = await v2OcaFor(key);
+}
+// The Hours plans for a date's chosen service: by the day's own rule, and by the
+// weekday rule (which the Pentecostarion branch reads). Null when not encoded.
+function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday) {
+  const mo = String(date.getMonth() + 1).padStart(2, "0");
+  const key = `${mo}-${String(date.getDate()).padStart(2, "0")}`;
+  const list = v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
+  if (!list.length) return { plan: null, weekdayPlan: null };
+  const svc = list[Math.min(serviceIndex, list.length - 1)];
+  const oca = PREFER_OCA_DEFAULT && svc.c.oca_primary ? (_ocaHymnCache[key] || null) : null;
+  return { plan: v2HoursPlan(svc.c, svc.path, { oca, sunday: isOrdinarySunday }),
+           weekdayPlan: v2HoursPlan(svc.c, svc.path, { oca, sunday: false }) };
+}
 
 async function _loadMenaionMonth(month) {
   if (_menaionCache[month]) return _menaionCache[month];
@@ -2126,7 +2151,7 @@ const HTM_PRAYER_9TH_CLOSING =
 // ── Assembly function ────────────────────────────────────────────────────────
 
 
-function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen = false, readerMode = false, templeDedication = null) {
+function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen = false, readerMode = false, templeDedication = null, menaionPlan = null, menaionWeekdayPlan = null) {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
 
@@ -2156,6 +2181,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       if (fmt === 'all_saints_sunday') return '§4B17';
       return '§4A';
     }
+    if (menaionPlan) return `§${menaionPlan.cited}`;
     if (!menaionEntry) return '§2A';
     // fekula_section_override: assembler escape hatch for entries where rank alone
     // cannot derive the correct Fekula section — specifically §2G afterfeast entries.
@@ -2192,128 +2218,21 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
     });
     return elements;
   }
-  // ── Troparion resolution ─────────────────────────────────────────────────
-  // Primary troparion: Pentecostarion entry or Menaion saint
-  // Secondary troparion: Menaion saint (when Pentecostarion is primary)
-  // Sunday: named day propers override Menaion when applicable
-  let primaryTrop = null;
-  let primaryTropSource = '';
-  let secondaryTrop = null;
-  let secondaryTropSource = '';
-
-  const menaionTrop = menaionEntry && menaionEntry.troparion ? menaionEntry.troparion : null;
-  const menaionSaint = menaionEntry ? menaionEntry.saint : 'saint of the day';
-
-  // Resolve named Sunday overrides (All Saints NA, etc.)
-  let effectiveMenaionTrop = menaionTrop;
-  let effectiveSaint = menaionSaint;
-  if (isOrdinarySunday && namedDay && namedDay.troparion) {
-    effectiveMenaionTrop = namedDay.troparion;
-    effectiveSaint = namedDay.name;
-  }
-
-  if (isPentecostarion && pentEntry && pentEntry.troparion) {
-    primaryTrop = pentEntry.troparion;
-    primaryTropSource = `Pentecostarion — ${pentEntry.name}`;
-    if (pentEntry.menaion_set_aside && pentEntry.troparion_2) {
-      // §4B13 / §4B17: Menaion set aside — secondary is hour-differentiated from pentEntry.
-      // 1st & 6th Hours: troparion_3 (feast troparion, e.g. Ascension T4 on P+42)
-      // 3rd & 9th Hours: troparion_2 (saint troparion, e.g. Holy Fathers T8 on P+42)
-      // Fekula §4B13: "First and Sixth Hours: Sunday + feast. Third and Ninth Hours: Sunday + Fathers."
-      secondaryTrop = is3rdOr9th
-        ? pentEntry.troparion_2
-        : (pentEntry.troparion_3 || pentEntry.troparion_2);
-      secondaryTropSource = `Pentecostarion — ${pentEntry.name}`;
-    } else if (effectiveMenaionTrop && !pentEntry.menaion_set_aside) {
-      secondaryTrop = effectiveMenaionTrop;
-      secondaryTropSource = `Menaion — ${effectiveSaint}`;
-    }
-  } else if (isOrdinarySunday) {
-    // Ordinary Sunday (post-Pentecostarion): resurrectional troparion is primary.
-    // Fekula §1A: resurrectional troparion of the tone, then Glory → Menaion saint troparion.
-    const resTrop = srcResTroparion(tone);
-    if (resTrop) {
-      primaryTrop = resTrop;
-      primaryTropSource = `Octoechos — Tone ${tone} (Sunday resurrectional)`;
-    }
-    if (effectiveMenaionTrop) {
-      secondaryTrop = effectiveMenaionTrop;
-      secondaryTropSource = `Menaion — ${effectiveSaint}`;
-    }
-  } else if (effectiveMenaionTrop) {
-    primaryTrop = effectiveMenaionTrop;
-    primaryTropSource = `Menaion — ${effectiveSaint}`;
-  }
-
-  // ── Kontakion resolution ─────────────────────────────────────────────────
-  // Pentecostarion: ode-aware (HTM rubric)
-  //   1st/6th Hours: after 3rd Ode at Matins → kontakion_ode3
-  //   3rd/9th Hours: after 6th Ode at Matins → kontakion_ode6
-  //   hours_kontakion: universal override (Period 3 single-kontakion days)
-  // Ordinary/Sunday: getKontakionForHour(menaionEntry, hourKey)
-  let kontakion = null;
-  let kontakionSource = '';
-  let kontakionOdeNote = hourKey === '1st_hour' || hourKey === '6th_hour'
+  // ── Troparia and kontakion ───────────────────────────────────────────────
+  // Chosen in src/lib/hours-propers.js (plain module, gated by
+  // tools/test_menaion_v2_hours.mjs). The Menaion's part is the V2 Hours plan
+  // (src/data/menaion_v2/adapter.js), which applies Fekula ch. 1 and ch. 2.
+  const propers = resolveHoursPropers({
+    hourKey, plan: menaionPlan, weekdayPlan: menaionWeekdayPlan, tone,
+    isOrdinarySunday, isPentecostarion, pentEntry, namedDay,
+    octo: { resTroparion: srcResTroparion, sunKontakion: srcSunKontakion },
+  });
+  const { primaryTrop, primaryTropSource, secondaryTrop, secondaryTropSource, kontakion, kontakionSource } = propers;
+  const effectiveSaint = (menaionPlan && menaionPlan.saintName) || 'saint of the day';
+  const menaionNotEncoded = !isPentecostarion && !menaionPlan;
+  const kontakionOdeNote = hourKey === '1st_hour' || hourKey === '6th_hour'
     ? 'And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion which was chanted after the 3rd Ode at Matins. — HTM'
     : 'And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion which was chanted after the 6th Ode at Matins. — HTM';
-
-  if (isPentecostarion && pentEntry) {
-    let pKont;
-    if (pentEntry.menaion_set_aside && pentEntry.hours_kontakion && pentEntry.kontakion_ode6) {
-      // §4B13 / §4B17: two distinct kontakia, hour-differentiated.
-      // 1st & 6th Hours: hours_kontakion (feast kontakion, after 3rd Ode — e.g. Ascension T6)
-      // 3rd & 9th Hours: kontakion_ode6 (saint kontakion, after 6th Ode — e.g. Holy Fathers T8)
-      // Fekula §4B13: "First and Sixth Hours: Kontakion of the feast.
-      //                Third and Ninth Hours: Kontakion of the Fathers."
-      pKont = is3rdOr9th ? pentEntry.kontakion_ode6 : pentEntry.hours_kontakion;
-    } else {
-      // Ordinary Pentecostarion: hours_kontakion is a universal single-kontakion override;
-      // otherwise ode-aware selection (3rd Ode after 1st/6th, 6th Ode after 3rd/9th).
-      pKont = pentEntry.hours_kontakion
-        || (is3rdOr9th
-            ? (pentEntry.kontakion_ode6 || pentEntry.kontakion_ode3)
-            : (pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6));
-    }
-    const mKont = menaionEntry && menaionEntry.kontakion_ode6 ? menaionEntry.kontakion_ode6 : null;
-    const isHighRank = menaionEntry && ['doxology','polyeleos','vigil'].includes(menaionEntry.rank);
-    // High-rank Menaion override: on ordinary Pentecostarion weekdays, Doxology+ saints
-    // get their kontakion at 3rd/9th (Fekula §4A footnote). But when menaion_set_aside
-    // is true, the Menaion is entirely displaced — §4B13/§4B17 governs exclusively.
-    const menaionKontakionOverride = isHighRank && is3rdOr9th && mKont && !pentEntry.menaion_set_aside;
-    kontakion = menaionKontakionOverride ? mKont : pKont;
-    kontakionSource = menaionKontakionOverride
-      ? `Menaion — ${effectiveSaint} (Doxology+ rank)`
-      : `Pentecostarion — ${pentEntry.name}`;
-  } else {
-    // Ordinary time (weekday or Sunday)
-    if (isOrdinarySunday) {
-      // Fekula §1A: Sunday kontakion of the tone at 1st & 6th Hours (after Ode III).
-      // At 3rd & 9th Hours (after Ode VI): Menaion saint kontakion if present,
-      // otherwise Sunday kontakion.
-      const sundayKont = srcSunKontakion(tone);
-      const menaionKont = getKontakionForHour(menaionEntry, hourKey);
-      if (is3rdOr9th && menaionKont) {
-        kontakion = menaionKont;
-        kontakionSource = `Menaion — ${effectiveSaint}`;
-      } else if (sundayKont) {
-        kontakion = sundayKont;
-        kontakionSource = `Octoechos — Tone ${tone} (Sunday kontakion)`;
-      } else {
-        kontakion = menaionKont;
-        kontakionSource = `Menaion — ${effectiveSaint}`;
-      }
-    } else {
-      kontakion = getKontakionForHour(menaionEntry, hourKey);
-      kontakionSource = `Menaion — ${effectiveSaint}`;
-    }
-    if (isOrdinarySunday && namedDay && namedDay.kontakion_ode6) {
-      const useThirdOde = hourKey === '1st_hour' || hourKey === '6th_hour';
-      kontakion = useThirdOde && namedDay.kontakion_ode3
-        ? namedDay.kontakion_ode3
-        : namedDay.kontakion_ode6;
-      kontakionSource = namedDay.name;
-    }
-  }
   // ── OPENING ─────────────────────────────────────────────────────────────
   if (is3rdOr9th) {
     // Full beginning at 3rd and 9th Hours
@@ -2454,7 +2373,9 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
   //   TWO troparia:   First troparion → Glory... → Second troparion → Both now... → Theotokion
   const tropFekulaNote = isPentecostarion
     ? 'Troparion of the preceding Sunday and the troparion from the Menaion, if there be such. — Fekula §4A(3)'
-    : '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two';
+    : (propers.rule ? `${propers.rule} — Fekula` : (isOrdinarySunday
+        ? 'The Sunday troparion. The Menaion is not yet encoded for this date.'
+        : 'The Menaion is not yet encoded for this date.'));
 
   const hasTwoTroparia = !!(primaryTrop && secondaryTrop);
 
@@ -2487,7 +2408,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
     elements.push({
       id: `${hourKey}-troparion`, type: 'movable', label: 'Troparion',
       source: `Menaion — ${effectiveSaint}`,
-      text: '[Troparion — text not yet in library for this date]',
+      text: menaionNotEncoded ? '[Troparion — the Menaion is not yet encoded for this date]' : '[Troparion — none is printed for this service]',
       unresolved: true,
       fekula: { section: fekulaSection, note: tropFekulaNote },
     });
@@ -2504,8 +2425,9 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       source: secondaryTropSource,
       toneNote: `Tone ${secondaryTrop.tone}`,
       text: secondaryTrop.text,
+      ...(secondaryTrop.path ? { srcPath: secondaryTrop.path } : {}),
       rubric: 'And we say the appointed troparion (or the second, if there be two). — HTM',
-      fekula: { section: fekulaSection, note: '...and the troparion from the Menaion, if there be such. — Fekula §4A' },
+      fekula: { section: fekulaSection, note: isPentecostarion ? '...and the troparion from the Menaion, if there be such. — Fekula §4A' : tropFekulaNote },
     });
   }
 
@@ -2572,16 +2494,16 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       fekula: { section: fekulaSection,
         note: isPentecostarion
           ? 'Kontakion of the preceding Sunday. — Fekula §4A(3)'
-          : '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two' },
+          : tropFekulaNote },
     });
   } else {
     elements.push({
       id: `${hourKey}-kontakion`, type: 'movable', label: 'Kontakion',
       rubric: kontakionOdeNote,
       source: `Menaion — ${effectiveSaint}`,
-      text: '[Kontakion — text not yet in library for this date]',
+      text: menaionNotEncoded ? '[Kontakion — the Menaion is not yet encoded for this date]' : '[Kontakion — none is printed for this service]',
       unresolved: true,
-      fekula: { section: fekulaSection, note: '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two' },
+      fekula: { section: fekulaSection, note: tropFekulaNote },
     });
   }
 
@@ -2753,16 +2675,6 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
 
   return elements;
 }
-
-function getKontakionForHour(entry, hourKey) {
-  if (!entry) return null;
-  const useThirdOde = hourKey === "1st_hour" || hourKey === "6th_hour";
-  if (useThirdOde && entry.kontakion_ode3) {
-    return entry.kontakion_ode3;
-  }
-  return entry.kontakion_ode6 || null;
-}
-
 
 const HTM_PSALM_103 =
   "Bless the Lord, O my soul; O Lord my God, Thou hast been magnified exceedingly. " +
@@ -15990,6 +15902,7 @@ export default function App() {
     const toneForVespers = getLiturgicalData(dNext).tone || 1;
     Promise.all([
       ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
+      _loadMenaionV2(m, `${m}-${String(d.getDate()).padStart(2, "0")}`),
       _loadPentecostarion(),
       OctoV2.loadV2Tone(toneForDate),
       OctoV2.loadV2Tone(toneForVespers),
@@ -16361,7 +16274,8 @@ export default function App() {
           fekula: { section: '10', note: 'Reader\'s services: the Typica stands in for the Divine Liturgy.' } }, ...els];
       }
     } else {
-      els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode, templeDedication);
+      const _hp = getMenaionHoursPlans(date, selectedServiceIndex, liturgicalData.season === 'sunday');
+      els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode, templeDedication, _hp.plan, _hp.weekdayPlan);
     }
     // Patch psalterHref onto any element that has kathismaNum
     // Patch scriptureHref onto epistle/gospel elements (selectedDate in scope here)

@@ -1,38 +1,61 @@
-// Gate: every encoded Menaion V2 service yields a troparion and a kontakion for
-// each of the four Hours (weekday rule), with and without "Prefer OCA".
+// Gate: the Hours as the tool assembles their troparia and kontakion from Menaion
+// V2. Runs the tool's own code (adapter hoursPlan + src/lib/hours-propers.js) for
+// every encoded service, as a weekday and as a Sunday, with and without the OCA layer.
 //   node tools/test_menaion_v2_hours.mjs            gate
-//   node tools/test_menaion_v2_hours.mjs --table    the per-date table, Markdown
+//   node tools/test_menaion_v2_hours.mjs --table    per-date table (Markdown)
 import { MONTH_LOADERS, loadMenaionV2Month } from '../src/data/menaion_v2/index.js';
-import { servicesOf, hoursPlan, ocaFor, shown, HOURS } from '../src/data/menaion_v2/adapter.js';
+import { servicesOf, hoursPlan, ocaFor, HOURS } from '../src/data/menaion_v2/adapter.js';
+import { resolveHoursPropers } from '../src/lib/hours-propers.js';
+import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
 const table = process.argv.includes('--table');
-const lead = (s) => (s ? shown(s).replace(/[[\]]/g, '').replace(/\s*(\*\*?|\||\/\/)\s*/g, ' ').slice(0, 34) : '');
-const cell = (slot) => (slot?.node ? `${slot.source === 'oca' ? 'OCA' : 'Men.'} T${slot.node.tone ?? '?'} ${slot.role}: ${lead(slot.node)}` : 'NONE');
-let services = 0, gaps = 0, bad = 0; const rows = [];
+const TONE = 1; await OctoV2.loadV2Tone(TONE);
+const octo = { resTroparion: (t) => OctoV2.getV2Troparion(t), sunKontakion: (t) => OctoV2.getV2Kontakion(t) };
+const lead = (n) => String(n.text).replace(/[[\]]/g, '').replace(/\s*(\*\*?|\||\/\/)\s*/g, ' ').slice(0, 30);
+const who = (src) => (/^Octoechos/.test(src) ? 'Sunday' : /^OCA/.test(src) ? 'OCA' : 'Men.') + (/of the feast$/.test(src) ? ' feast' : /^Octoechos/.test(src) ? '' : ' saint');
+const cell = (n, src) => (n ? `${who(src)} T${n.tone ?? '?'}: ${lead(n)}` : 'NONE');
+const squash = (cells) => { const u = [...new Set(cells)]; if (u.length === 1) return u[0];
+  const a = cells[0] === cells[2] && cells[1] === cells[3]; return a ? `1st, 6th: ${cells[0]}<br>3rd, 9th: ${cells[1]}` : cells.map((c, i) => `${['1st', '3rd', '6th', '9th'][i]}: ${c}`).join('<br>'); };
+let services = 0, plans = 0, gaps = 0, bad = 0; const rows = [];
+const fail = (m) => { bad++; console.log('  ERROR', m); };
 for (const mo of Object.keys(MONTH_LOADERS).sort()) {
   const M = await loadMenaionV2Month(mo);
   for (const key of Object.keys(M).filter((k) => /^\d\d-\d\d$/.test(k)).sort()) {
     const oca = await ocaFor(key);
     for (const { c, index, path } of servicesOf(M[key], key)) {
       services++;
-      for (const [mode, o] of [['menaion', null], ['oca', c.oca_primary ? oca : null]]) {
-        if (mode === 'oca' && !o) continue;
-        const p = hoursPlan(c, path, o);
-        const ks = HOURS.map((h) => p.kontakion[h]);
-        const distinct = [...new Set(ks.map(cell))];
-        const missing = [...p.troparia, ...ks].filter((s) => !s.node).length;
+      for (const sunday of [false, true]) for (const useOca of [false, true]) {
+        const o = useOca && c.oca_primary ? oca : null;
+        if (useOca && !o) continue;
+        plans++;
+        const plan = hoursPlan(c, path, { oca: o, sunday }); const weekdayPlan = hoursPlan(c, path, { oca: o, sunday: false });
+        const at = `${path} ${sunday ? 'Sunday' : 'weekday'}${o ? ' OCA' : ''}`;
+        const per = HOURS.map((hourKey) => resolveHoursPropers({ hourKey, plan, weekdayPlan, tone: TONE, isOrdinarySunday: sunday, isPentecostarion: false, pentEntry: null, namedDay: null, octo }));
+        let missing = false;
+        per.forEach((p, i) => {
+          if (!p.primaryTrop || !p.kontakion) missing = true;
+          for (const n of [p.primaryTrop, p.secondaryTrop, p.kontakion]) if (n && (!n.text || /\^/.test(n.text))) fail(`${at} ${HOURS[i]}: empty text or a caret shown`);
+          if (sunday && p.primaryTrop && !/^Octoechos/.test(p.primaryTropSource) && c.rank !== 'great_feast') fail(`${at} ${HOURS[i]}: a Sunday must begin with the Sunday troparion`);
+          if (!sunday && [p.primaryTropSource, p.secondaryTropSource, p.kontakionSource].some((s) => /^Octoechos/.test(s))) fail(`${at} ${HOURS[i]}: an Octoechos hymn on a weekday`);
+          if (p.primaryTrop && p.secondaryTrop && p.primaryTrop.text === p.secondaryTrop.text) fail(`${at} ${HOURS[i]}: the same troparion twice`);
+        });
+        if (!plan.rule || !/^§\d/.test(plan.rule)) fail(`${at}: no Fekula section cited`);
+        if (o && !per.some((p) => /(^|\|)OCA/.test(p.primaryTropSource + '|' + p.secondaryTropSource + '|' + p.kontakionSource))) fail(`${at}: OCA hymns are mapped but none is read`);
         if (missing) gaps++;
-        for (const s of [...p.troparia, ...ks]) if (s.node && (!s.node.text || /\^/.test(shown(s.node)))) { bad++; console.log('BAD', path, mode); }
-        if (mode === 'oca' && !p.troparia.some((s) => s.source === 'oca') && !ks.some((s) => s.source === 'oca')) { bad++; console.log('OCA hymns mapped but none used', path); }
-        rows.push({ path, mode, rank: c.rank, section: p.section, trop: p.troparia.map(cell).join('<br>Glory: '),
-          kont: distinct.length === 1 ? distinct[0] : `1st, 6th: ${cell(p.kontakion['1st_hour'])}<br>3rd, 9th: ${cell(p.kontakion['3rd_hour'])}`,
-          notes: p.notes.join(' '), def: index === 0 || c.oca_primary });
+        rows.push({ path: path + (c.oca_primary || M[key].commemorations.length === 1 ? '' : ' (2nd)'), day: sunday ? 'Sunday' : 'Weekday', text: o ? 'OCA' : 'Menaion', sec: `${c.rank}, §${plan.cited}`,
+          trop: squash(per.map((p) => [cell(p.primaryTrop, p.primaryTropSource), ...(p.secondaryTrop ? ['Glory: ' + cell(p.secondaryTrop, p.secondaryTropSource)] : [])].join('; '))),
+          kont: squash(per.map((p) => cell(p.kontakion, p.kontakionSource))), notes: plan.notes.join(' ') });
       }
     }
   }
 }
-if (table) {
-  console.log('| Service | Text | Rank, section | Troparia | Kontakion | Notes |\n|---|---|---|---|---|---|');
-  for (const r of rows) console.log(`| ${r.path}${r.def ? '' : ' (2nd)'} | ${r.mode === 'oca' ? 'OCA' : 'Menaion'} | ${r.rank}, ${r.section} | ${r.trop} | ${r.kont} | ${r.notes} |`);
+// A date the Menaion does not hold: a weekday shows nothing, a Sunday its own hymns.
+for (const sunday of [false, true]) {
+  const p = resolveHoursPropers({ hourKey: '3rd_hour', plan: null, weekdayPlan: null, tone: TONE, isOrdinarySunday: sunday, isPentecostarion: false, pentEntry: null, namedDay: null, octo });
+  if (p.encoded || !!p.primaryTrop !== sunday) fail(`not-encoded ${sunday ? 'Sunday' : 'weekday'} behaves wrongly`);
 }
-console.log(`Menaion V2 Hours: ${services} services, ${rows.length} plans, ${gaps} with a hymn still to be supplied, ${bad} error(s)`);
+if (table) {
+  console.log('| Service | Day | Text | Rank, rule | Troparia | Kontakion | Notes |\n|---|---|---|---|---|---|---|');
+  for (const r of rows) console.log(`| ${r.path} | ${r.day} | ${r.text} | ${r.sec} | ${r.trop} | ${r.kont} | ${r.notes} |`);
+}
+console.log(`Menaion V2 Hours: ${services} services, ${plans} plans, ${gaps} with a hymn still to be supplied, ${bad} error(s)`);
 process.exit(bad ? 1 : 0);
