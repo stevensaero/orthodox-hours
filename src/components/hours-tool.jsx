@@ -8525,6 +8525,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.56.2",
+    date: "November 2026",
+    summary: "The 'source' link opens the Menaion at the hymn itself",
+    items: [
+      "Fixed: a hymn's 'source' link opened the right Menaion page but stopped at the top. It " +
+      "now scrolls to the hymn and marks it with a gold outline.",
+      "A hymn shown in the OCA's words now has a 'source' link too. It opens the place in the " +
+      "Menaion that the hymn stands in, where the same OCA text is shown and marked.",
+    ],
+  },
+  {
     version: "v0.56.1",
     date: "November 2026",
     summary: "An OCA text naming one saint can no longer stand on another saint's day",

@@ -43,6 +43,7 @@ const CASES = [
   ['2026-11-14', '1st_hour', ['Multiple services available', 'Gregory Palamas', 'The holy and all-praised Apostle Philip', 'Prefer OCA texts', 'Polyeleos', 'Assembled per Fekula §2E'], ['COMMEMORATION OF', 'Assembled per Fekula §2A']], // the chooser lists the V2 services by name, the OCA's first
   ['2026-11-14', '1st_hour', ['Prefer OCA texts'], ['entreat the merciful God', 'not yet encoded'], { prefer_oca: '0' }],                                         // Prefer OCA off: the Menaion's troparion, not the OCA's
   ['2026-11-14', '1st_hour', ['O wonderworker Gregory, instructor in Orthodoxy'], ['not yet encoded'], null, 1],   // choosing the second service re-assembles the Hour for it
+  ['2027-11-15', '6th_hour', ['You received grace from on high'], ['not yet encoded'], { prefer_oca: '1' }, null, [/\/menaion-v2\?date=2027-11-15&from=tool#11-15\.c0\.kontakion$/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],   // a hymn shown in the OCA's words links to the place in OUR book it stands in (the viewer shows the OCA text there too)
   ['2026-11-16', '1st_hour', ['O come, let us worship'], ['not yet encoded'], { prefer_oca: '0' }, null, [/\/menaion-v2\?.*#11-16\.c0/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],   // a Menaion hymn links to its own place in the Menaion (Prefer OCA off, so the Menaion's texts show)
   // ── Dates the retired summarized Menaion used to serve (v0.53.0). Each service must still
   // assemble: the Pentecostarion's own material where it governs, "not yet encoded" where the

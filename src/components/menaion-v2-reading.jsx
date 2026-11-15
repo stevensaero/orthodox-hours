@@ -122,10 +122,13 @@ function pointed(text) {
 }
 
 export function RText({ node, path, label }) {
-  const { mode, prefix, oca } = useContext(ReadingContext);
+  const { mode, oca } = useContext(ReadingContext);
   if (isAbsence(node)) return <RAbsence node={node} path={path} />;
   if (!isTextNode(node)) return null;
-  const full = prefix + path;
+  // The id IS the hymn's stored path ("11-15.c0.troparion"): the address the Hours
+  // tool's "source" link carries. (`path` is already whole; adding the context's
+  // prefix doubled the date, and no link ever found its hymn.)
+  const full = path;
   // "Prefer OCA texts": where this hymn has an OCA mate, the OCA's words are
   // shown in its place, marked, with the book's own text one hover away.
   const mate = ocaMate(oca, node);   // the tone guard applies where the node prints its tone
@@ -335,8 +338,10 @@ export function RService({ svc, svcKey, path, entry }) {
     <>
       <RHeading id={`sec-${svcKey}`}>{SERVICE_HEADINGS[svcKey] ?? svcKey}</RHeading>
       {ordered.map((k, i) => (
+        // A hymn stored once at entry level (troparion, kontakion, ikos) and printed
+        // here by `order` keeps its STORED address, so a link to it finds it.
         <RElement key={`${k}-${i}`} value={(k in svc) ? svc[k] : entry?.[k]}
-                  path={`${path}.${k}`} fieldKey={k} />
+                  path={(k in svc) ? `${path}.${k}` : `${path.slice(0, path.lastIndexOf('.'))}.${k}`} fieldKey={k} />
       ))}
       {rest.length > 0 && (
         <div style={{ marginTop: "10px", paddingTop: "6px", borderTop: `1px dashed ${C.border}` }}>

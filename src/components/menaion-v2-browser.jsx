@@ -313,8 +313,10 @@ export default function MenaionV2Browser() {
     const hash = window.location.hash ? decodeAnchor(window.location.hash.slice(1)) : '';
     if (!hash) return;
     const el = document.getElementById(hash);
-    if (el) { el.scrollIntoView({ block: 'center' }); el.style.background = C.goldMid; }
-  }, [data, dateKey, cIdx, view]);
+    // Marked so it cannot be missed, and found again once the OCA texts have come in
+    // (they change the length of the page above it).
+    if (el) { el.scrollIntoView({ block: 'center' }); el.style.background = C.goldMid; el.style.outline = `2px solid ${C.gold}`; el.style.outlineOffset = '6px'; el.style.borderRadius = '2px'; }
+  }, [data, dateKey, cIdx, view, ocaMap]);
 
   useEffect(() => { try { localStorage.setItem('menRdgMode', mode); } catch {} }, [mode]);
   useEffect(() => { try { localStorage.setItem('menRdgRub', showRubrics ? '1' : '0'); } catch {} }, [showRubrics]);

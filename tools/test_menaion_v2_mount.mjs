@@ -58,6 +58,9 @@ async function visit(url, label, expectText, opts = {}) {
     const text = window.document.body.textContent;
     for (const t of opts.must ?? []) if (!text.includes(t)) errors.push(`${label}: expected on the page: ${JSON.stringify(t)}`);
     for (const t of opts.mustNot ?? []) if (text.includes(t)) errors.push(`${label}: should not be on the page: ${JSON.stringify(t)}`);
+    // Every hymn the services take from this page must be findable by its stored path:
+    // that path is what the Hours tool's "source" link carries (#11-15.c0.troparion).
+    for (const id of opts.ids ?? []) if (!window.document.getElementById(id)) errors.push(`${label}: no element with id ${JSON.stringify(id)}; a "source" link to this hymn would not find it`);
     if (expectText && !text.includes(expectText)) errors.push(`${label}: expected text not on the page: ${JSON.stringify(expectText.slice(0, 60))}`);
     // the audit view, by clicking the page's own button
     const auditBtn = [...window.document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Audit');
@@ -69,13 +72,20 @@ async function visit(url, label, expectText, opts = {}) {
 }
 
 const { MONTH_LOADERS } = await import(join(OUT, bundle));
+const { hymnsOf, entrancePlan } = await import('../src/data/menaion_v2/adapter.js');
+let linked = 0;
+const pathsOf = (c, base) => {
+  const h = hymnsOf(c, base); const ep = entrancePlan(c, base, {});
+  const nodes = [...h.troparia, h.troparion_alt, ...h.ode3, ...h.ode6, ...h.ikoi, ep.feast.troparion?.node, ep.feast.kontakion?.node, ...ep.saints.troparia.map((x) => x?.node), ...ep.saints.kontakia.map((x) => x?.node), ...(ep.beatitudes?.items ?? [])];
+  const ids = [...new Set(nodes.map((n) => n?.path).filter((p) => p && p.startsWith(base + '.')))]; linked += ids.length; return ids;
+};
 for (const mm of Object.keys(MONTH_LOADERS)) {
   const data = await MONTH_LOADERS[mm]();
   for (const [dk, d] of Object.entries(data))
     for (let i = 0; i < d.commemorations.length; i++) {
       const e = d.commemorations[i];
       const probe = (typeof e.title === 'string' ? e.title : e.title?.text) ?? '';
-      await visit(`https://example.org/orthodox-hours/menaion-v2?comm=${dk}#${encodeURIComponent(`${dk}.c${i}.matins`)}`, `${dk}.c${i}`, probe);
+      await visit(`https://example.org/orthodox-hours/menaion-v2?comm=${dk}#${encodeURIComponent(`${dk}.c${i}.matins`)}`, `${dk}.c${i}`, probe, { ids: pathsOf(e, `${dk}.c${i}`) });
     }
 }
 await visit('https://example.org/orthodox-hours/menaion-v2', 'no date selected', null);
@@ -111,6 +121,7 @@ for (const stem of ocaStems()) {
 
 rmSync(TMP, { recursive: true, force: true }); rmSync(OUT, { recursive: true, force: true });
 for (const e of errors) console.log('  ✗ ' + e);
+console.log(`${linked} hymn paths the services use were looked for on their pages`);
 console.log(`\nMenaion V2 browser mounted ${visits} time(s) (every encoded commemoration, reading and audit views) · ${errors.length} error(s)`);
 if (errors.length) { console.log('FAIL'); process.exit(1); }
 console.log('✓ Menaion V2 mount gate: PASS');

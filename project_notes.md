@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.56.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.56.2** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,25 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.56.2 — "source" links land ON the hymn (15 Nov 2026)
+
+- **Every Menaion "source" link had been landing at the top of the page.** Two causes in
+  `menaion-v2-reading.jsx`: (1) `RText` built its id as `prefix + path` while `path` was
+  already whole, giving `11-15.c0.11-15.c0.vespers.lic[0]`; (2) a hymn stored at entry
+  level (troparion, kontakion, ikos) and printed inside a service by `order` got the
+  service's path (`11-15.c0.vespers.troparion`), not its stored one. Now the id IS the
+  stored path. The Octoechos viewer's links were already right.
+- The target is outlined in gold as well as tinted, and found again when the OCA texts
+  arrive (they change the page's length).
+- **A hymn shown in the OCA's words has a link too:** `slot()` in `adapter.js` gives the
+  OCA node the `path` of our hymn it stands in. The viewer shares the `prefer_oca`
+  setting with the Hours tool, so the reader lands on the same OCA text, marked.
+  (Octoechos hymns are not yet shown in OCA words in the services, so there is nothing
+  to link there yet; the Octoechos viewer has no Prefer OCA toggle yet.)
+- **Gate:** the viewer mount gate now looks for every hymn path the services use
+  (hymnsOf + entrancePlan, 286 paths) as an element id on its page. It failed 286 of
+  286 on the old code. Hours mount: a 2027-11-15 6th Hour case for the OCA link.
 
 ### v0.56.1 — the matcher reads NAMES (15 Nov 2026)
 

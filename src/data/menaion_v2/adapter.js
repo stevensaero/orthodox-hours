@@ -107,7 +107,7 @@ export function hoursPlan(c, base, opts = {}) {
   const slot = (node, role) => {
     if (!node) return null;
     const o = ocaMate(oca, node);
-    return o ? { role, source: 'oca', node: { ...o, type: node.type ?? null, saint: node.saint ?? null }, menaion: node } : { role, source: 'menaion', node };
+    return o ? { role, source: 'oca', node: { ...o, type: node.type ?? null, saint: node.saint ?? null, path: node.path ?? null }, menaion: node } : { role, source: 'menaion', node };   // `path`: the place in our book it stands in
   };
   const fromGeneral = (field, role) => generalHymn(c, h, general, field, role, notes);
   const gap = (what, absent) => {
@@ -358,7 +358,7 @@ export function entrancePlan(c, base, opts = {}) {
   const slot = (node, role) => {
     if (!node) return null;
     const o = ocaMate(oca, node);
-    return o ? { role, source: 'oca', node: { ...o, type: node.type ?? null, saint: node.saint ?? null }, menaion: node } : { role, source: 'menaion', node };
+    return o ? { role, source: 'oca', node: { ...o, type: node.type ?? null, saint: node.saint ?? null, path: node.path ?? null }, menaion: node } : { role, source: 'menaion', node };   // `path`: the place in our book it stands in
   };
   const own = c.kind === 'feast' ? 'feast' : 'saint';
   // Each hymn the page gives is shown in the OCA's words where the register holds
