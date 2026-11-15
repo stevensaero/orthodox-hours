@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.58.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.58.2** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,28 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.58.2 — Q-0004 (15 November) ANSWERED from the books; Q-0014 opened (15 Nov 2026)
+
+- Bill asked whether vol. III had 15 November. **It does not**: `ods_v3_index.json`
+  passes from 26 October to 25 November (77 entries, not a complete Menaion), and the
+  full text has nothing for the martyrs of Edessa or the start of the fast. The 2nd
+  edition's ch. 5 p. 214 was never delivered and vol. III supersedes ch. 5.
+- Bill: "rewrite it only if you don't think it can be answered ... I should think the
+  rubric in the menaion would have something to say about it." It can be answered:
+  the Menaion's "Be it known" rubric gives Saturday / Sunday / Monday-Friday, and each
+  is a general Fekula outline: 2A; ch. 1 Sunday with a simple commemoration; and
+  **ODS 2nd ed. Appendix A-II, the Lenten service of the lesser fasts (pp. 238-248)**,
+  which names "the eve of the first day of the Nativity Fast" itself and whose 3 + 3
+  stichera are what the Menaion prints. Q-0004 is `answered` with that resolution.
+- **Q-0014 (open):** the one difference. At that Vespers Fekula A-II (p. 239) gives the
+  prokeimenon of the day on the eve of the first day of the fast; the Menaion's rubric
+  says Alleluia in Tone VI in place of the prokeimenon.
+- **A TOOL GAP this exposed (not built, not scheduled):** the tool does not assemble
+  the Alleluia service of the lesser fasts at all (`vespers-propers.js` never reads
+  `theotokos_stichera`). It applies to every simple or double weekday commemoration in
+  the Nativity, Apostles' and Dormition fasts outside a festal period. 15 Nov 2027 is a
+  Monday. Put to Bill.
 
 ### v0.58.0 — review BY DAY; outside decisions are SUGGESTIONS (15 Nov 2026)
 

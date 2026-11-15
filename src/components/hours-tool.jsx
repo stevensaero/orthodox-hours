@@ -8564,6 +8564,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.58.2",
+    date: "November 2026",
+    summary: "The question about 15 November is answered from the books",
+    items: [
+      "Open question Q-0004 (which of Fekula's outlines governs 15 November, the first day of " +
+      "the Nativity Fast) is answered: no date-specific order exists to wait for, and the " +
+      "Menaion's own rubric agrees with Fekula's general outlines for a Saturday, a Sunday " +
+      "and a weekday. The one point where the two books differ is a new, narrower question " +
+      "(Q-0014).",
+    ],
+  },
+  {
     version: "v0.58.1",
     date: "November 2026",
     summary: "The review line in the header reads as an invitation",

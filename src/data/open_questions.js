@@ -182,17 +182,18 @@ export default [
   },
   {
     id: 'Q-0004', source: 'menaion', subject: 'source_gap',
-    title: '15 November, first day of the Nativity Fast: Fekula p. 214',
-    path: '11-15.c0.fekula_section', status: 'open', opened: '2026-11-14',
+    title: '15 November, first day of the Nativity Fast: which Fekula outline governs',
+    path: '11-15.c0.fekula_section', status: 'answered', opened: '2026-11-14',
     question: '15 November, first day of the Nativity Fast: which Fekula outline governs, and what does his own section for this date say?',
     printed: 'A "Be it known" rubric before Vespers: on Saturday, 6 stichera of the martyrs and God is the Lord; on Sunday, 7 from the Oktoechos and 3 of the martyrs with God is the Lord; Monday through Friday, Alleluia "because of the beginning of the holy fast", with three stichera of the Theotokos before the three of the martyrs.',
     consulted: {
-      fekula: 'The table of contents lists "The 15th Day of the Month of November", ch. 5, p. 214. The delivered fekula_chapter_5.txt holds four lines and does not contain it, so the section could NOT be read. Appendix A-II (the Lenten service during the lesser fasts) covers the Alleluia form in general.',
-      oca: 'Not yet checked for 2026-11-15 (a Sunday this year).',
-      web: 'Not searched: the governing source exists and is simply undelivered. This row is a source gap before it is a question.',
+      fekula: 'ODS 3rd ed. vol. III (which replaces chapter 5 of the 2nd edition) has NO entry for 15 November: it passes from 26 October to 25 November. The 2nd edition\'s own section (ch. 5, p. 214) was never delivered and is superseded. ODS 2nd ed. Appendix A-II, "The Lenten Service During the Lesser Fasts" (pp. 238-248), gives the Alleluia service for Monday through Friday of a lesser fast on a simple or double commemoration, and names "the eve of the first day of the Nativity Fast" in its own text.',
+      oca: 'Not needed: the question was which of Fekula\'s outlines applies. (The OCA text for 15 November 2026, a Sunday, is on hand and is of the Sunday form.)',
+      web: 'Not searched: the books in hand settle it.',
     },
     provisional: 'rank simple, Fekula 2A by the 1.1 waterfall (3 stichera, no Polyeleos, no Great Doxology). Every branch the page prints is captured.',
-    impact: 'The stored texts do not change. The assembly does: which stichera and closers are taken depends on the weekday, and Fekula p. 214 is the authority for that selection. Needs the ch. 5 text (or the page read from the PDF) before the wire-in handles this date.',
+    impact: 'The stored texts do not change. The tool does not yet assemble the Alleluia service of the lesser fasts (Appendix A-II): on a 15 November that falls Monday through Friday, its Vespers does not put the three stichera of the Theotokos first. That is a missing feature, and it concerns every simple or double weekday of the lesser fasts, not this date alone.',
+    resolution: 'Settled from the books, 15 Nov 2026. There is no date-specific order to wait for. The Menaion\'s own "Be it known" rubric gives the three cases, and each is one of Fekula\'s general outlines: on a Saturday, the simple weekday service with God is the Lord (ch. 2, 2A); on a Sunday, the Sunday service with a simple commemoration (ch. 1); Monday through Friday, the Lenten service of the lesser fasts (Appendix A-II), whose six stichera, three of the Theotokos and three of the commemoration, are exactly what the Menaion prints. One point where the two books differ is carried on as Q-0014.',
   },
   {
     id: 'Q-0005', source: 'menaion', subject: 'hymn_selection',
@@ -320,5 +321,20 @@ export default [
     provisional: 'The tool reads the Menaion\'s Tone IV troparion. The OCA\'s is a different hymn and has no match in our books, so it is not shown under "Prefer OCA texts". (Until 15 November 2026 it was shown by date.)',
     impact: 'The troparion at the Hours, Vespers and Liturgy on 4 October; the same wider question as Q-0012.',
   },
+  {
+    id: 'Q-0014', source: 'menaion', subject: 'rubric',
+    title: 'Vespers on the eve of the Nativity Fast: prokeimenon of the day, or Alleluia?',
+    path: '11-15.c0.preface_rubric', status: 'open', opened: '2026-11-15',
+    question: 'At Vespers on the evening of 14 November, which opens the first day of the Nativity Fast, when 15 November falls Monday through Friday: is the prokeimenon of the day sung, or Alleluia in its place?',
+    printed: 'The Menaion\'s rubric for 15 November, for Monday through Friday: "Instead of the Prokeimenon, we chant Alleluia, in Tone VI."',
+    consulted: {
+      fekula: 'ODS 2nd ed. Appendix A-II (p. 239) separates two cases at this point of Vespers: on Sunday evening and "on the eve of the first day of the Nativity Fast", the prokeimenon of the day from the Horologion; on Monday through Thursday evenings, Alleluia. Its footnotes also omit the bows at the start of that Vespers and appoint Little Compline that evening. So Fekula treats the eve as not yet a fast-day service at this point; the Menaion\'s rubric does not make that exception. ODS vol. III has no entry for the date.',
+      oca: 'Not yet searched. The OCA text for 15 November 2026 is of a Sunday and does not show the weekday form.',
+      web: 'Not yet searched.',
+    },
+    provisional: 'Nothing depends on it yet: the tool does not assemble the Alleluia service of the lesser fasts. The Menaion\'s rubric is stored as printed.',
+    impact: 'One element of Vespers on the evening of 14 November in years when the 15th is a weekday (2027 is the next: a Monday), once the Alleluia service is built.',
+  },
 ];
+
 
