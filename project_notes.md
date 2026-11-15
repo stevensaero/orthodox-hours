@@ -477,18 +477,24 @@ DONE on the branch — Vespers ENTRANCE AND READINGS, and one composed LITIYA (1
   the Menaion prints WITHOUT references, which we identified from their opening
   words, match the OCA's "Composite 17 / 18" references exactly (the OCA numbers
   3 Kings as 1 Kings). KNOWN: 8 Sep, an OCA slip ("Ezekiel 43:2-44:4").
-- **A REAL DIVERGENCE, for Bill: for the Apostles Philip (14 Nov) and Matthew
-  (16 Nov) the Menaion prints three lessons from 1 John; the OCA reads three
-  from 1 Peter** (the three it also reads for St. Andrew). OCA takes precedence
-  for OCA parishes, so with Prefer OCA on the tool should read 1 Peter. Needs
-  the OCA layer to carry readings (not built). Listed as KNOWN in the gate.
+- **Readings under Prefer OCA (built, Bill's go, 14 Nov).** For the Apostles
+  Philip (14 Nov) and Matthew (16 Nov) the Menaion prints three lessons from
+  1 John; the OCA reads three from 1 Peter (the three it also reads for St.
+  Andrew). The OCA layer now reads the references an OCA document appoints
+  (`ocaVespersReadings` in `src/data/oca_hymns/index.js`), and with Prefer OCA
+  on an OCA reading REPLACES the Menaion's at the same position ONLY WHERE IT
+  IS A DIFFERENT LESSON (another book, or another chapter). The line names
+  both: "The reading appointed by the OCA (1 Peter 1:1-2:6) — the Menaion
+  prints 1 John 3:21-4:6". Where it is the same lesson the Menaion's citation
+  stands, so the OCA slip on 8 Sep is not carried in. Same principle as the
+  kontakion: an OCA item replaces its own counterpart and nothing else.
 - Litiya: the Saturday-evening Litiya of a forefeast or afterfeast, simple to
   doxology rank (Fekula 1F1), is now composed from the day's own page: stichera
   of the feast from the Vespers Aposticha; Glory, Both now, the sticheron of the
   feast from the Matins Aposticha. Agrees with the OCA text for 22 Nov. No
   temple sticheron in it. NOT built: the other Saturday-evening Litiyas of
   ch. 1 (temple sticheron, Octoechos stichera).
-- Whole Vespers gate: 104 checks on 12 dates, 0 errors, 9 known differences
+- Whole Vespers gate: 104 checks on 12 dates, 0 errors, 7 known differences
   each listed with its reason (`node tools/test_menaion_v2_vespers.mjs --table`).
 - Mount test: 7 cases, including "no entrance, no kontakion" on a doxology day.
 
