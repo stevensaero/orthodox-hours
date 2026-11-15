@@ -11,7 +11,7 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
-import { resolveLicClosers, resolveLicStichera } from '../lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha } from '../lib/vespers-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -898,7 +898,6 @@ const _menaionLoaders = {
 const srcResTroparion = (tone) => OctoV2.getV2Troparion(tone);
 const srcSunKontakion = (tone) => OctoV2.getV2Kontakion(tone);
 const srcDismissalTheot = (tone) => OctoV2.getV2DismissalTheotokion(tone);
-const srcSunApostTheot = (gloryTone) => OctoV2.getV2ApostichaTheotokion(gloryTone);
 // §8 conflation fix: the Typica serves the LITURGY prokeimenon/Alleluia
 // (never the Matins text — schema rule `prokeimenonNotEqual`).
 const srcSunProkeimenon = (tone) => OctoV2.getV2LiturgyProkeimenon(tone);
@@ -975,6 +974,9 @@ const VESPERS_OCTO = {
   evening: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.lic_theotokion : null; },
   sundayLic: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.lic : []; },
   eveningLic: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.lic : []; },
+  apostichaTheotokion: (t) => OctoV2.getV2ApostichaTheotokion(t),
+  sundayApostichaTheotokion: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.aposticha_theotokion : null; },
+  eveningApostichaTheotokion: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.aposticha_theotokion : null; },
 };
 // The Menaion V2 service of a date, { c, path }, or null when not encoded.
 function getMenaionV2Service(date, serviceIndex) {
@@ -4354,8 +4356,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // Aposticha structure: sticheron → verse → sticheron → verse → sticheron → [verse] → Glory → Both Now
   {
     const apostDayKey = getVespersDayKey(dow);
-    const apostOctoDay = (!isPentecostarion && (rank === "simple" || rank === "six_stichera" || !menaionEntry))
-      ? srcVespersDay(tone, apostDayKey) : null;
     const isSatEve = dow === 6;
 
     // Universal fixed verses (§2A/§2C weekday and Saturday)
@@ -4372,89 +4372,60 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
          "For He established the world which shall not be shaken.",
          "Holiness becometh Thy house, O Lord, unto length of days."];
 
-    if (isSunday && !isPentecostarion) {
-      // ── Sunday Vespers aposticha engine ─────────────────────────────────────
-      // 4 resurrection stichera (Octoechos sat) + Glory (commemoration doxasticon)
-      // + Both Now = theotokion in the tone of the aposticha Glory (the fixed per-tone
-      // 8-set SUNDAY_APOSTICHA_THEOTOKIA — NOT the dogmatikon). See spec §4 / §8.3.
-      const sunSatA = srcVespersDay(tone, "sat");
-      const sunApost = (sunSatA && sunSatA.aposticha) || [];
-      sunApost.forEach((entry, i) => {
-        elements.push({ id: "v-apost-stich-" + i, type: "movable", label: i === 0 ? "Aposticha" : "",
-          rubric: "Tone " + tone + ":",
-          text: hymnText(entry), source: "Octoechos", ...hymnProvenance(entry),
-          fekula: { section: fekulaSection, note: "Resurrection aposticha sticheron " + (i + 1) + " (Octoechos, Tone " + tone + "). Sunday Great Vespers." } });
-        if (satVerses[i]) {
-          elements.push({ id: "v-apost-verse-" + i, type: "fixed", label: "",
-            text: satVerses[i], source: "HTM Vespers" });
-        }
-      });
-      // Glory: commemoration doxasticon if encoded; else the Octoechos resurrectional
-      // aposticha Glory (tone of week); else verified-absent (Glory… now and ever together)
-      // ONLY when the entry declares aposticha_glory_absent. If neither field is present,
-      // the doxasticon is UNVERIFIED against the PDF → red placeholder for all ranks
-      // (§D runtime hardening, policy (b); the runtime twin of validator Check G).
-      const menAG = menaionEntry && menaionEntry.aposticha_glory;
-      const menAGText = menAG ? (typeof menAG === "string" ? menAG : menAG.text) : null;
-      const octoAG = sunSatA && sunSatA.aposticha_glory && !String(sunSatA.aposticha_glory).startsWith("[")
-        ? sunSatA.aposticha_glory : null;
-      const apostGloryAbsent = !!(menaionEntry && menaionEntry.aposticha_glory_absent === true);
-      let gloryTone = tone;
-      let apostGloryStichos = false; // did we emit a separate "Glory → doxasticon" (vs. combined)?
-      if (menAGText) {
-        gloryTone = (typeof menAG === "string" ? tone : menAG.tone) || tone;
-        apostGloryStichos = true;
-        elements.push({ id: "v-apost-glory", type: "fixed", label: "",
-          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
-        elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
-          rubric: "Tone " + gloryTone + ":", text: menAGText, source: "Menaion — " + effSaint,
-          fekula: { section: fekulaSection, note: "Aposticha Glory: doxasticon of " + effSaint + "." } });
-      } else if (octoAG) {
-        apostGloryStichos = true;
-        elements.push({ id: "v-apost-glory", type: "fixed", label: "",
-          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
-        elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
-          rubric: "Tone " + tone + ":", text: octoAG, source: "Octoechos",
-          fekula: { section: fekulaSection, note: "Aposticha Glory: resurrectional doxasticon (Octoechos, Tone " + tone + ")." } });
-      } else if (apostGloryAbsent) {
-        // Verified-absent in the PDF: Glory… now and ever sung together (no doxasticon).
+    if (!isPentecostarion) {
+      // Whose stichera, the Glory and the Both now are chosen printed-first in
+      // src/lib/vespers-propers.js from the Menaion V2 service and gated against the
+      // OCA texts (tools/test_menaion_v2_vespers.mjs). This only lays them out.
+      const ap = resolveAposticha({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO });
+      const apNote = ap.rule + (ap.notes.length ? " " + ap.notes.join(" ") : "");
+      const apSaint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : effSaint;
+      if (ap.stichera.source === "menaion") {
+        let first = true;
+        ap.stichera.items.forEach((it, i) => {
+          if (it.kind === "verse") {
+            elements.push({ id: "v-apost-verse-men-" + i, type: "fixed", label: "", rubric: "Reader:", text: it.text, source: "Menaion" });
+          } else {
+            elements.push({ id: "v-apost-stich-men-" + i, type: "movable", label: first ? "Aposticha" : "",
+              rubric: "Tone " + (it.tone || tone) + ":", text: it.text, source: "Menaion — " + apSaint,
+              ...(it.path ? { srcPath: it.path } : {}),
+              fekula: { section: fekulaSection, note: apNote } });
+            first = false;
+          }
+        });
+      } else {
+        const apDay = isSatEve ? srcVespersDay(tone, "sat") : srcVespersDay(tone, apostDayKey);
+        const apList = (apDay && apDay.aposticha) || [];
+        const apVerses = isSatEve ? satVerses : weekdayVerses;
+        apList.forEach((entry, i) => {
+          elements.push({ id: "v-apost-stich-" + i, type: "movable", label: i === 0 ? "Aposticha" : "",
+            rubric: "Tone " + tone + ":", text: hymnText(entry), source: "Octoechos", ...hymnProvenance(entry),
+            fekula: { section: fekulaSection, note: apNote } });
+          if (apVerses[i]) elements.push({ id: "v-apost-verse-" + i, type: "fixed", label: "", text: apVerses[i], source: "HTM Vespers" });
+        });
+        if (!apList.length) elements.push({ id: "v-apost-stich", type: "movable", label: "Aposticha Stichera", unresolved: true,
+          text: "[Aposticha — the Octoechos stichera were not found for Tone " + tone + "]", source: "Octoechos",
+          fekula: { section: fekulaSection, note: apNote } });
+      }
+      const AP_LABEL = { doxasticon: "Doxasticon", feast: "Sticheron of the feast", theotokion: "Theotokion", dogmatikon: "Dogmatikon", stavrotheotokion: "Stavrotheotokion" };
+      const apHymn = (slot, id) => ({
+        id, type: "movable", label: AP_LABEL[slot.kind] || "Sticheron", rubric: "Tone " + (slot.tone || tone) + ":",
+        text: hymnText(slot.node),
+        source: slot.source === "octoechos" ? "Octoechos" : "Menaion — " + (slot.kind === "feast" ? "of the feast" : apSaint),
+        ...(slot.source === "octoechos" ? hymnProvenance(slot.node) : (slot.node.path ? { srcPath: slot.node.path } : {})),
+        fekula: { section: fekulaSection, note: apNote } });
+      if (ap.glory && !ap.combined) {
+        elements.push({ id: "v-apost-glory", type: "fixed", label: "", text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push(apHymn(ap.glory, "v-apost-doxasticon"));
+        elements.push({ id: "v-apost-nowever", type: "fixed", label: "", text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
+      } else {
         elements.push({ id: "v-apost-glory-nowever", type: "fixed", label: "",
-          text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
-          source: "HTM Vespers" });
-      } else {
-        // Neither aposticha_glory nor aposticha_glory_absent declared: the doxasticon has
-        // not been checked against the Menaion PDF. Surface a red placeholder (all ranks)
-        // until an encoding pass encodes aposticha_glory or sets aposticha_glory_absent: true.
-        apostGloryStichos = true;
-        elements.push({ id: "v-apost-glory", type: "fixed", label: "",
-          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
-        elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
-          unresolved: true, rubric: "Tone " + gloryTone + ":",
-          text: "[aposticha doxasticon — unverified against PDF]", source: "Menaion — " + effSaint,
-          fekula: { section: fekulaSection, note: "Aposticha Glory unverified: encode aposticha_glory, or set aposticha_glory_absent: true if the PDF prints none. (§D policy (b) / validator Check G)" } });
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.", source: "HTM Vespers" });
       }
-      if (apostGloryStichos) {
-        elements.push({ id: "v-apost-nowever", type: "fixed", label: "",
-          text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
-      }
-      // Both Now: the Sunday aposticha theotokion in the tone of the Glory (fixed 8-set).
-      const sunApostTheot = srcSunApostTheot(gloryTone);
-      if (sunApostTheot && (sunApostTheot.text || typeof sunApostTheot === "string")) {
-        elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion (Both now…)",
-          rubric: "Tone " + ((sunApostTheot.tone) || gloryTone) + ":",
-          text: typeof sunApostTheot === "string" ? sunApostTheot : sunApostTheot.text,
-          ...(sunApostTheot.path ? { srcPath: sunApostTheot.path } : {}),
-          source: "Octoechos",
-          fekula: { section: fekulaSection, note: "Aposticha Both Now: Sunday aposticha theotokion in the tone of the Glory (Tone " + gloryTone + "). Spec §4 / §8.3." } });
-      } else {
-        elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion (Both now…)",
-          unresolved: true,
-          rubric: "Tone " + gloryTone + ":",
-          text: "[Sunday aposticha theotokion, Tone " + gloryTone + " — pending P2 data (SUNDAY_APOSTICHA_THEOTOKIA, the fixed 8-set from the St. Sergius Octoechos appendix).]",
-          source: "Octoechos",
-          fekula: { section: fekulaSection, note: "Aposticha Both Now: theotokion in the tone of the Glory (Tone " + gloryTone + "); 8-set not yet encoded. Spec §4 / §8.3." } });
-      }
-    } else if (isPentecostarion) {
+      if (ap.bothNow && ap.bothNow.node) elements.push(apHymn(ap.bothNow, ap.bothNow.kind === "doxasticon" ? "v-apost-doxasticon" : "v-apost-theotokion"));
+      else elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion", unresolved: true,
+        text: "[Both now — no hymn found for Tone " + tone + "]", source: "Octoechos", fekula: { section: fekulaSection, note: apNote } });
+    } else {
+      // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
       // Pentecostarion Great Feast: use encoded stichera_aposticha if present
       if (pentEntry && pentEntry.stichera_aposticha && pentEntry.stichera_aposticha.length > 0) {
         const pentAposticha = pentEntry.stichera_aposticha;
@@ -4495,176 +4466,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           source:"Pentecostarion",
           fekula:{section:fekulaSection, note:"Aposticha: Pentecostarion stichera assembly pending."}});
       }
-    } else if (!isPentecostarion && (rank === "simple" || rank === "six_stichera") && apostOctoDay && apostOctoDay.aposticha) {
-      // §2A: Octoechos stichera + universal verses — fully assembled
-      const apostStichera = apostOctoDay.aposticha; // array of strings or {text,...} objects
-      const verses = isSatEve ? satVerses : weekdayVerses;
-
-      apostStichera.forEach((entry, i) => {
-        // Sticheron first (Aposticha is inverted from LIC)
-        elements.push({id:"v-apost-stich-"+i, type:"movable", label: i===0 ? "Aposticha" : "",
-          rubric:"Tone "+tone+":",
-          text:hymnText(entry), source:"Octoechos", ...hymnProvenance(entry),
-          fekula:{section:fekulaSection, note:"Aposticha sticheron "+(i+1)+" from Octoechos, Tone "+tone+". Fekula §2A."}});
-        // Then its verse (if available)
-        if (verses[i]) {
-          elements.push({id:"v-apost-verse-"+i, type:"fixed", label:"",
-            text:verses[i], source:"HTM Vespers"});
-        }
-      });
-
-      // Glory → aposticha_glory (Menaion doxasticon if encoded, else Octoechos); when the
-      // entry declares aposticha_glory_absent, Glory… now and ever sung together (no red);
-      // if neither field is declared, the doxasticon is UNVERIFIED → red for all ranks
-      // (§D runtime hardening, policy (b) / validator Check G).
-      const menaionApostGlory = menaionEntry && menaionEntry.aposticha_glory;
-      const apostGlory = apostOctoDay.aposticha_glory;
-      const apostGloryAbsent = !!(menaionEntry && menaionEntry.aposticha_glory_absent === true);
-      if (apostGloryAbsent) {
-        // Verified-absent in the PDF: Glory… now and ever sung together (no doxasticon).
-        elements.push({id:"v-apost-glory-nowever", type:"fixed", label:"",
-          text:"Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
-          source:"HTM Vespers"});
-      } else {
-        elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
-        if (menaionApostGlory && menaionApostGlory.text) {
-          // Menaion provides its own Glory doxasticon (§2C and above)
-          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-            rubric:"Tone "+(menaionApostGlory.tone||tone)+":",
-            text:menaionApostGlory.text, source:"Menaion — " + mSaint,
-            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
-        } else if (apostGlory && !apostGlory.startsWith('[')) {
-          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-            rubric:"Tone "+tone+":",
-            text:apostGlory, source:"Octoechos",
-            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Octoechos, Tone "+tone+"."}});
-        } else {
-          // Neither aposticha_glory nor aposticha_glory_absent declared: doxasticon not
-          // checked against the PDF → red placeholder (all ranks) until an encoding pass
-          // encodes aposticha_glory or sets aposticha_glory_absent: true.
-          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-            unresolved:true,
-            text:"[aposticha doxasticon — unverified against PDF]",
-            source:"Menaion — " + mSaint,
-            fekula:{section:fekulaSection, note:"Aposticha Glory unverified: encode aposticha_glory, or set aposticha_glory_absent: true if the PDF prints none. (§D policy (b) / validator Check G)"}});
-        }
-        // Now and ever → theotokion/dogmatikon
-        elements.push({id:"v-apost-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
-      }
-      if (!isSatEve && pushCh6BothNow('v-apost', ch6WeekdayBothNow('aposticha', (menaionApostGlory && menaionApostGlory.tone) || null))) {
-        // Fekula Ch.6 appointment rendered (tone of the doxasticon — §II/§III).
-      } else if (apostOctoDay && apostOctoDay.aposticha_theotokion) {
-        // Octoechos V2: per-position aposticha closer (typed) — the proper
-        // text at THIS print site (verbatim per-position storage, spec §2.2).
-        const _at = apostOctoDay.aposticha_theotokion;
-        const _atIsDog = _at.type === "dogmatic_theotokion";
-        elements.push({id: _atIsDog ? "v-apost-dogmatikon" : "v-apost-theotokion", type:"movable",
-          label: _atIsDog ? "Dogmatikon (Friday)" : "Theotokion",
-          rubric:"Tone "+tone+":",
-          text:hymnText(_at), source:"Octoechos", ...hymnProvenance(_at),
-          fekula:{section:fekulaSection, note:"Aposticha Both Now: per-evening typed closer from the Octoechos. Fekula §2A."}});
-      } else if (isSatEve && apostOctoDay.dogmatikon) {
-        elements.push({id:"v-apost-dogmatikon", type:"movable", label:"Dogmatikon",
-          rubric:"Tone "+tone+":",
-          text:hymnText(apostOctoDay.dogmatikon), source:"Octoechos", ...hymnProvenance(apostOctoDay.dogmatikon),
-          fekula:{section:fekulaSection, note:"Saturday Aposticha Both Now = dogmatikon. Fekula §2A."}});
-      } else {
-        // Weekday Both Now: use aposticha_glory from Octoechos if available
-        const apostWeekdayTheot = apostOctoDay && apostOctoDay.aposticha_glory
-          && !apostOctoDay.aposticha_glory.startsWith('[')
-          ? apostOctoDay.aposticha_glory : null;
-        if (apostWeekdayTheot) {
-          elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion",
-            rubric:"Tone "+tone+":",
-            text:apostWeekdayTheot, source:"Octoechos",
-            fekula:{section:fekulaSection, note:"Aposticha Both Now: theotokion from Octoechos, Tone "+tone+". Fekula §2A."}});
-        } else {
-          elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion",
-            unresolved:true,
-            text:"[Theotokion — not found for Tone "+tone+"]",
-            source:"Octoechos",
-            fekula:{section:fekulaSection, note:"Aposticha Both Now: theotokion in tone of week."}});
-        }
-      }
-    } else if (!isPentecostarion && menaionEntry && menaionEntry.stichera_aposticha && menaionEntry.stichera_aposticha.length > 0) {
-      // §2C+: Menaion stichera_aposticha encoded — assemble with verses
-      const menAposticha = menaionEntry.stichera_aposticha;
-      menAposticha.forEach((s, i) => {
-        // First sticheron has no preceding verse; subsequent stichera have their verse before them
-        if (i > 0 && s.verse) {
-          elements.push({id:"v-apost-verse-men-"+i, type:"fixed", label:"", rubric:"Reader:",
-            text:s.verse, source:"Menaion"});
-        }
-        elements.push({id:"v-apost-stich-men-"+i, type:"movable",
-          label: i===0 ? "Aposticha" : "",
-          rubric:"Tone "+(s.tone||"?")+":"  ,
-          text:s.text, source:"Menaion — " + mSaint,
-          fekula:{section:fekulaSection, note:"Aposticha sticheron "+(i+1)+" from Menaion. — Fekula " + fekulaSection}});
-      });
-      // Glory → doxasticon (or unverified red); aposticha_glory_absent → combined "Glory…
-      // now and ever" sung together (clean). §D runtime hardening, policy (b) / Check G.
-      const apostGloryAbsent = !!(menaionEntry && menaionEntry.aposticha_glory_absent === true);
-      if (apostGloryAbsent) {
-        elements.push({id:"v-apost-glory-nowever", type:"fixed", label:"",
-          text:"Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
-          source:"HTM Vespers"});
-      } else {
-        elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
-        if (menaionEntry.aposticha_glory) {
-          const ag = menaionEntry.aposticha_glory;
-          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-            rubric:"Tone "+(ag.tone||"?")+":"  ,
-            text: typeof ag === "string" ? ag : ag.text,
-            source:"Menaion — " + mSaint,
-            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
-        } else {
-          // Neither aposticha_glory nor aposticha_glory_absent declared: doxasticon not
-          // checked against the PDF → red placeholder (all ranks) until an encoding pass
-          // encodes aposticha_glory or sets aposticha_glory_absent: true.
-          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-            unresolved:true,
-            text:"[aposticha doxasticon — unverified against PDF]",
-            source:"Menaion — " + mSaint,
-            fekula:{section:fekulaSection, note:"Aposticha Glory unverified: encode aposticha_glory, or set aposticha_glory_absent: true if the PDF prints none. (§D policy (b) / validator Check G)"}});
-        }
-        // Both Now
-        elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
-      }
-      if (menaionEntry.aposticha_both_now) {
-        // The Menaion's own encoded Both-now governs (it IS "the theotokion
-        // from the Menaion" — Fekula Ch.6 §III aposticha).
-        const at = menaionEntry.aposticha_both_now;
-        elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
-          rubric:"Tone "+(at.tone||"?")+":"  ,
-          text: typeof at === "string" ? at : at.text,
-          source:"Menaion — " + mSaint,
-          fekula:{section:fekulaSection, note:"Aposticha Both Now: theotokion from Menaion. — Fekula " + fekulaSection}});
-      } else {
-        // No Menaion Both-now encoded — Fekula Ch.6 appointment: §II theotokion
-        // in the tone of the doxasticon (daily class with doxasticon), the
-        // Menaion-marker (res class), or the per-evening Octoechos closer
-        // (daily class, no doxasticon).
-        const _ag = menaionEntry.aposticha_glory;
-        const _agTone = (_ag && typeof _ag === "object" && _ag.tone) || null;
-        if (!pushCh6BothNow('v-apost', ch6WeekdayBothNow('aposticha', _agTone))) {
-          const _evAp = (srcVespersDay(tone, getVespersDayKey(dow)) || {}).aposticha_theotokion || null;
-          if (_evAp) {
-            elements.push({id: _evAp.type === "dogmatic_theotokion" ? "v-apost-dogmatikon" : "v-apost-theotokion",
-              type:"movable",
-              label: _evAp.type === "dogmatic_theotokion" ? "Dogmatikon (Friday)" : "Theotokion",
-              rubric:"Tone "+tone+":",
-              text:hymnText(_evAp), source:"Octoechos", ...hymnProvenance(_evAp),
-              fekula:{section:fekulaSection, note:"Aposticha Both Now: per-evening typed closer from the Octoechos (no doxasticon — Fekula Ch.6 §II)."}});
-          }
-        }
-      }
-    } else {
-      // §2D/§2E/§2F: Menaion stichera + Menaion verses — not yet encoded
-      elements.push({id:"v-apost-stich",type:"movable",label:"Aposticha Stichera",
-        rubric:"Stichera with their appointed verses", unresolved:true,
-        text:"[Menaion aposticha stichera not yet entered]\n\nEnter stichera_aposticha[] in SAMPLE_MENAION to complete.",
-        source:"Menaion",
-        fekula:{section:fekulaSection, note:"Aposticha: Menaion stichera with Menaion-provided verses — not yet encoded."}});;
     }
   }
   // 16. NUNC DIMITTIS
