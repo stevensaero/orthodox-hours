@@ -504,8 +504,42 @@ never Menaion data (the daily one from the Octoechos, or a feast's great
 prokeimenon). Still to come in Vespers: the dismissal `name`; the other
 composed Litiyas; `isGreatVespers` and a few frame tests still key on rank.
 
-NEXT on the branch: Typica and Liturgy propers, dismissal, bulletin; Prefer OCA
-toggle and service chooser; the How-It-Works pass; merge and retire V1.
+DONE on the branch — Typica and Liturgy, FIRST PART (14 Nov):
+- `liturgyPlan(c, path)` in the adapter: what the service prints for the Liturgy
+  in print order (prokeimena, Alleluia, communion verses with their verses
+  attached; Epistle and Gospel references; the refrain and irmos "instead of It
+  is truly meet"). Both stored shapes (one of each, or lists).
+- `src/lib/liturgy-propers.js` reads the plan (`menaionPlan`) for the Menaion's
+  part; `zadostoinikFor` likewise; `readingsForDay` takes the rank as a
+  parameter. The Typica and the Liturgy context pass the plan, the rank, and
+  the Epistle/Gospel "of the commemoration" from the V2 service. The V1 reads
+  remain ONLY for the Pentecostarion season, marked.
+- `tools/test_liturgy_assembly.mjs` re-based: its sung-propers scenarios now
+  use V2 services (09-06; 11-22 for a Sunday with feast and saint).
+- Mount test: the Typica for 16 Nov shows the Menaion's prokeimenon and Gospel.
+- NOT DONE in the Liturgy: the Little Entrance troparia and kontakia
+  (`src/lib/liturgy-entrance.js`, by rank and temple), the Beatitudes troparia,
+  the Trisagion substitute. These still read V1 fields.
+
+**THE LITURGY RULE NEEDS BILL'S RULING BEFORE IT IS GATED AGAINST THE OCA.**
+The module applies Fekula's "for the day, and, if there be such, from the
+Menaion" by PRESENCE: whenever the page prints a prokeimenon, Alleluia or
+readings, they are added to the day's. The OCA texts do less:
+- 16 Nov (Monday, Apostle Matthew, polyeleos): ONLY the saint's prokeimenon,
+  Epistle, Alleluia and Gospel; nothing of the day.
+- 6 Sep (Sunday, six-stichera): ONLY the Sunday's; nothing of the Archangel,
+  though the Menaion prints a prokeimenon, Epistle and Gospel for him.
+- 22 Nov (Sunday, afterfeast): Sunday and feast prokeimena and Alleluia, the
+  Sunday Epistle and Gospel; nothing of the Apostles, though printed.
+- 14 Nov (Saturday): the saint's first, then the day's (as the module does).
+Either the OCA documents are not a full statement of the Liturgy (they may
+leave the daily readings to the lectionary), or presence is the wrong gate and
+rank decides. Fekula ch. 1 and ch. 2 "Divine Liturgy" lines must be read
+section by section, as was done for the Hours, before any change.
+
+NEXT on the branch: that ruling and the Liturgy gate; the entrance troparia and
+kontakia and the Beatitudes; dismissal `name`; bulletin; Prefer OCA toggle and
+service chooser; the How-It-Works pass; merge and retire V1.
 
 **RULED (Bill, 14 Nov, on the evidence):**
 - **An OCA hymn replaces its own counterpart and nothing else.** 10-04: the OCA
