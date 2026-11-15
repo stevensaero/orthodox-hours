@@ -790,6 +790,28 @@ RELEASE_NOTES, project_notes.md and the specs, and nowhere a reader looks.
 - Services and messages say "the Menaion"; keep "V2" out of the How-It-Works
   text.
 
+**CONFIRMED (Bill, 14 Nov): V1 IS DELETED AT THE MERGE, WHOLE. "I don't want bloat
+from unused tools ... all of that should now only be found in archives of prior
+commits."** The merge removes, not just hides:
+- `src/data/menaion/` (may, june, july, september, october: 98 dates);
+- `src/components/menaion-browser.jsx`, its route `/menaion` and its Library book;
+- V1-only support: the V1 parts of `editor-adapters.js` and `src/lib/audit.js`,
+  `tools/validate_entries.mjs`, `tools/compare_menaion_v1_v2.mjs`,
+  `tools/test_edit_engine.mjs` if it has no V2 subject;
+- every remaining V1 read in `hours-tool.jsx`, `pentecostarion-browser.jsx` and
+  `src/data/menaion_v2/index.js`;
+- gates that import V1 data are re-based first, so none keeps V1 alive:
+  `test_bulletin_day` (the May counter-case), `test_bulletin_layout`,
+  `render_bulletin`, `test_ref_resolution`, `test_sunday_vespers`,
+  `test_liturgy_assembly` (its remaining V1 fixtures).
+- Also clear the two stale comments naming `OCTOECHOS_HYPAKOE`, a V1 Octoechos
+  table that no longer exists. (The V1 Octoechos data, browser and validator
+  were checked and are gone; only its four planning documents remain.)
+**The cost, stated to Bill and accepted: 86 of V1's 98 dates are not in the new
+Menaion** (16 May to 31 July: 77; September: 6; October: 3) and will read "not
+yet encoded" until re-captured. None is in use before next May. The summer
+dates feed the Pentecostarion season, so they are due before then.
+
 **OPEN QUESTIONS ADDED (Bill: "fire off any uncertainties"):** Q-0008, how the
 dismissal names 6 September (a miracle of the Archangel, with the Martyr
 Eudoxius); Q-0009, whom it names on 29 November (the Menaion's Paramon and
