@@ -33,6 +33,21 @@
 //             Sunday's or the weekday's), 'feast', 'saint'.
 //             epistle / gospel: likewise; `saturday` gives the Saturday order where
 //             the book prints one.
+//   Vespers   lic: the stichera at "Lord, I have cried", [whose, how many] in order
+//             ('resurrection' from the Octoechos). licGlory / licBothNow: whose hymn.
+//             'dogmatikon:week' = in the tone of the week; 'dogmatikon:8' = Tone 8;
+//             'theotokion:2' likewise; 'feast' = the feast's hymn. licGlory null =
+//             one hymn at "Glory, Both now". `friday` gives what changes on a Friday
+//             evening. entrance: true | false. readings: the references, in order.
+//             litiya: [whose, how many] (the temple's sticheron is the parish's own),
+//             its Glory and Both now; `compose` where it is drawn from other places
+//             of the page (closer: where the closing hymn is stored).
+//             aposticha: from 'menaion' | 'octoechos', how many, Glory, Both now.
+//             troparia: the hymns in order; 'GN:' = at "Glory, Both now", 'G:', 'N:'.
+//             On a Sunday the troparia are those sung when no Vigil is served; at a
+//             Vigil the book appoints "Theotokos Virgin, rejoice", thrice.
+//             Little Compline and Matins are not entered: the tool does not yet
+//             assemble their propers.
 const HOURS = ['1st_hour', '3rd_hour', '6th_hour', '9th_hour'];
 const each = (v) => Object.fromEntries(HOURS.map((h) => [h, v]));
 const pairs = (a, b) => ({ '1st_hour': a, '3rd_hour': b, '6th_hour': a, '9th_hour': b });
@@ -42,6 +57,12 @@ export const ODS3_ORDERS = {
   // 5 September, Prophet Zacharias and Righteous Elizabeth (the polyeleos service, 09-05A.pdf)
   'ods3-0905-sun': {
     service: '09-05.c1', day: 'sunday', pages: [11, 13], rank: 'polyeleos',
+    vespers: { page: 11,
+      lic: [['resurrection', 4], ['saint:Zacharias', 3], ['saint:Elizabeth', 3]], licGlory: 'saint:Zacharias', licBothNow: 'dogmatikon:week',
+      entrance: true, readings: ['Genesis 18:1-14', 'Judges 13:2-20', '1 Kings 1:9-20'],
+      litiya: { stichera: [['temple', 1], ['saint', 3]], glory: 'doxasticon:6', bothNow: 'theotokion:6' },
+      aposticha: { from: 'octoechos', count: 4, glory: 'saint:Zacharias', bothNow: 'theotokion:2' },
+      troparia: ['sunday', 'G:saint', 'N:theotokion:2'] },
     hours: { page: 13, troparia: each(['sunday', 'saint']),
       kontakion: byHour('saint:Zacharias', 'sunday', 'saint:Elizabeth', 'sunday') },
     liturgy: { page: 13,
@@ -55,6 +76,13 @@ export const ODS3_ORDERS = {
   },
   'ods3-0905-wkd': {
     service: '09-05.c1', day: 'weekday', pages: [14, 16], rank: 'polyeleos',
+    vespers: { page: 14,
+      lic: [['saint:Zacharias', 4], ['saint:Elizabeth', 4]], licGlory: 'saint:Zacharias', licBothNow: 'dogmatikon:8',
+      entrance: true, readings: ['Genesis 18:1-14', 'Judges 13:2-20', '1 Kings 1:9-20'],
+      litiya: { stichera: [['temple', 1], ['saint', 3]], glory: 'doxasticon:6', bothNow: 'theotokion:6' },
+      aposticha: { from: 'menaion', count: 3, glory: 'saint:Zacharias', bothNow: 'theotokion:2' },
+      troparia: ['saint', 'GN:theotokion:2'],
+      friday: { licBothNow: 'dogmatikon:week', troparia: ['saint', 'GN:theotokion:week'] } },
     hours: { page: 16, troparia: each(['saint']), kontakion: pairs('saint:Zacharias', 'saint:Elizabeth') },
     liturgy: { page: 16,
       beatitudes: [['menaion', 0, 4], ['menaion', 4, 8]],
@@ -72,6 +100,14 @@ export const ODS3_ORDERS = {
   // St. Sergius Menaion holds no such service, so it is not entered.)
   'ods3-1125-sun-clement-rome': {
     service: '11-25.c0', day: 'sunday', pages: [50, 52], rank: 'doxology',
+    vespers: { page: 50,
+      lic: [['resurrection', 4], ['feast', 3], ['saint', 3]], licGlory: 'feast', licBothNow: 'dogmatikon:week',
+      entrance: true, readings: [],
+      // Three stichera of the feast from the Aposticha of Vespers, without their verses;
+      // Glory, Both now, the doxasticon of the feast from the Praises of Matins.
+      litiya: { stichera: [['feast', 3]], glory: null, bothNow: 'feast', compose: { closer: 'matins.praises_closer' } },
+      aposticha: { from: 'octoechos', count: 4, glory: null, bothNow: 'feast' },
+      troparia: ['sunday', 'G:saint', 'N:feast'] },
     hours: { page: 52, troparia: each(['sunday', 'feast']), kontakion: pairs('feast', 'sunday') },
     liturgy: { page: 52,
       // 2 from Ode IX of Canon I and 2 from Ode IX of Canon II: the page prints four of each.
@@ -82,6 +118,12 @@ export const ODS3_ORDERS = {
   },
   'ods3-1125-wkd': {
     service: '11-25.c0', day: 'weekday', pages: [56, 58], rank: 'doxology',
+    vespers: { page: 56,
+      lic: [['feast', 3], ['saint', 3]], licGlory: null, licBothNow: 'feast',
+      entrance: false, readings: [],
+      aposticha: { from: 'menaion', count: 3, glory: null, bothNow: 'feast' },
+      troparia: ['saint', 'GN:feast'],
+      friday: { licGlory: 'feast', licBothNow: 'dogmatikon:week' } },
     hours: { page: 58, troparia: each(['feast', 'saint']), kontakion: each('feast') },
     liturgy: { page: 58,
       beatitudes: [['menaion', 0, 4], ['menaion', 4, 8]],

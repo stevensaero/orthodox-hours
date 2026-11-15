@@ -167,7 +167,16 @@ export function resolveLicStichera({ c, base, eveDow, tone, octo }) {
     // gives up one: three, three of the feast, four of the saint (§1F1 six-stichera, §1F2).
     const total = sums.reduce((a, b) => a + b, 0);
     if (total <= 6) { plan = groups.map((g, i) => fit(g.items, sums[i])); rule = `§${feastDay ? '1F1' : '1B'}: four of the resurrection, then ${sums.join(' and ')} as the page prints them.`; }
-    else { plan = groups.map((g, i) => fit(g.items, i === groups.length - 1 ? 7 - sums.slice(0, -1).reduce((a, b) => a + Math.min(b, 3), 0) : Math.min(sums[i], 3))); rule = `§${feastDay ? '1F2' : '1B'}: three of the resurrection, three, and four of the saint.`; }
+    else if (!feastDay) {
+      // Two saints outside a feast period: four of the resurrection and six from the
+      // Menaion (§1B "three of the first saint and three of the second"; §1D "four from
+      // the Octoechos and six from the Menaion"), shared evenly. The resurrection gives
+      // up one only in a feast period. (ODS vol. III, 5 September: 4, 3 and 3.)
+      const each = Math.floor(6 / groups.length);
+      plan = groups.map((g, i) => fit(g.items, i === groups.length - 1 ? 6 - each * (groups.length - 1) : each));
+      rule = `§${c.rank === 'simple' ? '1B' : { six_stichera: '1C', doxology: '1C', polyeleos: '1D' }[c.rank] ?? '1E'}: four of the resurrection and six from the Menaion, ${plan.map((x) => x.length).join(' and ')}.`;
+    }
+    else { plan = groups.map((g, i) => fit(g.items, i === groups.length - 1 ? 7 - sums.slice(0, -1).reduce((a, b) => a + Math.min(b, 3), 0) : Math.min(sums[i], 3))); rule = '§1F2: three of the resurrection, three, and four of the saint.'; }
   } else {
     const n = SUNDAY_MENAION[c.rank] ?? 3;
     plan = [fit(groups[0].items, n)];
@@ -250,8 +259,22 @@ export function resolveAposticha({ c, base, eveDow, tone, octo }) {
 // the Matins Aposticha." NOT BUILT: the other Saturday-evening Litiyas of ch. 1,
 // which begin with the temple's sticheron and draw on the Octoechos.
 // Returns null, or { rubric, stichera: [{ text, tone, path }], glory, bothNow, combined, composed }.
-export function resolveLitiya({ c, base, eveDow = null }) {
+export function resolveLitiya({ c, base, eveDow = null, order = null }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
+  // ODS 3rd ed. vol. III composes the Litiya for this date from hymns the page prints
+  // elsewhere (src/data/ods_v3/orders.js: `compose`): the feast's stichera of the
+  // Vespers Aposticha without their verses, and one closing hymn named by its place.
+  const comp = order?.vespers?.litiya?.compose;
+  if (comp && v.litiya == null) {
+    const ofFeast = (n) => ['feast', 'forefeast'].includes(n.saint) || [].concat(n.label ?? []).includes('of_the_feast');
+    let t = null;
+    const stichera = (Array.isArray(v.aposticha) ? v.aposticha : []).map((n, i) => ({ n, i }))
+      .filter(({ n }) => isText(n) && !([].concat(n.label ?? []).includes('refrain')) && ofFeast(n))
+      .map(({ n, i }) => { if (n.tone != null) t = n.tone; return { text: n.text, tone: t, spec_mel: n.spec_mel ?? null, path: `${base}.${vname}.aposticha[${i}]` }; });
+    const closer = comp.closer.split('.').reduce((o, k) => o?.[k], c);
+    if (stichera.length && isText(closer)) return { rubric: null, stichera, glory: null, combined: true, composed: `ODS 3rd ed. vol. III, p. ${order.vespers.page} (${order.id})`,
+      bothNow: { kind: 'feast', source: 'menaion', tone: closer.tone ?? null, node: { ...closer, path: `${base}.${comp.closer}` }, basis: 'rule' } };
+  }
   if (v.litiya == null && eveDow === 6 && ['forefeast', 'afterfeast'].includes(c.kind) && c.fekula_section === '2G1') {
     const ofFeast = (n) => ['feast', 'forefeast'].includes(n.saint) || [].concat(n.label ?? []).includes('of_the_feast');
     let t = null;

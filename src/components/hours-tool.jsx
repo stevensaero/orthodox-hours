@@ -4198,7 +4198,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   //  P+56 All Saints) carry has_litya: true on the pentEntry, not the menaionEntry.
   // The Menaion's Litiya is whatever the V2 page prints, and no more (printed only:
   // src/lib/vespers-propers.js resolveLitiya; ruled 14 Nov 2026).
-  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path, eveDow: dow }) : null;
+  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path, eveDow: dow, order: ods3OrderFor(menaionV2.path, (dow + 1) % 7) }) : null;
   const menaionHasLitya = !!v2Litiya;
   const pentHasLitya = pentEntry && pentEntry.has_litya === true;
   const hasLitya = menaionHasLitya || pentHasLitya;
@@ -4235,7 +4235,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     if (!litEntryIsPent) {
       // Menaion V2: the stichera, Glory and Both now the page prints.
       const litNote = v2Litiya.composed
-        ? "Saturday evening in a forefeast or afterfeast (Fekula " + v2Litiya.composed + "): stichera of the feast from the Vespers Aposticha; Glory, Both now, the sticheron of the feast from the Matins Aposticha. Served if the rector wishes."
+        ? (/vol\. III/.test(v2Litiya.composed)
+            ? v2Litiya.composed + ": the stichera of the feast from the Vespers Aposticha, without their verses; Glory, Both now, the doxasticon of the feast from the Praises of Matins. Served if the rector directs."
+            : "Saturday evening in a forefeast or afterfeast (Fekula " + v2Litiya.composed + "): stichera of the feast from the Vespers Aposticha; Glory, Both now, the sticheron of the feast from the Matins Aposticha. Served if the rector wishes.")
         : (v2Litiya.rubric ? "The page: \u201c" + v2Litiya.rubric + "\u201d " : "") + "The Litiya as the Menaion prints it; nothing is supplied where the page is silent.";
       v2Litiya.stichera.forEach((st, i) => {
         elements.push({ id: "v-litiya-stich-" + i, type: "movable", label: i === 0 ? "Litiya Stichera" : "",

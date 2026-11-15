@@ -5,6 +5,8 @@
 //   - what the tool gives WITH the order must be exactly the order;
 //   - and the general rule (ODS 2nd ed. ch. 1, 2) is run beside it, to report where
 //     vol. III changes the result. A change is not an error: it is the override at work.
+// Vespers is CHECKED place by place against the tool's resolvers (printed first, then
+// the general rule); where they differ the gate fails until the order drives that place.
 // OWED lists parts of an order the code does not yet drive; the gate fails if a part
 // is neither driven nor listed there.
 //   node tools/test_ods_v3_orders.mjs
@@ -13,6 +15,7 @@ import { servicesOf, hoursPlan, entrancePlan, liturgyPlan, HOURS } from '../src/
 import { resolveEntrance, resolveBeatitudes } from '../src/lib/liturgy-entrance.js';
 import { resolveLiturgyPropers } from '../src/lib/liturgy-propers.js';
 import { readingsForDay } from '../src/lib/readings.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../src/lib/vespers-propers.js';
 import { ODS3_ORDERS } from '../src/data/ods_v3/orders.js';
 import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
 
@@ -36,6 +39,62 @@ const slotsOf = (els) => els.filter((e) => /^lit-tk-\d+-/.test(e.id)).map((e) =>
 // A saint slot holds every hymn the page prints for the saints: fold repeats for comparison.
 const fold = (list) => list.map((x) => x.replace(/^(G|N|GN):/, '')).filter((x, i, a) => x !== a[i - 1]).join(',');
 
+const octo = {
+  sundayDogmatikon: (t) => OctoV2.getV2SundayVespers(t)?.dogmatikon ?? null, dogmatikon: (t) => OctoV2.getV2Dogmatikon(t),
+  doxTheotokion: (t, eve) => OctoV2.getV2DoxasticonTheotokion(t, eve), evening: (t, eve) => OctoV2.getV2WeekdayVespers(t, eve)?.lic_theotokion ?? null,
+  sundayLic: (t) => OctoV2.getV2SundayVespers(t)?.lic ?? [], eveningLic: (t, eve) => OctoV2.getV2WeekdayVespers(t, eve)?.lic ?? [],
+  apostichaTheotokion: (t) => OctoV2.getV2ApostichaTheotokion(t), sundayApostichaTheotokion: (t) => OctoV2.getV2SundayVespers(t)?.aposticha_theotokion ?? null,
+  eveningApostichaTheotokion: (t, eve) => OctoV2.getV2WeekdayVespers(t, eve)?.aposticha_theotokion ?? null,
+  resTroparion: (t) => OctoV2.getV2Troparion(t), resDismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t), dailyDismissalTheotokion: (t, eve) => OctoV2.getV2DailyDismissalTheotokion(t, eve) };
+// Vespers of an order, checked against the tool's own resolvers on one evening.
+// WEEK is a tone of the week no hymn of these services is in, so "tone of the week" is unambiguous.
+const WEEK = 5;
+function checkVespers(id, o, c, base, eveDow, label, report) {
+  const V = { ...o.vespers, ...(eveDow === 5 ? o.vespers.friday ?? {} : {}) }; const a = { c, base, eveDow, tone: WEEK, octo }; const order = { id, ...o };
+  const bad = (what, got, want) => fail(`${id} Vespers (${label}) ${what}: tool ${got}; the order ${want}`);
+  const tn = (x) => (x === 'week' ? WEEK : Number(x));
+  // a hymn against a name: 'feast', 'saint', 'saint:Name', 'doxasticon:6', 'dogmatikon:week', 'theotokion:2'
+  const is = (sl, want) => { if (want == null) return sl == null; if (!sl) return false; const [k, arg] = want.split(':');
+    if (k === 'feast') return sl.kind === 'feast';
+    if (k === 'saint') return sl.kind !== 'feast' && sl.source === 'menaion' && (!arg || (sl.node?.saint ?? '').includes(arg));
+    return sl.kind === k && (sl.tone ?? sl.node?.tone) === tn(arg); };
+  const show = (sl) => (sl ? `${sl.kind}/T${sl.tone ?? sl.node?.tone}${sl.node?.saint ? '(' + sl.node.saint + ')' : ''}` : 'none');
+  // Lord, I have cried
+  const st = resolveLicStichera(a); const runs = [];
+  for (const x of st.stichera) { const g = x.group === 'saint' && x.who ? 'saint:' + x.who : x.group; if (runs.length && runs.at(-1)[0] === g) runs.at(-1)[1]++; else runs.push([g, 1]); }
+  const wantRuns = V.lic.map(([w, n]) => `${w}x${n}`); const gotRuns = runs.map(([g, n], i) => `${V.lic[i] && g.startsWith(V.lic[i][0]) ? V.lic[i][0] : g}x${n}`);
+  if (gotRuns.join(' ') !== wantRuns.join(' ')) bad('stichera', runs.map((r) => r.join('x')).join(' + '), wantRuns.join(' + '));
+  const cl = resolveLicClosers(a);
+  if (V.licGlory == null ? !(cl.combined && is(cl.bothNow, V.licBothNow)) : !(is(cl.glory, V.licGlory) && is(cl.bothNow, V.licBothNow))) bad('Glory / Both now', `${show(cl.glory)} / ${show(cl.bothNow)}${cl.combined ? ' (one hymn)' : ''}`, `${V.licGlory ?? 'one hymn'} / ${V.licBothNow}`);
+  // Entrance and readings
+  const rd = resolveVespersReadings(a);
+  if (rd.entrance !== V.entrance) bad('entrance', rd.entrance, V.entrance);
+  const refs = rd.readings.map((r) => r.display ?? r.ref ?? '');
+  if (refs.length !== V.readings.length || V.readings.some((r, i) => !refs[i].includes(r))) bad('readings', refs.join(' ; ') || 'none', V.readings.join(' ; ') || 'none');
+  // Litiya (the temple's sticheron is the parish's own and is not counted)
+  const li = resolveLitiya({ c, base, eveDow, order }); const liBare = resolveLitiya({ c, base, eveDow });
+  if (V.litiya) {
+    const n = V.litiya.stichera.filter(([w]) => w !== 'temple').reduce((x, [, k]) => x + k, 0);
+    if (!li) bad('Litiya', 'none', `${n} stichera`);
+    else {
+      if (li.stichera.length !== n) bad('Litiya stichera', li.stichera.length, n);
+      if (V.litiya.glory == null ? !(li.combined && is(li.bothNow, V.litiya.bothNow)) : !(is(li.glory, V.litiya.glory) && is(li.bothNow, V.litiya.bothNow))) bad('Litiya Glory / Both now', `${show(li.glory)} / ${show(li.bothNow)}`, `${V.litiya.glory ?? 'one hymn'} / ${V.litiya.bothNow}`);
+      if (V.litiya.compose && li.bothNow?.node?.path !== `${base}.${V.litiya.compose.closer}`) bad('Litiya closing hymn', li.bothNow?.node?.path, V.litiya.compose.closer);
+      if (!liBare) report.add(`Vespers (${label}) Litiya: CHANGES the general rule (none shown) to the one the order composes`);
+    }
+  } else if (li) bad('Litiya', `${li.stichera.length} stichera`, 'none appointed');
+  // Aposticha
+  const ap = resolveAposticha(a); const A = V.aposticha;
+  if (ap.stichera.source !== A.from) bad('Aposticha stichera', ap.stichera.source, A.from);
+  if (A.from === 'menaion') { const k = ap.stichera.items.filter((x) => x.kind === 'sticheron').length; if (k !== A.count) bad('Aposticha count', k, A.count); }
+  if (A.glory == null ? !(ap.combined && is(ap.bothNow, A.bothNow)) : !(is(ap.glory, A.glory) && is(ap.bothNow, A.bothNow))) bad('Aposticha Glory / Both now', `${show(ap.glory)} / ${show(ap.bothNow)}`, `${A.glory ?? 'one hymn'} / ${A.bothNow}`);
+  // Troparia
+  const tr = resolveVespersTroparia({ ...a, own: {} });
+  const got = tr.items.map((i) => ({ glory: 'G:', bothNow: 'N:', gloryBothNow: 'GN:' }[i.lead] ?? '') + (i.kind === 'theotokion' ? 'theotokion:' + (i.tone === WEEK ? 'week' : i.tone) : i.kind));
+  const want = V.troparia.map((w) => w.replace(/saint:.*/, 'saint'));
+  if (got.join(' | ') !== want.join(' | ')) bad('troparia', got.join(' | '), want.join(' | '));
+}
+
 let orders = 0; let changes = 0;
 for (const [id, o] of Object.entries(ODS3_ORDERS)) {
   orders++; const order = { id, ...o }; const key = o.service.slice(0, 5);
@@ -45,7 +104,17 @@ for (const [id, o] of Object.entries(ODS3_ORDERS)) {
   if (o.rank !== c.rank) fail(`${id}: vol. III prints ${o.rank}; Menaion V2 stores ${c.rank}`);
   const period = ['forefeast', 'afterfeast', 'apodosis'].includes(c.kind) ? c.kind : null;
   const ld = { dow, isSunday: sunday, tone: 3, season: period ?? (sunday ? 'sunday' : 'ordinary'), feastPeriod: period ? { periodType: period, feast: { name: 'the feast', forLord: false } } : null };
-  const report = [];
+  const report = []; report.add = (m) => { changes++; report.push(m); };
+
+  // Vespers: the evening before. A weekday order is run on a Tuesday and a Friday
+  // evening, a Sunday order on Saturday evening.
+  if (o.vespers) {
+    const before = bad;
+    if (sunday) checkVespers(id, o, c, svc.path, 6, 'Saturday evening', report);
+    else { checkVespers(id, o, c, svc.path, 2, 'Tuesday evening', report); checkVespers(id, o, c, svc.path, 5, 'Friday evening', report); }
+    if (bad === before && !report.some((r) => /^Vespers/.test(r))) report.push('Vespers: the tool already gives the order (stichera, Glory and Both now, entrance, readings, Litiya, Aposticha, troparia)');
+    else if (bad === before) report.push('Vespers: otherwise the tool already gives the order');
+  }
 
   // Hours
   if (o.hours) {
