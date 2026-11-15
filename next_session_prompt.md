@@ -64,7 +64,8 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   Vespers of the four vol. III orders is entered and gated (Matins and Compline are not
   assembled by the tool, so not entered). The dismissal name (hand-entered on every
   service; 29 names await Bill's read) and the bulletin (`src/lib/bulletin-day.js`) are
-  done. NEXT: Prefer OCA toggle, service chooser, How-It-Works, browser items, merge.
+  done. The Prefer OCA toggle and the V2 service chooser are
+  done. NEXT: How-It-Works pass, the three Menaion browser items, merge, retire V1, v0.53.0.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
