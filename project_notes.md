@@ -33,7 +33,8 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 
 "For vespers in the pentecostarion ... when we pick that up for a V2 run we capture
 the OCA verse tie in. I don't want to bother with it now because we will be doing a
-recapture." The full list is **`encoding_rule_v2.md` §3.8** (and it is flagged at the
+recapture." The full list is **`encoding_rule_v2.md` §3.8** (and it is §8 of
+`pentecostarion_v2_pass_notes.md`, and flagged at the
 head of `src/data/pentecostarion.js`, at §7 of the encoding rule, in
 `next_session_prompt.md`, and on each of the five "PENTECOSTARION — unchanged"
 branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to the

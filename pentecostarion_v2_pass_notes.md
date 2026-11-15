@@ -138,3 +138,29 @@ was not written down and a flag was added instead:
 4. Rewrite the five marked blocks against plans; delete the flags in section 4
    as each rule lands.
 5. Gate against the OCA texts; mount test; then the rest of the season.
+
+## 8. THE OCA TIE-IN IS OWED IN THIS PASS (added 15 Nov 2026, at Bill's request)
+
+"For vespers in the pentecostarion ... when we pick that up for a V2 run we capture
+the OCA verse tie in. I don't want to bother with it now because we will be doing a
+recapture." So it was deliberately NOT built on the V1 data, and it is part of this
+pass, not a job for afterwards.
+
+**The full list is `encoding_rule_v2.md` §3.8. Read it before starting.** In short:
+
+1. Add the recaptured Pentecostarion to the matcher's pool (`tools/lib/hymn_pool.mjs`
+   holds the Menaion and the Octoechos only), so OCA hymns can be matched to it.
+2. Ask Bill for the OCA service texts of the Paschal season and run the intake
+   (`npm run oca:intake -- "<folder>"`, encoding rule §3.7). None is captured yet.
+3. "Prefer OCA texts" in this season's services goes through the SAME overlay the
+   rest of the tool uses (`ocaWords` in `src/lib/vespers-propers.js`, `slot()` in
+   `src/data/menaion_v2/adapter.js`, `octoOca` in `hours-tool.jsx`). The five
+   "PENTECOSTARION — unchanged" blocks bypass it today. Do not write a second one.
+4. The by-day comparison (`src/data/oca_hymns/slots.js`, `by_date.js`) is keyed by
+   month and day; a Pentecostarion day is counted from Pascha. An OCA text has to be
+   tied to its day-from-Pascha for its year before the comparison can cover the season.
+5. The Pentecostarion viewer gets the Prefer OCA toggle and the "OCA <year> ↗" mark
+   (as `menaion-v2-reading.jsx` and `octoechos-v2-reading.jsx` have), and
+   `reviewForDay` in `hours-tool.jsx` counts this season's hymns.
+6. The rules do not change: hymn by hymn, never by the day; the tone guard; a general
+   hymn with another saint's name is a different hymn; only Bill's decisions apply.
