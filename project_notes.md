@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.54.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.55.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,32 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.55.0 — the review page for OCA matches (15 Nov 2026)
+
+`/oca-matches` (`src/components/oca-match-review.jsx`), linked from the Menaion
+rail ("Matches for review") and How It Works. One card per held hymn (148),
+strongest wording first: the OCA text, why it was held, the proposed mate and
+up to three other candidates (text, tone, link to the place in the book; a tone
+that differs from the OCA's shown in red). Answers: **This is the same hymn** /
+**Not this one** / **It has no mate in our books**, plus a note. Filters: all /
+waiting / decided here, and by reason held.
+- THE SITE IS STATIC. Decisions live in the reader's browser (localStorage
+  `oca_match_decisions`). **Copy decisions** gives JSON; Bill pastes it into a
+  session (or a file) and it is applied with
+  `node tools/apply_match_decisions.mjs <file>`, then
+  `node tools/match_oca_hymns.mjs` and the validator. Rejections accumulate; a
+  confirmation or "no mate" replaces. A confirmed mate in another tone is
+  stored with `toneDiffers: true`.
+- `matches_human.js` is now WRITTEN BY that tool in one standard form (plain
+  entries, sorted); hand edits are allowed, then `--rewrite`.
+- `matches_review.js` now carries the texts (OCA hymn, proposed mate, other
+  candidates) so the page loads that one file (298 KB, lazy, review page only).
+- Tested in headless Chrome: 148 cards; confirm / reject-then-confirm-another /
+  no mate / reject-only; export; reload keeps the choices; the export applied by
+  the tool, matcher and validator green; then the register restored. No jsdom
+  gate mounts this page; the validator checks every review entry carries what
+  the page needs.
 
 ### v0.54.2 — OCA matching after Bill's first review; the tone rules (15 Nov 2026)
 

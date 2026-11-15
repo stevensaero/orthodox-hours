@@ -8534,6 +8534,23 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.55.0",
+    date: "November 2026",
+    summary: "A review page for OCA matches the tool was not sure of",
+    items: [
+      "NEW PAGE: 'OCA matches for review', opened from the Menaion's rail. Each card shows an " +
+      "OCA hymn, the hymn of the Menaion or Octoechos proposed as the same hymn in another " +
+      "translation, why the tool held back, and up to three other candidates, each with its " +
+      "text, tone and a link to its place in the book.",
+      "Three answers: 'This is the same hymn', 'Not this one' (the tool keeps looking), and " +
+      "'It has no mate in our books'. A note can be added. The cards can be filtered by why " +
+      "they were held.",
+      "Choices are kept in your own browser. 'Copy decisions' gives a block of text to send to " +
+      "whoever maintains the tool; nothing in the tool changes until it is applied there.",
+      "148 matches are waiting.",
+    ],
+  },
+  {
     version: "v0.54.2",
     date: "November 2026",
     summary: "OCA matching after the first review: ten matches confirmed by a person, two candidates rejected, and the tone rules settled",
@@ -14621,6 +14638,7 @@ function HowItWorksPanel() {
             <><strong>Psalter reader &amp; the Order of the Psalter</strong> (<a href="/orthodox-hours/psalter?from=tool" style={{color: "#8B6914"}}>open</a>) — Full text of all 20 kathismas with stasis and psalm numbering, reached from Vespers kathisma assignments; now also assembled as a full service, including a For-the-Departed mode with the departed prayers, stasis dividers, and the whole-Psalter conclusion.</>,
             <><strong>Scripture viewer</strong> (<a href="/orthodox-hours/scripture?from=tool" style={{color: "#8B6914"}}>open</a>) — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
             <><strong>The Menaion</strong> (<a href="/orthodox-hours/menaion-v2?from=tool" style={{color: "#8B6914"}}>open</a>) — The fixed-calendar services as captured from the printed book: every line of each day's Vespers, Matins and Liturgy, the General Menaion, and a search. Every Menaion hymn in an assembled service links to its place here. “Prefer OCA texts” shows the OCA’s words for a hymn that has them, and the rail opens each OCA service text whole, as published.</>,
+            <><strong>OCA matches for review</strong> (<a href="/orthodox-hours/oca-matches?from=tool" style={{color: "#8B6914"}}>open</a>) — OCA hymns whose counterpart in the Menaion or Octoechos the tool could not settle by itself, each beside its candidates, for a person to decide.</>,
             <><strong>Questions for review</strong> (<a href="/orthodox-hours/questions?from=tool" style={{color: "#8B6914"}}>open</a>) — Points where the sources are silent or disagree and the tool has had to choose. Each states what is printed, what was consulted and what the tool does meanwhile, with a link to send an answer.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion?from=tool" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
             <><strong>Octoechos reading view (V2)</strong> (<a href="/orthodox-hours/octoechos-v2?from=tool" style={{color: "#8B6914"}}>open</a>) — The bound book, digitized: tone → day → service navigation, corpus search, audit mode. The complete eight-tone cycle; every assembled Octoechos text links to its exact position here.</>,

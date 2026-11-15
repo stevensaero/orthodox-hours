@@ -516,6 +516,10 @@ export default function MenaionV2Browser() {
               OCA text for this day{ocaToday.length > 1 ? ` — ${ocaLabel(d)}` : ''}
             </div>
           ))}
+          <a href="/orthodox-hours/oca-matches?from=tool" style={{ ...railItem(false), display: "block", textDecoration: "none" }}
+             title="OCA hymns whose mate in the Menaion or Octoechos the tool was not sure of">
+            Matches for review ↗
+          </a>
           <div style={{ display: ocaListOpen ? "block" : "none" }}>
             {ocaDocs.map(d => (
               <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }} style={railItem(d.stem === ocaDoc)}>{ocaLabel(d)}</div>

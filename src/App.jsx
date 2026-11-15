@@ -11,6 +11,7 @@ const OctoechosV2Browser = lazy(() => import('./components/octoechos-v2-browser.
 const MenaionV2Browser = lazy(() => import('./components/menaion-v2-browser.jsx'));
 const ToneTrainer = lazy(() => import('./components/tone-trainer.jsx'));
 const OpenQuestions = lazy(() => import('./components/open-questions.jsx'));
+const OcaMatchReview = lazy(() => import('./components/oca-match-review.jsx'));
 
 function OctoechosRedirect() {
   const loc = useLocation();
@@ -64,6 +65,7 @@ function App() {
         <Route path="/octoechos-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip maxWidth={908} /><OctoechosV2Browser /><HoursReturnStrip position="bottom" maxWidth={908} /></div></Suspense></ErrorBoundary>} />
         <Route path="/menaion-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip maxWidth={976} /><MenaionV2Browser /><HoursReturnStrip position="bottom" maxWidth={976} /></div></Suspense></ErrorBoundary>} />
         <Route path="/questions" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OpenQuestions /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
+        <Route path="/oca-matches" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip maxWidth={860} /><OcaMatchReview /><HoursReturnStrip position="bottom" maxWidth={860} /></div></Suspense></ErrorBoundary>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><ToneTrainer /><HoursReturnStrip position="bottom" /></Suspense>} />
       </Routes>
     </BrowserRouter>
