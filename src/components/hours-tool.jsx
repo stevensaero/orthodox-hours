@@ -3643,7 +3643,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     // (gated against the OCA texts by tools/test_menaion_v2_vespers.mjs); a date the
     // Menaion does not hold still gets its Octoechos Both now.
     const emitLicClosers = () => {
-      const r = resolveLicClosers({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, oca: vOca });
+      const r = resolveLicClosers({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, oca: vOca, order: menaionV2 ? ods3OrderFor(menaionV2.path, (dow + 1) % 7) : null });
       const v2Saint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : effSaint;
       const LABEL = { doxasticon: "Doxasticon", feast: "Sticheron of the feast", theotokion: "Theotokion", dogmatikon: "Dogmatikon", stavrotheotokion: "Stavrotheotokion" };
       const hymn = (slot, id) => ({
@@ -4264,7 +4264,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       // Menaion V2: the stichera, Glory and Both now the page prints.
       const litNote = v2Litiya.composed
         ? (/vol\. III/.test(v2Litiya.composed)
-            ? v2Litiya.composed + ": the stichera of the feast from the Vespers Aposticha, without their verses; Glory, Both now, the doxasticon of the feast from the Praises of Matins. Served if the rector directs."
+            ? v2Litiya.composed + ": " + v2Litiya.how + ". Served if the rector directs."
             : "Saturday evening in a forefeast or afterfeast (Fekula " + v2Litiya.composed + "): stichera of the feast from the Vespers Aposticha; Glory, Both now, the sticheron of the feast from the Matins Aposticha. Served if the rector wishes.")
         : (v2Litiya.rubric ? "The page: \u201c" + v2Litiya.rubric + "\u201d " : "") + "The Litiya as the Menaion prints it; nothing is supplied where the page is silent.";
       v2Litiya.stichera.forEach((st, i) => {
@@ -4714,7 +4714,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const isFeast = menaionV2.c.kind === "feast";
       return { saint: h.troparia.find((x) => x.role !== "feast" || isFeast), feast: isFeast ? null : h.troparia.find((x) => x.role === "feast") };
     })();
-    const tr = resolveVespersTroparia({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, own: vOwn, oca: vOca });
+    const tr = resolveVespersTroparia({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, own: vOwn, oca: vOca, order: menaionV2 ? ods3OrderFor(menaionV2.path, (dow + 1) % 7) : null });
     const trNote = tr.rule + (tr.notes.length ? " " + tr.notes.join(" ") : "") + " No kontakion is sung at Vespers.";
     const trSaint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : "saint of the day";
     const TR_LEAD = { glory: "Glory to the Father, and to the Son, and to the Holy Spirit.", bothNow: "Both now and ever, and unto the ages of ages. Amen.",
@@ -8579,6 +8579,22 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.60.1",
+    date: "November 2026",
+    summary: "The Menaion for 7 to 9 December: St. Ambrose, St. Patapius, the Conception of the Theotokos",
+    items: [
+      "Three more days of the Menaion: St. Ambrose of Milan (7 December), St. Patapius (8 December), and " +
+      "on 9 December the Conception of the Most Holy Theotokos by Saint Anna, with the Menaion's second " +
+      "service of that day, the icon of the Mother of God 'Unexpected Joy', offered as a choice.",
+      "The Conception follows the order Fekula's third edition prints for it: the troparion of the feast " +
+      "alone at Vespers, with no theotokion after it; on a Sunday a Litiya made from the feast's own " +
+      "aposticha; and the feast's hymns after the entrance at the Liturgy.",
+      "Two new open questions: how the stichera of the Theotokos are sung at Vespers on a weekday of the " +
+      "Nativity Fast, where the OCA text for 7 December differs from what the tool gives, and a count in " +
+      "Fekula for a Sunday 9 December that does not add up.",
+    ],
+  },
   {
     version: "v0.60.0",
     date: "November 2026",

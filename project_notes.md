@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.60.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.60.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,45 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.60.1 — 12-07, 12-08, 12-09, 12-09A encoded; the first vol. III order of December (16 Nov 2026)
+
+- **12-07** St. Ambrose and **12-08** St. Patapius: `simple`, Fekula 2A. Each prints the
+  three stichera of the Theotokos for Alleluia days.
+- **12-09** the Conception of the Theotokos: `kind: 'feast'`, `doxology`, Fekula 2C. ODS
+  vol. III HAS this date: `ods3-1209-sun` and `ods3-1209-wkd` are entered in
+  `src/data/ods_v3/orders.js` (structure only). The troparion's Liturgy printing moves one
+  phrase mark and is stored as `liturgy.liturgy_troparion`.
+- **12-09A** the icon "Unexpected Joy": second file, `kind: 'feast'`, a Little Vespers is
+  printed, so `vigil`, Fekula 2F, PROVISIONAL under Q-0002 (added there). Vol. III and the
+  OCA text know only the Conception on this date.
+- **The order drives three places the chapters do not treat** (rule 1.4.5; ch. 1 note 17
+  names only the four great feasts of the Theotokos): (1) Vespers troparia: the feast's
+  troparion alone, or on Saturday evening the Sunday troparion and then the feast's at
+  Glory, Both now (`resolveVespersTroparia` takes `order`); (2) Friday evening: Glory of
+  the feast, Both now the dogmaticon (`resolveLicClosers` takes `order`); (3) the Sunday
+  Litiya: `compose: { count: 2, closer: 'vespers.aposticha[4]' }`, the first two aposticha
+  stichera and the third as the closing hymn. The tool and both gates now pass the order
+  to these resolvers.
+- **Fix:** on a feast's own page (`kind: 'feast'`) the adapter now counts the page's
+  readings as the feast's, as it already did its hymns. Without it an order naming the
+  "feast" reading bound to nothing.
+- **Source defect in vol. III (Q-0016):** the Sunday order states a total of ten Beatitude
+  troparia and names parts that make eight. Entered provisionally as six of the
+  resurrection and four of the feast, which is the stated total and the general rule.
+- **OCA intake.** Slots for 12-07 and 12-09 (there is no OCA text for 12-08). Findings:
+  (1) 12-07, Q-0017 OPENED: the OCA sings three of St. Ambrose and then the Menaion's three
+  "of the Theotokos" at Lord I have cried, none from the Octoechos; the tool gives three
+  of the Octoechos and three of the saint. Listed as known; it belongs to the Alleluia
+  service still to be built. (2) Two more faults in the comparisons' readers, fixed: a
+  weekday aposticha headed "Penitential stichera in the Tone of the week" is the
+  Octoechos'; the OCA's hymns "of the day" and "for the departed" at Liturgy are left out
+  as the tool's own weekday hymns already were. (3) The Vespers comparison now calls the
+  troparia resolver with the date's order, as the tool does.
+- **12-09A label:** the Polyeleos sessional hymn is headed "in Tone Il-" in both
+  extractions; no tone is stored. To be read off the page image.
+- **NOT DONE, known.** Nothing looked at on the live site. The lessons of 12-09A carry
+  identified citations (worklist).
 
 ### v0.60.0 — REVIEW MARKS IN THE VIEWERS: what is open about the page on screen (15 Nov 2026)
 
