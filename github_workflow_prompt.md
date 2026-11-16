@@ -14,11 +14,14 @@ You can push to GitHub from the bash_tool. Here is exactly how it works.
 - **Live site:** https://stevensaero.github.io/orthodox-hours/
 - **Deploy:** Automatic — GitHub Actions builds and deploys on every push to `main`
 
-## Role of Google Drive
+## Where the sources are (Google Drive is NOT used)
 
-**Drive is used only to deliver PDFs for encoding.** Nothing else goes to Drive.
-- Menaion PDFs: `orthodox_liturgics/Menaion/st-sergius-pdf/`
-- Pentecostarion PDFs: `orthodox_liturgics/Pentecostarion/st-sergius-pdf/`
+**Google Drive is retired for this project (Bill, 15 Nov 2026).** Every scan and
+source is found in, or will be delivered to, the local project folder on Bill's
+computer: `C:\Users\Bill\Documents\Claude\Projects\Orthodox Hours\`
+(`Menaion_St_Sergius\`, `OCA_service_texts\`, `Fekula_ODS_SOM_V3\intake\`, and
+whatever is added). Do not look for a source on Drive; if it is not in the
+folder, ask Bill to put it there.
 - No `.txt` encoding records. No project notes snapshots. No versioned filenames.
 - All other source of truth lives in GitHub (see files below).
 

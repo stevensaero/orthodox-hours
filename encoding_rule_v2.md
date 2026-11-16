@@ -217,7 +217,7 @@ A blank field is never acceptable. Blank = encoding error.
 | 1b | **Fekula & Williams, ODS 2nd ed. (2009)** | All assembly decisions **outside ch. V** — general Sunday/weekday structure (ch. I–II), Triodion (ch. III), Pentecostarion (ch. IV), ch. VI, Appendices. Retires chapter by chapter as 3rd-ed. vols. I and II appear |
 | 2 | **OCA calendar — oca.org** | Primary commemoration; OCA troparion/kontakion if differing |
 | 3 | **St. Sergius Menaion PDF** — `Orthodox Hours/Menaion - St. Sergius/` | Full service texts for Menaion dates |
-| 4 | **St. Sergius Pentecostarion PDF** — *(still to migrate off Drive)* | Full service texts for Pentecostarion dates |
+| 4 | **St. Sergius Pentecostarion PDF** — *(local project folder; Drive is retired: ask Bill to put the scans there)* | Full service texts for Pentecostarion dates |
 | 5 | **General Menaion PDF** — `Orthodox Hours/General_Menaion/` | Fallback when no daily PDF exists (§2.1) |
 
 **OCA primacy rule:** When OCA troparion, kontakion, or commemoration date differs from
@@ -585,7 +585,7 @@ fabricated to satisfy a uniformity the source itself doesn't have (v2.9; case: 0
 - **RLE / OCA sources** → already use `|` / `//`; store verbatim.
 - **Formatted-docx underlines** → the underlined span becomes `[brackets]`; merge
   adjacent underlined runs into one bracket (`A[mer]ica`, not `A[mer][ica]`).
-  These docx are delivered via Drive (see §2) and will grow over time.
+  These docx are in the local project folder (`OCA_service_texts`, see §2) and will grow over time.
 - **`//` already in the text** (OCA docx penultimate marker) → keep it, whether at
   a line end or mid-line.
 
@@ -728,7 +728,7 @@ Every encoding session follows these steps in order:
 1. **Read project notes** — clone the repo and read `project_notes.md`; confirm its
    version header matches the tool badge in `hours-tool.jsx`
 2. **Read this rule** — encoding_rule_v2.md is the single point of truth
-3. **For each date:** read the source (PDF or docx) from Drive → fill the skeleton →
+3. **For each date:** read the source (PDF or docx) from the local project folder (§2; Drive is retired) → fill the skeleton →
    encode directly into the monthly data file → commit
 4. **Before closing:** note any NOT YET ENCODED fields explicitly; bump version if
    session adds meaningful content

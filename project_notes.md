@@ -42,6 +42,15 @@ matcher's pool; capture the Paschal-season OCA texts (none on hand); put its ser
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
 
+### STANDING: GOOGLE DRIVE IS RETIRED (Bill, 15 Nov 2026)
+
+"google drive is depreciated and all scans will be found and or delivered in the local
+project folder." Every source is in `C:\Users\Bill\Documents\Claude\Projects\Orthodox
+Hours\` on Bill's computer, or is asked for there. The last Drive references were
+removed from `github_workflow_prompt.md` and `encoding_rule_v2.md` (source table, §3.3,
+§4 step 3). Bill has a replacement text for the claude.ai Project instructions (which
+still described Drive and `src/data/menaion/may.js`); only he can paste it in.
+
 ### v0.59.2 — Prefer OCA in the Octoechos viewer (step 4); the v0.59.1 service link REMOVED (15 Nov 2026)
 
 - **Bill, 15 Nov: "Is that extra link actually required? ... the source takes you to
