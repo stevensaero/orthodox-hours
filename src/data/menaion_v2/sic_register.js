@@ -5,6 +5,20 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── DECEMBER 1-3 (15 Nov 2026). Each confirmed against a second extraction
+  // (pdftotext -layout) before being registered. ───────────────────────────────
+  { path: '12-01.c1.vespers.lic_stavrotheotokion', file: '12-01A.pdf', locus: 'p1 LIC Stavrotheotokion',
+    verbatim: 'Tree of the Cross. O Jesus, she who kneweth', note: 'Full stop in mid-sentence, and "kneweth" for "knew".' },
+  { path: '12-02.c0.vespers.theotokos_stichera[2]', file: '12-02.pdf', locus: 'p1 Sticheron of the Theotokos 3',
+    verbatim: 'take pity one me', note: '"one" for "on".' },
+  { path: '12-02.c0.vespers.lic_stavrotheotokion', file: '12-02.pdf', locus: 'p2 LIC Stavrotheotokion',
+    verbatim: 'shed Thy blood, O Master?', note: 'The quotation opened at "O my Son most desired" is never closed.' },
+  { path: '12-02.c0.matins.canons[0].odes.8.irmos', file: '12-02.pdf', locus: 'p5 Ode 8 irmos',
+    verbatim: 'throughout all ages', note: 'No final full stop.' },
+  { path: '12-02.c1.vespers.aposticha_glory', file: '12-02A.pdf', locus: 'p1 Aposticha Glory',
+    verbatim: 'those who born of woman', note: 'A word is missing ("those who are born").' },
+  { path: '12-02.c1.matins.canons[0].odes.9.items[0]', file: '12-02A.pdf', locus: 'p7 Ode 9 troparion 1',
+    verbatim: 'the-guilelessness', note: 'Stray hyphen.' },
   // ── NOVEMBER daily files (14 Nov 2026) ─────────────────────────────────────
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the

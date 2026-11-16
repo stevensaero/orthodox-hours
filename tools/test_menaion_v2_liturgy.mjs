@@ -58,7 +58,7 @@ const kindOf = (slot, own) => { const [who, what] = slot.split('_'); return (wha
 const seq = (els) => els.filter((e) => /^lit-tk-\d+-/.test(e.id)).map((e) => ({ slot: e.id.replace(/^lit-tk-\d+-/, '').replace(/-\d+$/, ''), e })).filter((x) => !SKIP.test(x.slot));
 
 // ── 1. the OCA answer key ────────────────────────────────────────────────────
-const data = {}; for (const mm of ['09', '10', '11']) data[mm] = await loadMenaionV2Month(mm);
+const data = {}; for (const mm of ['09', '10', '11', '12']) data[mm] = await loadMenaionV2Month(mm);
 let checked = 0; const unmatched = [];
 for (const [key, slots] of Object.entries(OCA_SLOTS)) {
   const day = data[key.slice(0, 2)]?.[key]; if (!day) continue;

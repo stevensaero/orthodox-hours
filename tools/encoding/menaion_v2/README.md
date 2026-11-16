@@ -45,4 +45,12 @@ reading a tone number out of a printed label.
 - Reading bodies are never stored: heading and citation only. A heading with no
   printed reference takes `citation_basis: 'identified'` and lands on the gate's
   worklist until the page is checked.
+- A page that prints ONLY second sites of a canonical hymn (12-02A p8: the Liturgy
+  troparion and kontakion again) is cited by their `verified_sites`; the gate counts them.
+- "in the same melody" under a set of stichera: the hymn takes their tone, set by hand
+  (`tone=4`) with a comment saying so (12-02, 12-03).
+- A NEW MONTH: add its block to `DATES`; its loader line in `src/data/menaion_v2/index.js`;
+  `<MONTH>_DATES` in the schema, enumerated from the folder listing, and into
+  `SOURCE_FILES`; and the month in the month lists of `tools/test_menaion_v2_vespers.mjs`
+  and `tools/test_menaion_v2_liturgy.mjs`. Add the dates to `tools/test_hours_mount.mjs`.
 - The month `.js` is generated. Change the map and rebuild.

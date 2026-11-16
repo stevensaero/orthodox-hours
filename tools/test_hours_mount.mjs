@@ -100,7 +100,20 @@ const CASES = [
   ['2026-10-01', '3rd_hour', ['O come, let us worship'], []],   // Protection, not yet captured
   ['2026-10-01', 'vespers', ['Now lettest Thou Thy servant depart in peace'], []],   // Protection, not yet captured
   ['2026-10-01', 'liturgy', ['Blessed is the Kingdom'], []],   // Protection, not yet captured
-  ['2026-10-01', 'typica', ['Bless the Lord, O my soul'], []],   // Protection, not yet captured
+  ['2026-10-01', 'typica', ['Bless the Lord, O my soul'], []],   // Protection, not yet captured  // ── December 1-3 (encoded 15 Nov 2026): weekdays of the Nativity Fast, simple services.
+  ['2026-12-01', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Nahum'], ['not yet encoded']],   // Tuesday, two services printed (Nahum, Philaret)
+  ['2026-12-01', 'vespers', ['Now lettest Thou Thy servant depart in peace'], ['not yet encoded']],   // Tuesday, two services printed (Nahum, Philaret)
+  ['2026-12-01', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Tuesday, two services printed (Nahum, Philaret)
+  ['2026-12-01', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Tuesday, two services printed (Nahum, Philaret)
+  ['2026-12-02', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Habbakuk'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
+  ['2026-12-02', 'vespers', ['Now lettest Thou Thy servant depart in peace'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
+  ['2026-12-02', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
+  ['2026-12-02', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
+  ['2026-12-03', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Zephaniah'], ['not yet encoded']],   // Thursday
+  ['2026-12-03', 'vespers', ['Now lettest Thou Thy servant depart in peace'], []],   // Thursday evening opens 4 December, not yet encoded
+  ['2026-11-30', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'The grace of the Holy Spirit dwelt within thee'], ['not yet encoded']],   // Monday evening opens 1 December: the prophet Nahum's stichera
+  ['2026-12-03', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Thursday
+  ['2026-12-03', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Thursday
 ];
 let bad = 0;
 // Debugging aids: ONLY="2026-11-22 liturgy" runs the cases for one date and service; DUMP=<regex> prints where it occurs on the page.

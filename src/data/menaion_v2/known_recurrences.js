@@ -21,6 +21,48 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── DECEMBER 1-3 (15 Nov 2026): Nahum, Philaret the Merciful, Habbakuk, the four
+  // venerable fathers of Egypt, Zephaniah. Identical rows by sweep (first earlier
+  // daily site, else the first General Menaion site); the two variant rows were
+  // seen in the encode. Nearly all of it is irmoi. ─────────────────────────────
+  { a: '12-02.c0.kontakion', b: '12-02.c0.liturgy.liturgy_kontakion', relation: 'variant', note: 'Kontakion of Habbakuk (Tone VIII), printed twice: after Ode VI (p5) "radiant angel: * and proclaimed ... to the world. *"; at Liturgy (p7) "radiant angel, and proclaimed ... to the world. *", one phrase mark fewer and a comma for the colon. Same words.' },
+  { a: '12-01.c0.vespers.lic_stavrotheotokion', b: '12-01.c1.vespers.aposticha_stavrotheotokion', relation: 'variant', note: 'The Tone III Stavrotheotokion "A sword pierced thy heart": unpointed and ending "even after I gave birth!" in the Nahum file, pointed and ending "even after birthgiving!" in the Philaret file.' },
+  { a: '09-06.c0.compline.canon.odes.3.irmos', b: '12-02.c1.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-06.c0.compline.canon.odes.6.irmos', b: '12-02.c1.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-06.c0.compline.canon.odes.8.irmos', b: '12-02.c1.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-06.c0.compline.canon.odes.9.irmos', b: '12-02.c1.matins.canons[0].odes.9.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-06.c0.matins.canons[0].odes.6.irmos', b: '12-02.c0.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-08.c0.matins.canons[0].odes.1.irmos', b: '12-01.c1.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-08.c0.matins.canons[0].odes.4.irmos', b: '12-01.c1.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-27.c0.matins.sessional_ode3[2]', b: '12-01.c0.matins.sessional_ode3[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '10-04.c0.matins.canons[0].odes.4.irmos', b: '12-02.c1.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '10-04.c0.matins.canons[0].odes.5.irmos', b: '12-02.c1.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.1.irmos', b: '12-03.c0.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.3.irmos', b: '12-03.c0.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.4.irmos', b: '12-03.c0.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.5.irmos', b: '12-03.c0.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.9.irmos', b: '12-03.c0.matins.canons[0].odes.9.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.1.irmos', b: '12-02.c1.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.7.irmos', b: '12-02.c1.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-18.c0.matins.sessional_ode3[2]', b: '12-02.c0.matins.sessional_ode3[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.matins.canons[1].odes.1.irmos', b: '12-02.c0.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.matins.canons[1].odes.3.irmos', b: '12-02.c0.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.matins.canons[1].odes.4.irmos', b: '12-02.c0.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.matins.canons[1].odes.5.irmos', b: '12-02.c0.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.matins.canons[1].odes.8.irmos', b: '12-02.c0.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.vespers.lic_stavrotheotokion', b: '12-02.c0.vespers.lic_stavrotheotokion', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-20.c0.liturgy.troparia[1]', b: '12-02.c1.troparion', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.1.irmos', b: '12-01.c0.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.3.irmos', b: '12-01.c0.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.4.irmos', b: '12-01.c0.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.5.irmos', b: '12-01.c0.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.6.irmos', b: '12-01.c0.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.7.irmos', b: '12-01.c0.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-26.c0.matins.canons[0].odes.9.irmos', b: '12-01.c0.matins.canons[0].odes.9.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-28.c0.compline.canon.odes.6.irmos', b: '12-03.c0.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-28.c0.compline.canon.odes.7.irmos', b: '12-03.c0.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-28.c0.compline.canon.odes.8.irmos', b: '12-03.c0.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '12-02.c0.matins.sessional_ode3[2]', b: 'general.Nuns.matins.sessional_ode3_stavrotheotokion', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── OVERLAP DATES (September, October) ─────────────────────────────────────
   { a: '10-04.c0.matins.kontakia_ode3[0]', b: '10-04.c0.liturgy.kontakia[0]', relation: 'variant', note: 'Kontakion of Hierotheus (Tone VIII): UNPOINTED after Ode III (p3), POINTED at Liturgy (p8); same words.' },
   { a: '10-04.c0.matins.kontakia_ode6[0]', b: '10-04.c0.liturgy.kontakia[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },

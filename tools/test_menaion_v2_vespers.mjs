@@ -254,7 +254,7 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
       ...(lit ? [...lit.stichera.map((x) => ['Litiya', x]), ['Litiya Glory', lit.glory], ['Litiya Both now', lit.bothNow]] : []),
       ...resolveVespersTroparia(a).items.map((x) => ['Troparia', x])].filter(([, x]) => x && x.kind !== 'verse'); };
   let places = 0, swapped = 0; const byDate = {}; const stemOf = {}; for (const st of ocaStems()) stemOf[`${st.slice(5, 7)}-${st.slice(7, 9)}`] ??= st;
-  for (const mm of ['09', '10', '11']) { const M = await loadMenaionV2Month(mm); if (!M) continue;
+  for (const mm of ['09', '10', '11', '12']) { const M = await loadMenaionV2Month(mm); if (!M) continue;
     for (const key of Object.keys(M).sort()) {
       const oca = new Map([await ocaMatesFor(textsUnder(M[key])), ...octoMates].flatMap((m) => [...m]));
       // The evening this day's Vespers is sung on in 2026, and its tone: what a reader of the tool sees this year.

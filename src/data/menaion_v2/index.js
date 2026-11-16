@@ -29,6 +29,7 @@ export const MONTH_LOADERS = {
   '09': () => import('./september.js').then(m => m.default),
   '10': () => import('./october.js').then(m => m.default),
   '11': () => import('./november.js').then(m => m.default),
+  '12': () => import('./december.js').then(m => m.default),
 };
 
 // The General Menaion is a BOOK, not a month (§6.2) — the browser surfaces it on

@@ -188,7 +188,16 @@ const OCTOBER_DATES = [
   '10-21','10-22','10-22A','10-23','10-24','10-24A','10-25','10-25A','10-26','10-27',
   '10-27A','10-28','10-28A','10-28B','10-28C','10-28D','10-29','10-30','10-31',
 ];
-export const SOURCE_FILES = [...AUGUST_DATES, ...SEPTEMBER_DATES, ...OCTOBER_DATES, ...NOVEMBER_DATES].map(d => `${d}.pdf`);
+// December — the 46 files in the folder on Bill's computer, enumerated FROM THE
+// FOLDER listing of 15 Nov 2026. There is no 12-12A or 12-12B: the folder has 12-12 and 12-12C.
+const DECEMBER_DATES = [
+  '12-01','12-01A','12-02','12-02A','12-03','12-04','12-05','12-06','12-07','12-08',
+  '12-09','12-09A','12-10','12-10A','12-11','12-11A','12-11B','12-12','12-12C','12-13',
+  '12-14','12-15','12-16','12-17','12-18','12-18A','12-18B','12-19','12-20','12-20A',
+  '12-21','12-21A','12-22','12-23','12-23A','12-24','12-24A','12-25','12-25A','12-26',
+  '12-26A','12-27','12-28','12-29','12-30','12-31',
+];
+export const SOURCE_FILES = [...AUGUST_DATES, ...SEPTEMBER_DATES, ...OCTOBER_DATES, ...NOVEMBER_DATES, ...DECEMBER_DATES].map(d => `${d}.pdf`);
 
 // Real page counts of the DAILY files that are encoded. The page-coverage
 // tripwire (7.4) runs on daily entries exactly as on the General Menaion: every
@@ -199,6 +208,7 @@ export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
   '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16, '11-27.pdf': 14, '11-27A.pdf': 16, '11-28.pdf': 14, '11-29.pdf': 12, '11-30.pdf': 27,
+  '12-01.pdf': 5, '12-01A.pdf': 7, '12-02.pdf': 7, '12-02A.pdf': 8, '12-03.pdf': 6,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
