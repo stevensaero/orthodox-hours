@@ -1,6 +1,13 @@
-# ENCODING RULE v2.19 — Orthodox Hours Tool
+# ENCODING RULE v2.20 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.18, v2.17, v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.19, v2.18, v2.17, v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.20 changes (16 Nov 2026) — THE OCA'S DAY FOR A SAINT, AND THE NORTH AMERICAN SAINT FIRST (§1.6, new):**
+- Ruled by Bill on Q-0018: where the OCA keeps a saint on another day than the St.
+  Sergius Menaion prints him under, his service is BUILT INTO the OCA's day and carries
+  `printed_under`. A North American saint the OCA keeps is the first service of his
+  day; every other service of that day is a secondary selection. First case: St.
+  Herman of Alaska, printed 12 December (12-12C), served 13 December.
 
 **v2.19 changes (15 Nov 2026) — THE OCA INTAKE IS PART OF EVERY ENCODING SESSION (§3.7, §3.8, new):**
 - `npm run oca:intake` (with the docx folder when new OCA texts have arrived) is run
@@ -385,6 +392,27 @@ Innocent, Bishop of Irkutsk"). Take it from the title line; where the OCA
 publishes a text for the day, follow its title. Two saints in one service are
 joined with "and". On a feast itself (of the Lord, of the Theotokos, of an icon)
 it is `None`. The validator fails a service without it.
+
+### 1.6 THE OCA'S DAY, AND THE NORTH AMERICAN SAINT FIRST (ruled by Bill, 16 Nov 2026)
+
+"If OCA places Herman there that's our preference, favor the OCA North American
+saint making all other services secondary selections." (Q-0018.)
+
+1. **The day.** Where the OCA calendar keeps a saint on another day than the St.
+   Sergius Menaion prints his service under, the service is served on the OCA's day.
+   This is a rule of the data, true in every year, never a by-date substitution at
+   run time: in `tools/encoding/menaion_v2/build_month.py` the file's module is
+   listed under the OCA's day, and its line map carries
+   `'printed_under': 'MM-DD'` (the day the book prints it under) and says so at the
+   head of its `note`. The file keeps its own name (`source_file`), so the page is
+   still found where the book has it. Cite the OCA page that gives the day.
+2. **The default.** A North American saint whom the OCA keeps is the first service
+   of his day (`oca_primary: True`, listed first); every other service of that day,
+   the Menaion's own included, is `oca_primary: False` and offered as a choice.
+3. **What it does not do.** It does not combine the services, and it does not move
+   a hymn. A Sunday or a feast that falls on the day is governed by its own rules.
+4. First case: St. Herman of Alaska, printed under 12 December (12-12C.pdf), served
+   on 13 December; the martyrs of 12-13.pdf are the choice.
 
 ### 1.4 ODS vol. III ORDERS OVERRIDE THE GENERAL RULE (ruled by Bill, 14 Nov 2026)
 

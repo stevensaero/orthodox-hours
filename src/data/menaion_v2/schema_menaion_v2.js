@@ -449,6 +449,7 @@ export const ENTRY_TOP = {
   known: [
     'kind', 'title', 'feast_ref', 'day_of', 'rank', 'fekula_section',
     'oca_primary', 'source_file', 'note',
+    'printed_under',             // HAND-ENTERED: the MM-DD the book prints the service under, where the OCA keeps it on another day and it is built into that day (12-12C St. Herman, served 12-13; Q-0018)
     'name',                      // HAND-ENTERED (ruling 12): how the dismissal names the day's saints; null on a feast of the Theotokos or of an icon
     'preface_rubric',            // printed between the title and the first service heading (11-15)
     'appendix',                  // printed after the last service: ordered rubrics and texts (11-20)

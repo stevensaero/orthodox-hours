@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.60.3 and after)
+# Next-session kickoff — encoding the Menaion (v0.60.4 and after)
 
-State at handoff: **v0.60.3**. December is begun: 12-01 to 12-15 are encoded (twenty-one files); 12-11B (the movable Sunday of the Forefathers, 13 December in 2026) is HELD for Bill's ruling on Q-0019, and St. Herman's day is Q-0018; 12-16 onward are not. Bill's cadence: three calendar days at a time, pausing between. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.60.4**. December is begun: 12-01 to 12-15 are encoded (twenty-one files); 12-11B (the movable Sunday of the Forefathers, 13 December in 2026) is HELD for Bill's ruling on Q-0019, RULED YES and not yet built; St. Herman is served on 13 December (Q-0018 answered, encoding rule §1.6); 12-16 onward are not. Bill's cadence: three calendar days at a time, pausing between. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -17,8 +17,8 @@ matches the `project_notes.md` header, and run every gate on the clean tree.
 
 **Read first:** the top blocks of `project_notes.md`;
 `tools/encoding/menaion_v2/README.md`; `menaion_v2_spec.md` §§2, 5, 7, 12 and
-the two rulings at the end of §16.5; `encoding_rule_v2.md` (live; v2.19) §§1.1,
-1.4, 1.5, 3 and **3.7 (the OCA intake: run in every session)**; `src/data/open_questions.js`; `bill_review_ledger.md`.
+the two rulings at the end of §16.5; `encoding_rule_v2.md` (live; v2.20) §§1.1,
+1.4, 1.5, 1.6, 3 and **3.7 (the OCA intake: run in every session)**; `src/data/open_questions.js`; `bill_review_ledger.md`.
 
 **Sources on Bill's computer, never in the repo:** the St. Sergius Menaion PDFs;
 `Orthodox Hours/OCA_service_texts/` (`2026-MMDD-texts-tt.docx`); and Fekula

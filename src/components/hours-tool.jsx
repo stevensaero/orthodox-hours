@@ -8580,6 +8580,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.60.4",
+    date: "November 2026",
+    summary: "St. Herman of Alaska is kept on 13 December, as the OCA keeps him",
+    items: [
+      "St. Herman of Alaska now stands on 13 December, where the OCA keeps his repose, and is the " +
+      "service the tool gives first on that day. The Menaion prints his service under 12 December; the " +
+      "tool says so on the service.",
+      "The Menaion's own saints of 13 December, the Martyr Eustratius and those with him, are offered as " +
+      "a choice. 12 December is St. Spyridon alone.",
+      "The rule behind it: a North American saint whom the OCA keeps is the first service of his day, " +
+      "and the other services of that day are choices.",
+      "Still to come: the Sunday of the Holy Forefathers, which in 2026 falls on 13 December.",
+    ],
+  },
+  {
     version: "v0.60.3",
     date: "November 2026",
     summary: "The Menaion for 13 to 15 December: the Martyr Eustratius and those with him, the Martyrs Thyrsus, Lucius and Philemon, the Hieromartyr Eleutherius",

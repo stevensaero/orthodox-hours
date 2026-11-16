@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.60.3** | **Tone Trainer: v0.26.0** | Last synced: November 16, 2026
+**Tool version: v0.60.4** | **Tone Trainer: v0.26.0** | Last synced: November 16, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,29 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.60.4 — ST. HERMAN ON 13 DECEMBER; Q-0018 ANSWERED, Q-0019 RULED (16 Nov 2026)
+
+Bill: "1. yes 2. yes if OCA places herman there that's our preference, favor the OCA
+north american oca saint making all other services secondary selections."
+
+- **Q-0018 ANSWERED. New rule, `encoding_rule_v2.md` §1.6 (v2.20).** A saint the OCA keeps
+  on another day than the Menaion prints him under is BUILT INTO the OCA's day
+  (`build_month.py` lists his module there) and carries `printed_under` (new identity
+  key). A North American saint of the OCA is the first service of his day; the rest are
+  choices. No run-time substitution anywhere: the resolvers are untouched.
+- **St. Herman:** 12-12C is now `12-13.c0` (`oca_primary: True`, `printed_under: '12-12'`);
+  Eustratius is `12-13.c1` (`oca_primary: False`); 12 December is St. Spyridon alone. The
+  sic rows, recurrence rows and question paths were repointed.
+- **Q-0019 RULED YES, NOT YET BUILT:** the Sunday of the Forefathers (12-11B) is to be keyed
+  by its span and found by rule. The question stays open until the capture and the rule
+  exist. 13 December 2026 is that Sunday: until then the tool shows a Sunday with St.
+  Herman's vigil and nothing of the Forefathers.
+- **The combination is NOT built.** The tool gives ONE service of a day; St. Herman with
+  the Sunday, and the Forefathers with a polyeleos or vigil saint (vol. III
+  `ods3-1211x1217-sun-combined`), are the same unbuilt thing as Q-0002.
+- **NOT DONE, known.** Nothing looked at on the live site. The OCA page for 13 December
+  was read as a search result only.
 
 ### v0.60.3 — 12-13, 12-14, 12-15 encoded (16 Nov 2026)
 

@@ -1,6 +1,8 @@
 # 12-12C.pdf — COMMEMORATION OF OUR VENERABLE FATHER HERMAN, WONDERWORKER OF ALASKA
-# (17 pages). Second file of 12 December (c1). The page is headed "THE 12th DAY OF THE
-# MONTH OF DECEMBER"; THE OCA KEEPS THE REPOSE OF ST. HERMAN ON 13 DECEMBER (Q-0018).
+# (17 pages). The page is headed "THE 12th DAY OF THE MONTH OF DECEMBER"; THE OCA KEEPS
+# THE REPOSE OF ST. HERMAN ON 13 DECEMBER. RULED BY BILL, 16 Nov 2026 (Q-0018): the
+# service is built into 13 December as its FIRST service (build_month.py), and the
+# Menaion's own saints of the 13th are the secondary selection.
 # Little Vespers; Great Vespers with three lessons, a Litiya and the blessing of the
 # Loaves; Polyeleos with a Magnification; one canon printed (the Paraklisis is
 # appointed, not printed); Great Doxology. Boundaries read off the extracted page,
@@ -214,12 +216,15 @@ def build():
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'vigil',
         'fekula_section': '2F',
-        'oca_primary': False,
+        'oca_primary': True,
+        'printed_under': '12-12',
         'source_file': s.file,
-        'note': ('Second file of 12 December, a separate service (Bill, 15 Nov 2026, on the lettered files). THE '
-                 'DATE: the page is headed "THE 12th DAY OF THE MONTH OF DECEMBER" and the file stands under 12 '
-                 'December; the OCA calendar keeps the Repose of Venerable Herman of Alaska on 13 DECEMBER (oca.org, '
-                 'checked 16 Nov 2026). Captured where it is printed; where the tool serves it is Q-0018. Rank by the '
+        'note': ('PRINTED UNDER 12 DECEMBER, SERVED ON 13 DECEMBER. The page is headed "THE 12th DAY OF THE MONTH OF '
+                 'DECEMBER" (file 12-12C, beside St. Spyridon); the OCA calendar keeps the Repose of Venerable Herman '
+                 'of Alaska on 13 December (oca.org, 16 Nov 2026). Ruled by Bill, 16 Nov 2026 (Q-0018): the tool '
+                 'follows the OCA and favors the North American saint, so this is the FIRST service of 13 December '
+                 'and the Menaion\'s martyrs of that day are the secondary selection. '
+                 'Rank by the '
                  'encoding_rule_v2.md 1.1 waterfall, step 2: the Menaion prints a LITTLE VESPERS for the saint, so '
                  'Vigil, Fekula 2F. ODS vol. III has no 12-12 or 12-13 entry for him. Great Vespers with "Blessed is '
                  'the man", 8 stichera all printed (3 in Tone III, 5 in Tone VI), the Dogmatic Theotokion, three '

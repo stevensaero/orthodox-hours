@@ -193,13 +193,14 @@ def build():
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
         'rank': 'polyeleos',
         'fekula_section': '2E',
-        'oca_primary': True,
+        'oca_primary': False,
         'source_file': s.file,
         'note': ('Rank by the encoding_rule_v2.md 1.1 waterfall: no Little Vespers; "Blessed is the man", three '
                  'lessons, a Polyeleos with a Magnification and a Gospel, a Great Doxology: Polyeleos, Fekula 2E. ODS '
                  'vol. III has no fixed 12-13 entry (its 11 to 17 December entries are the movable Sunday of the '
                  'Forefathers, Q-0019; in 2026 that Sunday IS 13 December). THE OCA KEEPS ST. HERMAN OF ALASKA ON THIS '
-                 'DAY; this Menaion prints him under 12 December (12-12C, Q-0018). The title also names the holy '
+                 'DAY: his service (12-12C, printed under 12 December) is the first service of the day and this one '
+                 'the secondary selection (Bill, 16 Nov 2026, Q-0018). The title also names the holy '
                  'Martyr Lucia: NO hymn of hers is printed apart; three theotokia of Canon I name her. Six stichera '
                  'of the martyrs in two sets of three, both Tone IV; the Dogmatic Theotokion; three lessons with NO '
                  'reference printed (citations are identifications); no Litiya and no blessing of the Loaves. Matins: '

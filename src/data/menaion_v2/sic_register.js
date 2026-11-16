@@ -7,11 +7,11 @@
 export default [
   // ── DECEMBER 13-15 (16 Nov 2026). Each confirmed against a second extraction
   // (pdftotext -layout) before being registered. ───────────────────────────────
-  { path: '12-13.c0.matins.canons[0].odes.1.items[1]', file: '12-13.pdf', locus: 'p7 Canon I Ode 1 troparion 2',
+  { path: '12-13.c1.matins.canons[0].odes.1.items[1]', file: '12-13.pdf', locus: 'p7 Canon I Ode 1 troparion 2',
     verbatim: 'which emmiteth the', note: '"emmiteth" for "emitteth".' },
-  { path: '12-13.c0.matins.praises_glory', file: '12-13.pdf', locus: 'p15 Praises Glory',
+  { path: '12-13.c1.matins.praises_glory', file: '12-13.pdf', locus: 'p15 Praises Glory',
     verbatim: 'God-bearing martyrs-the five-stringed harp', note: 'A hyphen stands for a dash: "martyrs-the".' },
-  { path: '12-13.c0.liturgy.prokeimenon', file: '12-13.pdf', locus: 'p17 Liturgy prokeimenon',
+  { path: '12-13.c1.liturgy.prokeimenon', file: '12-13.pdf', locus: 'p17 Liturgy prokeimenon',
     verbatim: 'all His desires in them', note: 'No final stop is printed.' },
   { path: '12-15.c0.matins.canons[0].odes.7.items[3]', file: '12-15.pdf', locus: 'p9 hieromartyr Ode 7 Theotokion',
     verbatim: 'The most pure Word, of God,', note: 'Stray comma after "Word". The same theotokion prints "puriying" for "purifying".' },
@@ -31,7 +31,7 @@ export default [
     verbatim: 'forth O Christ’', note: 'The irmos closes a quotation it does not open, and has no final stop.' },
   { path: '12-11.c1.matins.canons[0].odes.9.items[1]', file: '12-11A.pdf', locus: 'p6 Ode 9 troparion 2',
     verbatim: 'O Savior of the-world', note: 'Stray hyphen: "the-world". The ODE VIII heading of this file is printed "OODE VIII".' },
-  { path: '12-12.c1.great_vespers.lic[7]', file: '12-12C.pdf', locus: 'p4 LIC 8',
+  { path: '12-13.c0.great_vespers.lic[7]', file: '12-12C.pdf', locus: 'p4 LIC 8',
     verbatim: '** wherefore, teach us', note: 'The sticheron BREAKS OFF in print after these words: no close, no final stop; the Glory follows on the next line.' },
   // ── DECEMBER 7-9 (16 Nov 2026). Each confirmed against a second extraction
   // (pdftotext -layout) before being registered. ───────────────────────────────

@@ -17682,12 +17682,7 @@ const DECEMBER = {
    "c0.identity",
    "c0.vespers",
    "c0.matins",
-   "c0.liturgy",
-   "c1.identity",
-   "c1.little_vespers",
-   "c1.great_vespers",
-   "c1.matins",
-   "c1.liturgy"
+   "c0.liturgy"
   ],
   "commemorations": [
    {
@@ -18693,7 +18688,22 @@ const DECEMBER = {
       "label_inline": true
      }
     }
-   },
+   }
+  ]
+ },
+ "12-13": {
+  "_encoded": [
+   "c0.identity",
+   "c0.little_vespers",
+   "c0.great_vespers",
+   "c0.matins",
+   "c0.liturgy",
+   "c1.identity",
+   "c1.vespers",
+   "c1.matins",
+   "c1.liturgy"
+  ],
+  "commemorations": [
    {
     "kind": "saint",
     "name": "our venerable father Herman, Wonderworker of Alaska",
@@ -18708,9 +18718,10 @@ const DECEMBER = {
     },
     "rank": "vigil",
     "fekula_section": "2F",
-    "oca_primary": false,
+    "oca_primary": true,
+    "printed_under": "12-12",
     "source_file": "12-12C.pdf",
-    "note": "Second file of 12 December, a separate service (Bill, 15 Nov 2026, on the lettered files). THE DATE: the page is headed \"THE 12th DAY OF THE MONTH OF DECEMBER\" and the file stands under 12 December; the OCA calendar keeps the Repose of Venerable Herman of Alaska on 13 DECEMBER (oca.org, checked 16 Nov 2026). Captured where it is printed; where the tool serves it is Q-0018. Rank by the encoding_rule_v2.md 1.1 waterfall, step 2: the Menaion prints a LITTLE VESPERS for the saint, so Vigil, Fekula 2F. ODS vol. III has no 12-12 or 12-13 entry for him. Great Vespers with \"Blessed is the man\", 8 stichera all printed (3 in Tone III, 5 in Tone VI), the Dogmatic Theotokion, three lessons with NO reference printed (citations are identifications), a Litiya, the blessing of the Loaves, and \"if a vigil is not served\" a Theotokion after the troparion. Matins: a sessional hymn and Theotokion at each kathisma and after the Polyeleos; a Magnification and Selected Psalm verse; a Gospel; \"Canon of supplication to the Theotokos (the Paraklisis), with 6 Troparia, including the Irmos\" is appointed and NOT printed; the canon of the venerable one, with 8, is printed; Great Doxology. FAULTS IN PRINT: the last sticheron at Lord I have cried breaks off (\"wherefore, teach us\"); the Tone VI Glory is printed three times and the printing after Psalm 50 opens with its first two phrases in the other order. At Liturgy the rubric appoints 8 Beatitude troparia, 4 from Ode III and 4 from Ode VI; three (the first Twice), three and the Theotokion of Ode VI are printed.",
+    "note": "PRINTED UNDER 12 DECEMBER, SERVED ON 13 DECEMBER. The page is headed \"THE 12th DAY OF THE MONTH OF DECEMBER\" (file 12-12C, beside St. Spyridon); the OCA calendar keeps the Repose of Venerable Herman of Alaska on 13 December (oca.org, 16 Nov 2026). Ruled by Bill, 16 Nov 2026 (Q-0018): the tool follows the OCA and favors the North American saint, so this is the FIRST service of 13 December and the Menaion's martyrs of that day are the secondary selection. Rank by the encoding_rule_v2.md 1.1 waterfall, step 2: the Menaion prints a LITTLE VESPERS for the saint, so Vigil, Fekula 2F. ODS vol. III has no 12-12 or 12-13 entry for him. Great Vespers with \"Blessed is the man\", 8 stichera all printed (3 in Tone III, 5 in Tone VI), the Dogmatic Theotokion, three lessons with NO reference printed (citations are identifications), a Litiya, the blessing of the Loaves, and \"if a vigil is not served\" a Theotokion after the troparion. Matins: a sessional hymn and Theotokion at each kathisma and after the Polyeleos; a Magnification and Selected Psalm verse; a Gospel; \"Canon of supplication to the Theotokos (the Paraklisis), with 6 Troparia, including the Irmos\" is appointed and NOT printed; the canon of the venerable one, with 8, is printed; Great Doxology. FAULTS IN PRINT: the last sticheron at Lord I have cried breaks off (\"wherefore, teach us\"); the Tone VI Glory is printed three times and the printing after Psalm 50 opens with its first two phrases in the other order. At Liturgy the rubric appoints 8 Beatitude troparia, 4 from Ode III and 4 from Ode VI; three (the first Twice), three and the Theotokion of Ode VI are printed.",
     "troparion": {
      "text": "O venerable Herman, * ascetic of the northern wilderness * and gracious advocate for all the world, * teacher of the Orthodox Faith, * good instructor of piety, * adornment of Alaska and joy of all America: ** Entreat Christ God, that He save our souls.",
      "tier": 2,
@@ -20327,17 +20338,7 @@ const DECEMBER = {
       "label_inline": true
      }
     }
-   }
-  ]
- },
- "12-13": {
-  "_encoded": [
-   "c0.identity",
-   "c0.vespers",
-   "c0.matins",
-   "c0.liturgy"
-  ],
-  "commemorations": [
+   },
    {
     "kind": "saint",
     "name": "the holy Martyrs Eustratius, Auxentius, Eugene, Mardarius and Orestes, and the holy Martyr Lucia",
@@ -20352,9 +20353,9 @@ const DECEMBER = {
     },
     "rank": "polyeleos",
     "fekula_section": "2E",
-    "oca_primary": true,
+    "oca_primary": false,
     "source_file": "12-13.pdf",
-    "note": "Rank by the encoding_rule_v2.md 1.1 waterfall: no Little Vespers; \"Blessed is the man\", three lessons, a Polyeleos with a Magnification and a Gospel, a Great Doxology: Polyeleos, Fekula 2E. ODS vol. III has no fixed 12-13 entry (its 11 to 17 December entries are the movable Sunday of the Forefathers, Q-0019; in 2026 that Sunday IS 13 December). THE OCA KEEPS ST. HERMAN OF ALASKA ON THIS DAY; this Menaion prints him under 12 December (12-12C, Q-0018). The title also names the holy Martyr Lucia: NO hymn of hers is printed apart; three theotokia of Canon I name her. Six stichera of the martyrs in two sets of three, both Tone IV; the Dogmatic Theotokion; three lessons with NO reference printed (citations are identifications); no Litiya and no blessing of the Loaves. Matins: no God is the Lord rubric; a sessional hymn (Twice) and Theotokion at each kathisma and after the Polyeleos; \"Canon of the supplication to the Theotokos (the Paraclysis), with 6 Troparia\" appointed and NOT printed; two canons of the martyrs \"with a total of 8\", Canon I by John the Monk in Tone IV, Canon II in Tone VI with no composer named; the katavasia \"Christ is born\" named after Ode I. TWO kontakia: Tone II after Ode III, Tone III with the ikos after Ode VI; both are printed at Liturgy, headed \"ODE III\" and \"ODE VI\". Four stichera on the Praises by Germanus, John the Monk and Cassia the nun. The ODE III heading is printed doubled. At Liturgy the rubric appoints 8 Beatitude troparia; three (the first Twice), three and a Theotokion are printed.",
+    "note": "Rank by the encoding_rule_v2.md 1.1 waterfall: no Little Vespers; \"Blessed is the man\", three lessons, a Polyeleos with a Magnification and a Gospel, a Great Doxology: Polyeleos, Fekula 2E. ODS vol. III has no fixed 12-13 entry (its 11 to 17 December entries are the movable Sunday of the Forefathers, Q-0019; in 2026 that Sunday IS 13 December). THE OCA KEEPS ST. HERMAN OF ALASKA ON THIS DAY: his service (12-12C, printed under 12 December) is the first service of the day and this one the secondary selection (Bill, 16 Nov 2026, Q-0018). The title also names the holy Martyr Lucia: NO hymn of hers is printed apart; three theotokia of Canon I name her. Six stichera of the martyrs in two sets of three, both Tone IV; the Dogmatic Theotokion; three lessons with NO reference printed (citations are identifications); no Litiya and no blessing of the Loaves. Matins: no God is the Lord rubric; a sessional hymn (Twice) and Theotokion at each kathisma and after the Polyeleos; \"Canon of the supplication to the Theotokos (the Paraclysis), with 6 Troparia\" appointed and NOT printed; two canons of the martyrs \"with a total of 8\", Canon I by John the Monk in Tone IV, Canon II in Tone VI with no composer named; the katavasia \"Christ is born\" named after Ode I. TWO kontakia: Tone II after Ode III, Tone III with the ikos after Ode VI; both are printed at Liturgy, headed \"ODE III\" and \"ODE VI\". Four stichera on the Praises by Germanus, John the Monk and Cassia the nun. The ODE III heading is printed doubled. At Liturgy the rubric appoints 8 Beatitude troparia; three (the first Twice), three and a Theotokion are printed.",
     "troparion": {
      "text": "In their sufferings, Thy martyrs O Lord, * received imperishable crowns from Thee, our God; * for, possessed of Thy might, * they set at naught the tyrants and crushed the feeble audacity of the demons. ** By their supplications save Thou our souls.",
      "tier": 2,
