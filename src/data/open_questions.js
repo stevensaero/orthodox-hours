@@ -335,6 +335,18 @@ export default [
     provisional: 'Nothing depends on it yet: the tool does not assemble the Alleluia service of the lesser fasts. The Menaion\'s rubric is stored as printed.',
     impact: 'One element of Vespers on the evening of 14 November in years when the 15th is a weekday (2027 is the next: a Monday), once the Alleluia service is built.',
   },
+  {
+    id: 'Q-0015', source: 'menaion', subject: 'source_gap',
+    title: 'Hieromartyr Alexander Hotovitzky (4 December): in the OCA text, not in the Menaion',
+    path: '12-04.c0', status: 'open', opened: '2026-11-15',
+    question: 'On 4 December the OCA service text adds a troparion and a kontakion of the Hieromartyr Alexander Hotovitzky after those of the Great-martyr Barbara and St. John of Damascus. The St. Sergius Menaion has no service or hymn of his on this date. Should the tool commemorate him, and from what text?',
+    printed: 'The Menaion (12-04.pdf): one service for the Great-martyr Barbara and St. John of Damascus; at Liturgy two troparia and two kontakia. The OCA service text for 4 December 2026 prints, after its troparia and kontakia of St. Barbara and St. John, "Tone 6 Troparion (St. Alexander)" ("In a time of fiery temptations for the Church of Russia") and "Tone 2 Kontakion (St. Alexander)".',
+    consulted: {
+      fekula: 'ODS 3rd ed. vol. III has no entry for 4 December. ODS 2nd ed. ch. 2 orders the hymns of the saints the Menaion gives; it does not address a commemoration the Menaion lacks.',
+      oca: 'The OCA service text for the day prints his troparion and kontakion as a third commemoration. The oca.org calendar and Lives pages were not searched.',
+      web: 'Not yet searched.',
+    },
+    provisional: 'The tool reads the Menaion: two troparia and two kontakia. The OCA\'s hymns of St. Alexander have no counterpart in our books, so they are not shown under "Prefer OCA texts" and the day\'s order differs from the OCA text by them (a known difference in the Liturgy comparison).',
+    impact: 'One troparion and one kontakion at the Liturgy on 4 December. The same kind of gap will recur wherever the OCA calendar keeps a saint the St. Sergius Menaion does not have.',
+  },
 ];
-
-

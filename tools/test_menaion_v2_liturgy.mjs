@@ -31,6 +31,7 @@ const KNOWN = {
   '09-27|troparion tone': 'Different hymns: the Menaion prints the general troparion of martyrs (Tone 4, "In their sufferings"); the OCA prints a troparion of St. Callistratus (Tone 3).',
   '10-04|troparion tone': 'Different hymns: the Menaion prints "Having learned goodness" (Tone 4); the OCA prints "We the faithful all praise Hierotheus" (Tone 1).',
   '11-29|kontakion tone': 'Different hymns: the page prints no kontakion, so the General Menaion\'s for a martyr is read (Tone 2); the OCA prints a kontakion of the martyrs (Tone 4).',
+  '12-04|order': 'Q-0015 (open). The OCA adds a troparion and a kontakion of the Hieromartyr Alexander Hotovitzky after those of St. Barbara and St. John of Damascus; the St. Sergius Menaion has no hymn of his on this date.',
   '11-26.c1|beatitudes': 'The rubric appoints 8 (4 from Ode III, 4 from Ode VI); 11-26A.pdf prints 7 and marks none "Twice". Given as printed.',
 };
 const allow = (k, msg) => { if (KNOWN[k]) { known.push(`${k}: ${KNOWN[k]}`); return true; } fail(`${k}: ${msg}`); return false; };

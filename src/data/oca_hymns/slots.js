@@ -53,6 +53,15 @@ export const OCA_SLOTS = {
   '11-29': at('2026-1129-texts-tt', {
     troparion: 'Tone 4 Troparion (Martyrs)', kontakion: 'Tone 4 Kontakion (Martyrs)' }),
   '11-30': at('2026-1130-texts-tt', { troparion: 'Tone 4 Troparion', kontakion: 'Tone 2 Kontakion' }),
+  // One Menaion service for two saints. The OCA text also prints a troparion and a
+  // kontakion of the Hieromartyr Alexander Hotovitzky, whom the St. Sergius Menaion
+  // does not have on this date: nothing of ours for them to stand beside.
+  '12-04': at('2026-1204-texts-tt', {
+    troparion: 'Tone 8 Troparion (St. Barbara)', kontakion: 'Tone 4 Kontakion (St. Barbara)',
+    troparion_2: 'Tone 8 Troparion (St. John)', kontakion_2: 'Tone 4 Kontakion (St. John)' }),
+  '12-05': at('2026-1205-texts-tt', { troparion: 'Tone 8 Troparion', kontakion: 'Tone 8 Kontakion' }),
+  '12-06': at('2026-1206-texts-tt', {
+    troparion: 'Tone 4 Troparion (St. Nicholas)', kontakion: 'Tone 3 Kontakion (St. Nicholas)' }),
 };
 
 // A date the Menaion holds, with an OCA service text, that has nothing to place: the
