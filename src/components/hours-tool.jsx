@@ -8580,6 +8580,22 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.59.3",
+    date: "November 2026",
+    summary: "The Menaion for 1 to 3 December",
+    items: [
+      "Three more days of the Menaion are in the tool, the first of December: the Prophet Nahum and " +
+      "the Righteous Philaret the Merciful (1 December), the Prophet Habbakuk and the venerable John, " +
+      "Heraclemon, Andrew and Theophilus of Egypt (2 December), and the Prophet Zephaniah (3 December). " +
+      "The Hours, Vespers, the Typica and the Liturgy read their hymns from the full service.",
+      "On 1 and 2 December the Menaion prints two services. The tool reads the first (the prophet) " +
+      "and offers the second as a choice, as on the other days with two services.",
+      "Not yet done on these days: the stichera of the Theotokos that the Menaion appoints at Vespers " +
+      "when Alleluia is sung at Matins. They are in the Menaion viewer; the Vespers service does not " +
+      "place them yet.",
+    ],
+  },
+  {
     version: "v0.59.2",
     date: "November 2026",
     summary: "Prefer OCA texts in the Octoechos; the extra OCA link in the services is removed",

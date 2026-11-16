@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.59.2** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.59.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,45 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.59.3 — DECEMBER BEGUN: 12-01, 12-01A, 12-02, 12-02A, 12-03 encoded (15 Nov 2026)
+
+The first December pass, run to try the whole intake pipeline on a new month.
+
+- **Sources.** The five PDFs were staged from Bill's computer (`Menaion_St_Sergius\`); the
+  folder holds 46 December files, listed in `DECEMBER_DATES` (schema) from the folder
+  listing. ODS vol. III has NO entry for 1, 2 or 3 December (its first December entry is
+  the 9th). All five services are `simple`, Fekula 2A, by the 1.1 waterfall.
+- **What the pages print.** The three prophets (Nahum, Habbakuk, Zephaniah): 3 stichera,
+  three stichera of the Theotokos "if Alleluia be chanted at Matins", a Theotokion and a
+  Stavrotheotokion, the troparion; one canon, a sessional hymn, a kontakion with no ikos,
+  no exapostilarion; at Liturgy the troparion and kontakion only. 12-01A (Philaret the
+  Merciful) and 12-02A (John, Heraclemon, Andrew and Theophilus of Egypt, headed for 12
+  June as well): 3 stichera with a Glory, an aposticha Glory, a canon, kontakion and ikos.
+- **A new month needs:** the `DATES` block in `build_month.py`; the loader line in
+  `src/data/menaion_v2/index.js`; `<MONTH>_DATES` in the schema, FROM THE FOLDER LISTING,
+  added to `SOURCE_FILES`; the page counts; and the month added to the month lists in
+  `test_menaion_v2_vespers.mjs` and `test_menaion_v2_liturgy.mjs` (the Hours, render and
+  mount tests read `MONTH_LOADERS`). `npm run validate` fails until `npm run oca:intake`
+  has rebuilt the match register over the new texts: that is the intake doing its work.
+- **Gate change.** `validate_menaion_v2.mjs` page coverage now counts a canonical hymn's
+  `verified_sites` as citations of their pages. 12-02A's last page prints only the Liturgy
+  troparion and kontakion again, byte for byte, so nothing else cites it.
+- **Conventions used for the first time.** A second print site that differs is stored at
+  its own position with a variant row: `liturgy.liturgy_kontakion` on 12-02. A hymn labelled
+  "in the same melody" takes the tone of the stichera it follows, set by hand in the map
+  with a comment. `exapostilarion_glory` with no `exapostilarion` (12-02A prints "After the
+  Exapostilarion, Glory" and no exapostilarion).
+- **OCA.** There is no OCA service text for 1 to 3 December, so no slots are owed. The
+  intake re-matched every OCA hymn against the larger pool; hymns waiting for Bill's review
+  now include some whose candidates are in these days (the Hours tool's review line shows
+  them by day).
+- **NOT DONE, known.** (1) The stichera of the Theotokos for Alleluia days are captured and
+  shown in the viewer but Vespers does not place them: that is the Alleluia service of the
+  lesser fasts, still to be built (Q-0014; ODS 2nd ed. Appendix A-II). (2) Which of two
+  simple services is served on 1 and 2 December, or whether both: added to Q-0002. The tool
+  reads the first file and offers the second as a choice. (3) The mount test covers these
+  dates in jsdom; nothing was looked at on the live site.
 
 ### STANDING: GOOGLE DRIVE IS RETIRED (Bill, 15 Nov 2026)
 
