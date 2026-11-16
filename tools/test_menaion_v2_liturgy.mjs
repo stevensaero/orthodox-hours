@@ -65,7 +65,9 @@ for (const [key, slots] of Object.entries(OCA_SLOTS)) {
   const day = data[key.slice(0, 2)]?.[key]; if (!day) continue;
   const svc = servicesOf(day, key)[0]; const c = svc.c; const own = c.kind === 'feast';
   const doc = await loadOcaDoc(Object.values(slots)[0].doc);
-  const oca = ocaTexts(doc).filter((t) => /Divine Liturgy/i.test(t.section ?? '') && /^(Troparion|Kontakion)$/.test(t.label ?? '') && !/or this/i.test(t.head))
+  const oca = ocaTexts(doc).filter((t) => /Divine Liturgy/i.test(t.section ?? '') && /^(Troparion|Kontakion)$/.test(t.label ?? '') && !/or this/i.test(t.head)
+    // The hymns of the day of the week and for the departed are left out on both sides (SKIP): they are the weekday's, not the page's.
+    && !/\((of the day|for the departed)\b/i.test(t.head))
     .map((t) => ({ kind: (t.label === 'Troparion' ? 'T' : 'K') + ':' + (/Resurrection/i.test(t.subject ?? '') ? 'res' : /^Feast$/i.test(t.subject ?? '') ? 'feast' : 'saint'), tone: t.tone, head: t.head }));
   const ld = ldFor(key, c);
   for (const preferOca of [true, false]) {

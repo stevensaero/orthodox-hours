@@ -62,6 +62,10 @@ export const OCA_SLOTS = {
   '12-05': at('2026-1205-texts-tt', { troparion: 'Tone 8 Troparion', kontakion: 'Tone 8 Kontakion' }),
   '12-06': at('2026-1206-texts-tt', {
     troparion: 'Tone 4 Troparion (St. Nicholas)', kontakion: 'Tone 3 Kontakion (St. Nicholas)' }),
+  '12-07': at('2026-1207-texts-tt', { troparion: 'Tone 4 Troparion (St. Ambrose)', kontakion: 'Tone 3 Kontakion (St. Ambrose)' }),
+  // The OCA text is of the Conception alone; it has nothing of the icon "Unexpected Joy"
+  // (12-09.c1), the Menaion's second service of the date.
+  '12-09': at('2026-1209-texts-tt', { troparion: 'Tone 4 Troparion', kontakion: 'Tone 4 Kontakion' }),
 };
 
 // A date the Menaion holds, with an OCA service text, that has nothing to place: the

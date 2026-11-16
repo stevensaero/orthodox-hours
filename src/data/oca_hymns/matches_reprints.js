@@ -18,6 +18,7 @@ export const OCA_MATE_REPRINTS = {
   m1729b719befa68: ["m0149f1399c0591"],
   m172d3460b86a20: ["m169701946fc020"],
   m18ebba02395b03: ["m182e597e3873be"],
+  m1aee44a5f89bb0: ["m0df3549479031a"],
   m1b28c8c6be9493: ["m11db9bf04eeed8"],
   m1d3633cc053c61: ["m0e80a8cb163bcc"],
 };

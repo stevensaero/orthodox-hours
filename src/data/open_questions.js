@@ -163,7 +163,7 @@ export default [
       oca: 'oca.org lists St. Gregory Palamas third on 14 November, after the Apostle Philip and St. Philip of Irap, with his own troparion and kontakion (Tone 8). Not yet checked for 26 and 27 November. The OCA service texts for 2026 serve ONE service on each two-file date they cover and do not mention the other: 14 November is the Apostle Philip alone (no St. Gregory Palamas); 4 October is Hieromartyr Hierotheus alone (no Paul the Simple); 8 September is the Nativity of the Theotokos alone (no Kursk-Root Icon). No OCA text was available for 5 September, 26 or 27 November.',
       web: 'ponomar.net (Lambertsen Menaion, November): the 14 November service to the Apostle Philip is headed "(for this day we provide also the service in honor of St. Gregory Palamas)", i.e. supplied as an additional service, not combined with the Apostle\'s.',
     },
-    provisional: 'Each second file is stored whole as its own commemoration (c1), uncombined. The service shown by default is the one marked oca_primary (the first file, except 5 September where ODS vol. III and V1 take the second); the other is offered as a choice (ruled 14 Nov 2026). Ranks by the 1.1 waterfall (Vigil only where a Little Vespers is printed) and provisional: Palamas, Innocent and the Kursk-Root Icon are all polyeleos (2E). RULED BY BILL, 15 Nov 2026: 12-01A and 12-02A are separate services, as the other lettered files are; they are not combined with the first file.',
+    provisional: 'Each second file is stored whole as its own commemoration (c1), uncombined. The service shown by default is the one marked oca_primary (the first file, except 5 September where ODS vol. III and V1 take the second); the other is offered as a choice (ruled 14 Nov 2026). Ranks by the 1.1 waterfall (Vigil only where a Little Vespers is printed) and provisional: Palamas, Innocent and the Kursk-Root Icon are all polyeleos (2E). 9 Dec (12-09A, the icon of the Mother of God "Unexpected Joy"), encoded 16 Nov 2026: the second file prints a Little Vespers, lessons, a Litiya, the blessing of the Loaves and a Polyeleos, and is stored vigil, Fekula 2F, by the waterfall; the first file is the Conception of the Theotokos, doxology rank, which ODS vol. III (ods3-1209) and the OCA text keep on this date with no mention of the icon. RULED BY BILL, 15 Nov 2026: 12-01A and 12-02A are separate services, as the other lettered files are; they are not combined with the first file.',
     impact: 'Decides which troparion and kontakion the Hours and Liturgy read on these dates. Until answered the assembler reads the first file (c0) alone, and offers the second as a service a parish may choose.',
   },
   {
@@ -348,5 +348,33 @@ export default [
     },
     provisional: 'The tool reads the Menaion: two troparia and two kontakia. The OCA\'s hymns of St. Alexander have no counterpart in our books, so they are not shown under "Prefer OCA texts" and the day\'s order differs from the OCA text by them (a known difference in the Liturgy comparison).',
     impact: 'One troparion and one kontakion at the Liturgy on 4 December. The same kind of gap will recur wherever the OCA calendar keeps a saint the St. Sergius Menaion does not have.',
+  },
+  {
+    id: 'Q-0016', source: 'menaion', subject: 'source_gap',
+    title: 'Sunday 9 December: how many Beatitude troparia of the resurrection',
+    path: '12-09.c0.liturgy.beatitudes_rubric', status: 'open', opened: '2026-11-16',
+    question: 'When the Conception of the Theotokos (9 December) falls on a Sunday, ODS vol. III heads the Beatitudes with a total of ten and then names four of the resurrection and four of the feast, which make eight. Are there six of the resurrection (ten in all) or four (eight in all)?',
+    printed: 'ODS 3rd ed. vol. III, p. 61 (ods3-1209-sun): a total of ten is stated; the parts named are 4 of the resurrection from the Octoechos and 4 from Ode III of Canon I of the Conception. The Menaion (12-09.pdf, at Liturgy) appoints for the feast alone "8 Troparia: 4 from ODE III of the first canon, and 4 from ODE VI of the second canon".',
+    consulted: {
+      fekula: 'ODS 2nd ed. ch. 1 §1C (a doxology-rank service on Sunday) gives ten: six of the resurrection and four from the Menaion. That meets vol. III\'s stated total and not its named parts.',
+      oca: '9 December 2026 is a Wednesday: the OCA text for that day cannot settle a Sunday.',
+      web: 'Not yet searched.',
+    },
+    provisional: 'Six of the resurrection and four of the feast (ten), as the stated total and the general rule both give. Entered so in src/data/ods_v3/orders.js with this question named beside it.',
+    impact: 'Two troparia at the Beatitudes on a Sunday 9 December (next in 2029).',
+  },
+  {
+    id: 'Q-0017', source: 'menaion', subject: 'combination',
+    title: 'Stichera of the Theotokos at "Lord, I have cried" in the Nativity Fast (7 December)',
+    path: '12-07.c0.vespers.theotokos_stichera_rubric', status: 'open', opened: '2026-11-16',
+    question: 'For Monday 7 December 2026 the OCA service text sings, at "Lord, I have cried", three stichera of St. Ambrose and then the three stichera "of the Theotokos" which the Menaion appoints "if Alleluia be chanted at Matins", with none from the Octoechos. Does the OCA keep such a weekday of the fast as an Alleluia day, and in which order are the two sets sung?',
+    printed: 'The Menaion (12-07.pdf, and likewise 12-01, 12-02, 12-03, 12-08): "But if Alleluia be chanted at Matins instead of \'God is the Lord ...,\' we chant the following Stichera of the Theotokos before the foregoing, in the same melody", then three stichera. The OCA text for 7 December 2026: "Tone 1 (from the Menaion, for St. Ambrose)", then "Tone 1 (for the Theotokos)", six verses in all; its aposticha are the penitential stichera in the tone of the week; a troparion of St. Ambrose with a theotokion follows.',
+    consulted: {
+      fekula: 'ODS 2nd ed. ch. 2 §2A (a simple service): three stichera of the Octoechos and three of the Menaion. Appendix A-II gives the Alleluia service of the lesser fasts; it was not re-read for this point in this session. ODS vol. III has no entry for 7 December.',
+      oca: 'The OCA text for 7 December 2026 is as described: the saint\'s three first, then the three of the Theotokos, where the Menaion says the Theotokos\' are sung before the saint\'s.',
+      web: 'Not yet searched.',
+    },
+    provisional: 'The tool gives three of the Octoechos and three of the saint, by ch. 2. The stichera of the Theotokos are captured and shown in the Menaion viewer; Vespers does not place them. A known difference in the Vespers comparison.',
+    impact: 'Three stichera at Vespers on each weekday of the Nativity Fast (and the other lesser fasts) that has a simple service: which three stand beside the saint\'s, and in what order. It bears on the Alleluia service still to be built.',
   },
 ];

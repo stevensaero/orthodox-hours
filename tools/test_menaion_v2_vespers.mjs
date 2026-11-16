@@ -11,6 +11,7 @@ import { hoursPlan, ocaFor } from '../src/data/menaion_v2/adapter.js';
 import { loadMenaionV2General } from '../src/data/menaion_v2/index.js';
 import { loadOcaDoc, ocaStems, ocaVespersReadings, ocaMatesFor, textsUnder, ocaTexts, textKey, loadOcaMatches } from '../src/data/oca_hymns/index.js';
 import { OCA_SLOTS } from '../src/data/oca_hymns/slots.js';
+import { ods3OrderFor } from '../src/data/ods_v3/orders.js';
 import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
 const table = process.argv.includes('--table');
 for (let t = 1; t <= 8; t++) await OctoV2.loadV2Tone(t);
@@ -95,7 +96,7 @@ function ocaAposticha(doc) {
     if (/Troparion|Kontakion/i.test(h[2])) break;
     const kind = /Theotokion/i.test(h[2]) ? 'theotokion' : /Feast|Forefeast/i.test(h[2]) ? 'feast' : 'doxasticon';
     const slot = { tone: Number(h[1]), kind, head: t };
-    if (!after) { if (!out.first) out.first = { tone: slot.tone, source: /Resurrection|Octoechos/i.test(h[2]) ? 'octoechos' : 'menaion' }; }   // "(Prosomia of the Cross, from the Octoechos)" on a weekday
+    if (!after) { if (!out.first) out.first = { tone: slot.tone, source: /Resurrection|Octoechos|Penitential|Tone of the week/i.test(h[2]) ? 'octoechos' : 'menaion' }; }   // "(Prosomia of the Cross, from the Octoechos)", "(Penitential stichera in the Tone of the week)" on a weekday
     else if (after === 'glory') out.glory = slot; else { out.bothNow = slot; out.combined = after === 'both'; }
     after = null;
   }
@@ -143,6 +144,7 @@ function ocaLitya(doc) {
 }
 // Disagreements that are understood and accepted. Each needs a reason.
 const KNOWN = {
+  '12-07 lic stichera': 'Q-0017 (open). The OCA sings the three stichera of St. Ambrose and then the Menaion\'s three "of the Theotokos", which the page appoints for a day when Alleluia is sung at Matins; the tool gives three of the Octoechos and three of the saint (ch. 2). The Alleluia service of the lesser fasts is not built.',
   '09-08 readings': 'the OCA text heads the second lesson "Ezekiel 43:2-44:4"; on 21 Nov it heads the same lesson "Ezekiel 43:27-44:4", as the Menaion has it. Taken as a slip in the OCA text.',
 
   '11-14 litiya Glory': 'the page prints stichera only; the OCA adds a Glory (Tone 2) the page does not print. Printed-only is the ruling.',
@@ -184,7 +186,8 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
   // The troparia at the end. Text as the tool will show it: Prefer OCA on, General Menaion where the page is silent.
   { const oca = await ocaFor(M[key]); const hp = hoursPlan(svc.c, svc.path, { oca, general }).hours['1st_hour'];
     const own = { saint: hp.troparia.find((x) => x.role !== 'feast' || svc.c.kind === 'feast'), feast: svc.c.kind === 'feast' ? null : hp.troparia.find((x) => x.role === 'feast') };
-    const tr = resolveVespersTroparia({ c: svc.c, base: svc.path, eveDow, tone, octo, own }); const wt = ocaTroparia(doc);
+    // With the vol. III order of the date where there is one, as the tool calls it.
+    const tr = resolveVespersTroparia({ c: svc.c, base: svc.path, eveDow, tone, octo, own, order: ods3OrderFor(svc.path, dow) }); const wt = ocaTroparia(doc);
     const kk = (x) => (x.kind === 'feast' && svc.c.kind === 'feast' ? 'saint' : x.kind);
     const mineT = tr.items.map((x) => `T${x.tone}${kk(x)[0]}`).join(' '); const theirsT = wt.map((x) => `T${x.tone}${x.kind[0]}`).join(' ');
     if (tr.items.some((x) => !x.node?.text)) fail(`${key} troparia: a place with no hymn (${tr.items.filter((x) => !x.node?.text).map((x) => x.kind + ' T' + x.tone).join(', ')})`);
