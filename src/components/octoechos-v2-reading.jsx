@@ -17,6 +17,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useContext, createContext } from 'react';
+import { ReviewMark } from './review-marks.jsx';
 import { ocaMate } from '../data/oca_hymns/index.js';
 
 export const ReadingContext = createContext({
@@ -171,7 +172,7 @@ export function RRubric({ text, center = false, id }) {
       color: C.inkLight, margin: "8px 0", textAlign: center ? "center" : "left",
       lineHeight: 1.5, background: C.goldFaint, borderLeft: `2px solid #D4C49A`,
       padding: "5px 9px", borderRadius: 0,
-    }}>{text}</div>
+    }}>{text}{id && <ReviewMark path={id} />}</div>
   );
 }
 function RSpecMel({ text }) {
@@ -224,6 +225,8 @@ export function RText({ node, path }) {
              style={{ color: C.gold, fontSize: "0.75rem", textDecoration: "none", marginLeft: "6px" }}>↩ repeat</a>
         )}
         <SicMark path={full} />
+        {/* What is open about this hymn: a question, or an OCA match waiting on it. */}
+        <ReviewMark path={full} text={node.text} />
       </div>
     </div>
   );
@@ -361,6 +364,7 @@ function RTextInline({ node, path }) {
            style={{ color: C.gold, fontSize: "0.75rem", textDecoration: "none", marginLeft: "6px" }}>↩</a>
       )}
       <SicMark path={full} />
+      <ReviewMark path={full} text={node.text} />
     </span>
   );
 }

@@ -33,6 +33,7 @@ import {
 import {
   ReadingContext, DAY_SLOTS, SvcCanonical, RHeading, RRubric,
 } from './octoechos-v2-reading.jsx';
+import { ReviewContext, ScreenReviewLine, useReviewRegisters } from './review-marks.jsx';
 import { getLiturgicalData } from './hours-tool.jsx';
 import { ocaMatesFor, textsUnder } from '../data/oca_hymns/index.js';
 
@@ -420,6 +421,10 @@ export default function OctoechosV2Browser() {
   // (localStorage `prefer_oca`, on by default), so the books and the services agree.
   const [preferOca, setPreferOca] = useState(() => { try { const v = localStorage.getItem('prefer_oca'); return v === null ? true : v === '1'; } catch { return true; } });
   const [ocaMap, setOcaMap] = useState(null);   // Map<text key, OCA hymn> for the tone on the page and the common theotokia
+  // What is open about the page on screen: open questions filed against its paths and
+  // OCA matches waiting on its hymns. The line counts the marks that are drawn.
+  const reviewReg = useReviewRegisters();
+  const reviewCard = useRef(null);
   useEffect(() => { try { localStorage.setItem('prefer_oca', preferOca ? '1' : '0'); } catch { /* no storage */ } }, [preferOca]);
   useEffect(() => {
     if (!preferOca || !data) { setOcaMap(null); return undefined; }
@@ -791,7 +796,8 @@ export default function OctoechosV2Browser() {
               )}
               {data && (
                 <ReadingContext.Provider value={{ mode, sics: sicIndex, roots, tonePrefix: `tone${tone}.`, showRubrics, oca: preferOca ? ocaMap : null, ocaTone: tone }}>
-                  <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: narrow ? "16px 18px" : "26px 34px", maxWidth: "720px", margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)" }}>
+                <ReviewContext.Provider value={reviewReg ? { ...reviewReg, from: '&from=tool', of: `Tone ${tone} of the Octoechos` } : null}>
+                  <div ref={reviewCard} style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: narrow ? "16px 18px" : "26px 34px", maxWidth: "720px", margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)" }}>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", fontSize: "0.68rem", color: C.inkMid }}>
                       <label style={{ cursor: "pointer" }}><input type="checkbox" checked={showRubrics} onChange={e => setRubPersist(e.target.checked)} /> Rubrics</label>
                       <label style={{ cursor: "pointer" }}
@@ -804,6 +810,7 @@ export default function OctoechosV2Browser() {
                     </div>
                     <div style={{ textAlign: "center", letterSpacing: "0.18em", color: C.gold, fontSize: "0.85rem" }}>TONE {tone}</div>
                     <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginBottom: "8px" }}>{slot.label}{svc ? ` — ${svc.label}` : ''}</div>
+                    <ScreenReviewLine containerRef={reviewCard} what="this page" />
                     {!svc && <SvcCanonical d={data} />}
                     {!svc && <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginTop: "14px" }}>Choose a service to open its page.</div>}
                     {svc && !encoded.has(svc.claim) && (
@@ -823,6 +830,7 @@ export default function OctoechosV2Browser() {
                       </div>
                     )}
                   </div>
+                </ReviewContext.Provider>
                 </ReadingContext.Provider>
               )}
             </div>

@@ -126,6 +126,24 @@ await visit('https://example.org/orthodox-hours/octoechos-v2#tone7.troparion', '
 await visit('https://example.org/orthodox-hours/octoechos-v2#tone7.troparion', 'Octoechos Tone 7, Prefer OCA off', null, { octo: true, preferOca: false, wait: 900,
   must: ['Prefer OCA texts', 'Thou didst destroy death by Thy Cross'], mustNot: ['OCA 2026', 'By Thy Cross Thou didst destroy death'] });
 for (let t = 1; t <= 8; t++) await visit(`https://example.org/orthodox-hours/octoechos-v2#tone${t}.kontakion`, `Octoechos Tone ${t}`, null, { octo: true, preferOca: true, wait: 700, must: ['Prefer OCA texts'] });
+// ── What is open about the page on screen (15 Nov 2026) ───────────────────────────────
+// The Menaion: a line for the day, and a mark AT the element a question's path names, or
+// at the head of the service when the question is about the service as a whole (Q-0015 is
+// filed against "12-04.c0"). A hymn with an OCA match waiting carries a mark to that item.
+await visit('https://example.org/orthodox-hours/menaion-v2?comm=12-04&date=2026-12-04', '12-04: review line and marks', null, { wait: 500,
+  must: ['Help us improve this tool. Review items for this day:', '1 open question', '? open question', '? OCA match'],
+  href: /^\/orthodox-hours\/questions\?q=Q-0015&from=tool$/ });
+await visit('https://example.org/orthodox-hours/menaion-v2?comm=12-04&date=2026-12-04', '12-04: the line links to the day', null, { wait: 500,
+  href: /^\/orthodox-hours\/questions\?day=12-04&from=tool$/ });
+await visit('https://example.org/orthodox-hours/menaion-v2?comm=12-04&date=2026-12-04', '12-04: a hymn mark names its page', null, { wait: 500,
+  href: /^\/orthodox-hours\/oca-matches\?ids=o[0-9a-f]{10}(,o[0-9a-f]{10})*&on=m[0-9a-f]+&of=December%204%20in%20the%20Menaion&from=tool$/ });
+// A question about one rubric is marked at that rubric (11-15's "Be it known").
+await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2026-11-15', '11-15: the mark at the rubric', null, { wait: 500,
+  must: ['? open question'], href: /^\/orthodox-hours\/questions\?q=Q-00\d\d&from=tool$/ });
+// The Octoechos: the line counts the marks drawn on the page that is on screen.
+await visit('https://example.org/orthodox-hours/octoechos-v2#tone2.troparion', 'Octoechos Tone 2: review line and marks', null, { octo: true, wait: 900,
+  must: ['Help us improve this tool. Review items for this page:', '? OCA match'],
+  href: /^\/orthodox-hours\/oca-matches\?ids=o[0-9a-f]{10}(,o[0-9a-f]{10})*&on=m[0-9a-f]+(,m[0-9a-f]+)*&of=Tone%202%20of%20the%20Octoechos&from=tool$/ });
 // No year given: the calendar year stands in.
 { const now = new Date().getFullYear() === 2026;
   await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15', '11-15, no year given', null, { wait: 400,

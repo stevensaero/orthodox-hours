@@ -22,6 +22,7 @@ import { MONTH_LOADERS, MONTH_LABELS, MONTHS, loadMenaionV2General, loadMenaionV
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ANCHOR_RE, SERVICES } from '../data/menaion_v2/schema_menaion_v2.js';
 import { ReadingContext, RCommemoration } from './menaion-v2-reading.jsx';
+import { ReviewContext, ReviewLine, useReviewRegisters, reviewUnder } from './review-marks.jsx';
 import { ocaStems, ocaDocInfo, ocaMatesFor, textsUnder } from '../data/oca_hymns/index.js';
 import OcaDocView from './oca-doc-view.jsx';
 
@@ -339,6 +340,17 @@ export default function MenaionV2Browser() {
                : generalType ? `general.${generalType}.`
                : (dateKey ? `${dateKey}.c${cIdx}.` : '');
   const generalTypes = useMemo(() => Object.keys(general ?? {}).sort(), [general]);
+
+  // What is open about the day on the page: OCA matches waiting on its hymns, and
+  // open questions filed against its paths. Dates only: the General Menaion and the
+  // shared tables have no day.
+  const reviewReg = useReviewRegisters();
+  const onDatePage = !!dateKey && !generalType && !sharedTable && !!entry;
+  const dayReview = useMemo(() => (onDatePage ? reviewUnder(reviewReg, textsUnder(dateObj), `${dateKey}.`) : null),
+    [reviewReg, onDatePage, dateObj, dateKey]);
+  const reviewCtx = useMemo(() => (reviewReg && onDatePage
+    ? { ...reviewReg, from: '&from=tool', of: `${new Date(`2024-${dateKey}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} in the Menaion` } : null),
+    [reviewReg, onDatePage, dateKey]);
 
   // The OCA service texts captured, newest first, and those for the day on the page.
   const ocaDocs = useMemo(() => ocaStems().map(ocaDocInfo).filter(Boolean).sort((a, b) => b.date.localeCompare(a.date) || a.stem.localeCompare(b.stem)), []);
@@ -727,10 +739,15 @@ export default function MenaionV2Browser() {
               <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics, oca: preferOca ? ocaMap : null,
                   // The OCA badge on a hymn opens the OCA service text it came from, at that hymn.
                   openOca: (m) => { ocaReturn.current = { y: window.scrollY, label: 'the hymn you came from' }; setOcaFocus(m.id); setOcaDoc(m.from.doc); } }}>
+                <ReviewContext.Provider value={reviewCtx}>
                 <div style={readingCard}>
                   {ReadingToggles}
+                  <ReviewLine review={dayReview} what="this day"
+                    matchesHref={dayReview ? `/orthodox-hours/oca-matches?ids=${dayReview.ids.join(',')}&on=${dayReview.on.join(',')}&of=${encodeURIComponent(reviewCtx?.of ?? '')}&from=tool` : undefined}
+                    questionsHref={`/orthodox-hours/questions?day=${dateKey}&from=tool`} />
                   <RCommemoration entry={entry} path={`${dateKey}.c${cIdx}`} />
                 </div>
+                </ReviewContext.Provider>
               </ReadingContext.Provider>
             )}
           </div>

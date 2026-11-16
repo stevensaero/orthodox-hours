@@ -36,7 +36,7 @@ function OcaText({ text }) {
 const btn = (color, on) => ({ fontFamily: SERIF, fontSize: "0.76rem", cursor: "pointer", padding: "3px 10px", borderRadius: "4px",
   border: `1px solid ${color}`, background: on ? color : "#fff", color: on ? "#fff" : color });
 
-function Card({ id, m, d, set, onDay }) {
+function Card({ id, m, d, set, onDay, fromPage = false }) {
   const cands = [{ mate: m.mate, mateHash: m.mateHash, score: m.score, text: m.mateText, tones: m.mateTones, top: true }, ...(m.others || [])];
   const rejected = new Set(d?.reject ?? []);
   const state = d?.none ? 'none' : d?.confirm ? 'confirm' : rejected.size ? 'reject' : null;
@@ -70,7 +70,7 @@ function Card({ id, m, d, set, onDay }) {
               <span>{c.top ? 'Proposed mate' : `Candidate ${i + 1}`}</span>
               {href ? <a href={href} style={{ color: C.gold, fontFamily: "monospace", fontSize: "0.7rem" }}>{c.mate}</a> : <span style={{ fontFamily: "monospace", fontSize: "0.7rem" }}>{c.mate}</span>}
               <span>wording {c.score}</span>
-              {onDay && onDay.has(c.mateHash) && <span style={{ color: C.green, fontWeight: 700 }}>a hymn of the day you came from</span>}
+              {onDay && onDay.has(c.mateHash) && <span style={{ color: C.green, fontWeight: 700 }}>{fromPage ? 'a hymn of the page you came from' : 'a hymn of the day you came from'}</span>}
               {c.tones && c.tones.length > 0 && <span style={{ color: toneDiffers ? C.red : C.inkLight, fontWeight: toneDiffers ? 700 : 400 }}>Tone {c.tones.join('/')}{toneDiffers ? ` (the OCA: Tone ${m.tone})` : ''}</span>}
             </div>
             <div style={{ fontFamily: SERIF, fontSize: "0.92rem", lineHeight: 1.55, color: C.ink, margin: "4px 0 6px" }}>{c.text}</div>
@@ -107,7 +107,9 @@ export default function OcaMatchReview() {
     try { const p = new URLSearchParams(window.location.search); const ids = (p.get('ids') || '').split(',').filter((x) => /^o[0-9a-f]{10}$/.test(x));
       if (!ids.length) return null;
       const day = /^\d{4}-\d\d-\d\d$/.test(p.get('day') || '') ? p.get('day') : null;
-      return { ids: new Set(ids), on: new Set((p.get('on') || '').split(',').filter((x) => /^m[0-9a-f]+$/.test(x))), day };
+      // From a viewer's mark or line: the page it came from, named in words (?of=).
+      const of = /^[A-Za-z0-9 ,.'-]{1,60}$/.test(p.get('of') || '') ? p.get('of') : null;
+      return { ids: new Set(ids), on: new Set((p.get('on') || '').split(',').filter((x) => /^m[0-9a-f]+$/.test(x))), day, of };
     } catch { return null; }
   });
   useEffect(() => { import('../data/oca_hymns/matches_review.js').then((m) => setReview(m.OCA_MATCHES_REVIEW)); }, []);
@@ -156,8 +158,10 @@ export default function OcaMatchReview() {
         {dayFilter && (
           <div style={{ border: `1px solid ${C.gold}`, background: "rgba(139,105,20,0.08)", borderRadius: "6px", padding: "8px 12px", margin: "8px 0", fontSize: "0.84rem", color: C.inkMid }}>
             Showing only the {ids.length === 1 ? 'item that touches' : `${ids.length} items that touch`} the hymns of{' '}
-            <strong>{dayFilter.day ? new Date(dayFilter.day + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'the day you came from'}</strong>.
-            {' '}A candidate marked <span style={{ color: C.green, fontWeight: 700 }}>a hymn of the day you came from</span> is one our books give for that day: on the Menaion's page for it, or a Sunday hymn of its tone.
+            <strong>{dayFilter.of ? dayFilter.of : dayFilter.day ? new Date(dayFilter.day + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'the day you came from'}</strong>.
+            {' '}{dayFilter.of
+              ? <>A candidate marked <span style={{ color: C.green, fontWeight: 700 }}>a hymn of the page you came from</span> is one printed on that page of our books.</>
+              : <>A candidate marked <span style={{ color: C.green, fontWeight: 700 }}>a hymn of the day you came from</span> is one our books give for that day: on the Menaion's page for it, or a Sunday hymn of its tone.</>}
             {' '}<span role="button" onClick={() => setDayFilter(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>show all</span>
           </div>
         )}
@@ -188,7 +192,7 @@ export default function OcaMatchReview() {
               </div>
             )}
             <div style={{ fontSize: "0.76rem", color: C.inkLight, margin: "10px 0 0" }}>{shown.length} shown, strongest wording first.</div>
-            {shown.map((id) => <Card key={id} id={id} m={review[id]} d={dec[id]} set={set} onDay={dayFilter ? dayFilter.on : null} />)}
+            {shown.map((id) => <Card key={id} id={id} m={review[id]} d={dec[id]} set={set} onDay={dayFilter ? dayFilter.on : null} fromPage={!!(dayFilter && dayFilter.of)} />)}
           </>
         )}
       </div>

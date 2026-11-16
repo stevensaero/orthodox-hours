@@ -100,11 +100,15 @@ export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_E
   // Opened from the Hours tool's "waiting for review on this day" line (?day=MM-DD):
   // only the questions about that day's page, and the list brought into view.
   const [day, setDay] = useState(() => { try { const d = new URLSearchParams(window.location.search).get('day'); return /^\d\d-\d\d$/.test(d || '') ? d : null; } catch { return null; } });
+  // Opened from a mark or a line in the Menaion or Octoechos viewer (?q=Q-0015 or a list):
+  // only the questions about the place the reader was looking at.
+  const [only, setOnly] = useState(() => { try { const v = (new URLSearchParams(window.location.search).get('q') || '').split(',').filter((x) => /^Q-\d{4}$/.test(x)); return v.length ? new Set(v) : null; } catch { return null; } });
   const listRef = useRef(null);
-  useEffect(() => { if (day && listRef.current && listRef.current.scrollIntoView) listRef.current.scrollIntoView({ block: 'start' }); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if ((day || only) && listRef.current && listRef.current.scrollIntoView) listRef.current.scrollIntoView({ block: 'start' }); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
   const shown = useMemo(() => questions.filter(q => (!day || (typeof q.path === 'string' && q.path.startsWith(day + '.'))) &&
+    (!only || only.has(q.id)) &&
     (status === 'all' ? true : status === 'answered' ? q.status === 'answered' : q.status !== 'answered')),
-    [questions, status, day]);
+    [questions, status, day, only]);
   const vocab = groupBy === 'source'
     ? Object.fromEntries(Object.entries(SOURCES).map(([k, v]) => [k, v.label]))
     : SUBJECTS;
@@ -189,6 +193,12 @@ export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_E
           <div style={{ border: `1px solid ${C.gold}`, background: C.goldFaint, borderRadius: "6px", padding: "8px 12px", margin: "8px 0", fontSize: "0.84rem", color: C.inkMid }}>
             Showing only the questions about <strong>{new Date(`2024-${day}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</strong>, the day you came from.
             {' '}<span role="button" onClick={() => setDay(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>show all</span>
+          </div>
+        )}
+        {only && (
+          <div style={{ border: `1px solid ${C.gold}`, background: C.goldFaint, borderRadius: "6px", padding: "8px 12px", margin: "8px 0", fontSize: "0.84rem", color: C.inkMid }}>
+            Showing only the {only.size === 1 ? 'question' : `${only.size} questions`} about the place you came from.
+            {' '}<span role="button" onClick={() => setOnly(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>show all</span>
           </div>
         )}
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center", margin: "8px 0" }}>

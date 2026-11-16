@@ -22,6 +22,7 @@
 import React, { useContext, createContext } from 'react';
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ocaMate } from '../data/oca_hymns/index.js';
+import { ReviewMark } from './review-marks.jsx';
 
 export const ReadingContext = createContext({
   mode: 'printed', sics: {}, prefix: '', showRubrics: true,
@@ -109,7 +110,7 @@ export function RRubric({ node, path, center }) {
            color: C.inkLight, margin: "8px 0", textAlign: center ? "center" : "left",
            lineHeight: 1.5, background: C.goldFaint, borderLeft: "2px solid #D4C49A",
            padding: "5px 9px", borderRadius: 0,
-         }}>{text}<SicMark path={path} /></div>
+         }}>{text}<SicMark path={path} /><ReviewMark path={path} /></div>
   );
 }
 
@@ -170,6 +171,9 @@ export function RText({ node, path, label, groupTone = null }) {
           ))
         : <span>{pointed(shownText)}</span>}
       <SicMark path={full} />
+      {/* What is open about this hymn: a question, or an OCA match waiting on it.
+          Looked up by the words OUR book prints, whichever words are shown. */}
+      <ReviewMark path={full} text={node.text} />
     </div>
   );
 }
@@ -381,6 +385,9 @@ export function RCommemoration({ entry, path }) {
         <div style={{ fontFamily: SERIF, fontSize: "0.78rem", color: C.inkLight, marginBottom: "8px" }}>
           {entry.kind ?? ''}{entry.rank ? ` · ${String(entry.rank).replace(/_/g, ' ')}` : ''}
           {entry.fekula_section ? ` · Fekula §${entry.fekula_section}` : ''}
+          {/* Questions about the service as a whole, or about a field with no line of its
+              own on the page (its rank, its section, how the dismissal names the saint). */}
+          <ReviewMark path={path} extraPaths={['rank', 'fekula_section', 'name', 'title', 'kind'].map((k) => `${path}.${k}`)} />
         </div>
       </div>
       {/* NOTHING HOISTED HERE. troparion/kontakion/ikos are stored once at
