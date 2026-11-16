@@ -63,7 +63,7 @@ export const rubricTone = (node) => {
 //   { kind: 'doxasticon'|'feast'|'theotokion'|'dogmatikon'|'stavrotheotokion',
 //     source: 'menaion'|'octoechos', tone, node, basis: 'printed'|'rubric'|'rule' }.
 // `combined`: Glory and Both now are sung together before the one hymn in bothNow.
-function _resolveLicClosers({ c, base, eveDow, tone, octo }) {
+function _resolveLicClosers({ c, base, eveDow, tone, octo, order = null }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const at = (key, node) => ({ ...node, path: `${base}.${vname}.${key}` });
   const notes = [];
@@ -98,6 +98,13 @@ function _resolveLicClosers({ c, base, eveDow, tone, octo }) {
 
   // ── weekday evenings ──
   if (feast) {
+    // ODS 3rd ed. vol. III, where it prints this date's order (src/data/ods_v3/orders.js),
+    // drives the Friday evening of a feast the chapters do not treat (9 December, a
+    // doxology-rank feast of the Theotokos): Glory, of the feast; Both now, the dogmaticon.
+    const fri = friday ? order?.vespers?.friday : null;
+    if (fri && fri.licGlory === 'feast' && fri.licBothNow === 'dogmatikon:week' && !dox) {
+      return out(feast, fromOcto('dogmatikon', tone, octo.dogmatikon(tone), 'rule'), `ODS 3rd ed. vol. III, p. ${order.vespers.page} (${order.id}), Friday evening: Glory, of the feast; Both now, the dogmaticon in the tone of the week.`);
+    }
     // §2G3: "if it be Friday evening: Glory ... of the feast; Now and ever ... dogmaticon in the tone of the week."
     if (friday && c.fekula_section === '2G3' && !dox) {
       return out(feast, fromOcto('dogmatikon', tone, octo.dogmatikon(tone), 'rule'), '§2G3, Friday evening: Glory, of the feast; Both now, the dogmaticon in the tone of the week.');
@@ -300,13 +307,19 @@ function _resolveLitiya({ c, base, eveDow = null, order = null }) {
   // Vespers Aposticha without their verses, and one closing hymn named by its place.
   const comp = order?.vespers?.litiya?.compose;
   if (comp && v.litiya == null) {
-    const ofFeast = (n) => ['feast', 'forefeast'].includes(n.saint) || [].concat(n.label ?? []).includes('of_the_feast');
+    // On the feast's own page every sticheron is the feast's.
+    const ofFeast = (n) => c.kind === 'feast' || ['feast', 'forefeast'].includes(n.saint) || [].concat(n.label ?? []).includes('of_the_feast');
     let t = null;
     const stichera = (Array.isArray(v.aposticha) ? v.aposticha : []).map((n, i) => ({ n, i }))
       .filter(({ n }) => isText(n) && !([].concat(n.label ?? []).includes('refrain')) && ofFeast(n))
       .map(({ n, i }) => { if (n.tone != null) t = n.tone; return { text: n.text, tone: t, spec_mel: n.spec_mel ?? null, path: `${base}.${vname}.aposticha[${i}]` }; });
-    const closer = comp.closer.split('.').reduce((o, k) => o?.[k], c);
-    if (stichera.length && isText(closer)) return { rubric: null, stichera, glory: null, combined: true, composed: `ODS 3rd ed. vol. III, p. ${order.vespers.page} (${order.id})`,
+    // `count`: only the first so many of them; the closer may be one of the list ("vespers.aposticha[4]").
+    if (comp.count != null) stichera.length = Math.min(stichera.length, comp.count);
+    const closer = comp.closer.split(/[.[\]]/).filter(Boolean).reduce((o, k) => o?.[k], c);
+    const how = /aposticha\[/.test(comp.closer)
+      ? `the first ${stichera.length} stichera of the feast from the Vespers Aposticha, without their verses; Glory, Both now, the last sticheron of that Aposticha`
+      : 'the stichera of the feast from the Vespers Aposticha, without their verses; Glory, Both now, the doxasticon of the feast from the Praises of Matins';
+    if (stichera.length && isText(closer)) return { rubric: null, stichera, glory: null, combined: true, composed: `ODS 3rd ed. vol. III, p. ${order.vespers.page} (${order.id})`, how,
       bothNow: { kind: 'feast', source: 'menaion', tone: closer.tone ?? null, node: { ...closer, path: `${base}.${comp.closer}` }, basis: 'rule' } };
   }
   if (v.litiya == null && eveDow === 6 && ['forefeast', 'afterfeast'].includes(c.kind) && c.fekula_section === '2G1') {
@@ -356,11 +369,17 @@ function _resolveLitiya({ c, base, eveDow = null, order = null }) {
 // octo adds: resTroparion(tone), resDismissalTheotokion(tone), dailyDismissalTheotokion(tone, eve).
 // Returns { items: [{ lead, kind, source, tone, node }], rule, notes }; lead is
 //   null | 'glory' | 'bothNow' | 'gloryBothNow'.
-function _resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }) {
+function _resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {}, order = null }) {
   const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
   const notes = []; const saturday = eveDow === 6; const friday = eveDow === 5; const eve = EVES[eveDow];
   const high = ['doxology', 'polyeleos', 'vigil', 'great_feast'].includes(c.rank);
-  const theotokosFeast = c.kind === 'feast' && c.rank === 'great_feast';
+  // Fekula's chapters name four great feasts of the Theotokos (ch. 1 §1E, note 17). Where
+  // ODS 3rd ed. vol. III prints the order of a lesser one (9 December) and gives its
+  // troparion alone, with no theotokion after it, the order drives this place.
+  const ordered = order?.vespers ? { ...order.vespers, ...(friday ? order.vespers.friday ?? {} : {}) }.troparia : null;
+  const feastAlone = c.kind === 'feast' && Array.isArray(ordered) && ordered.every((w) => /^(sunday|(GN:)?feast)$/.test(w));
+  const cite = feastAlone ? `ODS 3rd ed. vol. III, p. ${order.vespers.page} (${order.id})` : null;
+  const theotokosFeast = (c.kind === 'feast' && c.rank === 'great_feast') || feastAlone;
   const list = [];
   if (isText(c.troparion)) list.push({ node: { ...c.troparion, path: `${base}.troparion` }, feast: theotokosFeast, labels: [] });
   (v.troparia ?? []).forEach((n, i) => isText(n) && list.push({ node: { ...n, path: `${base}.${vname}.troparia[${i}]` }, labels: [].concat(n.label ?? []),
@@ -381,7 +400,7 @@ function _resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }) {
 
   if (saturday) {
     const sunday = { lead: null, kind: 'sunday', source: 'octoechos', tone, node: octo.resTroparion(tone) };
-    if (theotokosFeast && feast) return { items: [sunday, item(feast, 'gloryBothNow', 'feast')], rule: '§1E, a feast of the Theotokos: the Sunday troparion; Glory, Both now, the troparion of the feast.', notes };
+    if (theotokosFeast && feast) return { items: [sunday, item(feast, 'gloryBothNow', 'feast')], rule: `${cite ?? '§1E'}, a feast of the Theotokos: the Sunday troparion; Glory, Both now, the troparion of the feast.`, notes };
     const items = [sunday];
     if (saints[0]) items.push(item(saints[0], 'glory', 'saint'));
     if (saints.length > 1) notes.push('Three troparia are never sung at Vespers before the theotokion: the second saint\'s is left out (Fekula §1B, note 9).');
@@ -396,7 +415,7 @@ function _resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }) {
     notes.push('The Menaion prints no troparion for this service.');
     return { items: [], rule: 'No troparion is printed.', notes };
   }
-  if (theotokosFeast) return { items: [item(feast ?? list[0], null, 'feast')], rule: 'The troparion of the feast.', notes };
+  if (theotokosFeast) return { items: [item(feast ?? list[0], null, 'feast')], rule: cite ? `${cite}: the troparion of the feast, with no theotokion after it.` : 'The troparion of the feast.', notes };
   // As printed: each troparion under the heading the page gives it.
   const leadOf = (x, i) => { const g = x.labels.includes('glory'), b = x.labels.includes('both_now'); return g && b ? 'gloryBothNow' : g ? 'glory' : b ? 'bothNow' : (i > 0 && !x.feast && saints.length === 2 && x === saints[1] ? 'glory' : null); };
   const items = list.map((x, i) => item(x, leadOf(x, i), x.feast ? 'feast' : 'saint'));

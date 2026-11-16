@@ -41,7 +41,8 @@
 //             evening. entrance: true | false. readings: the references, in order.
 //             litiya: [whose, how many] (the temple's sticheron is the parish's own),
 //             its Glory and Both now; `compose` where it is drawn from other places
-//             of the page (closer: where the closing hymn is stored).
+//             of the page (closer: where the closing hymn is stored; count: how
+//             many of the feast's Aposticha stichera are taken, all where absent).
 //             aposticha: from 'menaion' | 'octoechos', how many, Glory, Both now.
 //             troparia: the hymns in order; 'GN:' = at "Glory, Both now", 'G:', 'N:'.
 //             On a Sunday the troparia are those sung when no Vigil is served; at a
@@ -130,6 +131,51 @@ export const ODS3_ORDERS = {
       entrance: ['feast_troparion', 'saint_troparion', 'G:saint_kontakion', 'N:feast_kontakion'],
       prokeimenon: ['feast', 'saint'], alleluia: ['feast', 'saint'], communion: ['feast', 'saint'],
       epistle: ['day', 'feast', 'saint'], gospel: ['day', 'feast', 'saint'] },
+  },
+  // 9 December, the Conception of the Most Holy Theotokos by Saint Anna (12-09.pdf).
+  // (The St. Sergius Menaion's second service of the date, the icon "Unexpected Joy",
+  // 12-09A.pdf, has no order in vol. III.)
+  'ods3-1209-sun': {
+    service: '12-09.c0', day: 'sunday', pages: [59, 61], rank: 'doxology',
+    vespers: { page: 59,
+      lic: [['resurrection', 6], ['feast', 4]], licGlory: 'feast', licBothNow: 'dogmatikon:week',
+      entrance: true, readings: [],
+      // The first two stichera of the feast from the Aposticha of Vespers, without their
+      // verses; Glory, Both now, the third.
+      litiya: { stichera: [['temple', 1], ['feast', 2]], glory: null, bothNow: 'feast', compose: { count: 2, closer: 'vespers.aposticha[4]' } },
+      aposticha: { from: 'octoechos', count: 4, glory: null, bothNow: 'feast' },
+      troparia: ['sunday', 'GN:feast'] },
+    hours: { page: 61, troparia: each(['sunday', 'feast']), kontakion: pairs('feast', 'sunday') },
+    liturgy: { page: 61,
+      // The book heads this with a total of ten and then names 4 of the resurrection and
+      // 4 from Ode III of Canon I, which make eight. PROVISIONAL (Q-0016): six of the
+      // resurrection, which meets the book's own total and is the general rule (ch. 1 §1C).
+      beatitudes: [['resurrection', 6], ['menaion', 0, 4]],
+      entrance: {
+        lord: ['sunday_troparion', 'feast_troparion', 'G:sunday_kontakion', 'N:feast_kontakion'],
+        theotokos: ['sunday_troparion', 'feast_troparion', 'G:sunday_kontakion', 'N:feast_kontakion'],
+        saint: ['sunday_troparion', 'feast_troparion', 'temple_troparion', 'sunday_kontakion', 'G:temple_kontakion', 'N:feast_kontakion'] },
+      prokeimenon: ['day', 'feast'], alleluia: ['day', 'feast'], communion: ['day', 'feast'],
+      epistle: ['day', 'feast'], gospel: ['day', 'feast'] },
+  },
+  'ods3-1209-wkd': {
+    service: '12-09.c0', day: 'weekday', pages: [61, 63], rank: 'doxology',
+    vespers: { page: 61,
+      lic: [['feast', 6]], licGlory: null, licBothNow: 'feast',
+      entrance: false, readings: [],
+      aposticha: { from: 'menaion', count: 3, glory: null, bothNow: 'feast' },
+      troparia: ['feast'],
+      friday: { licGlory: 'feast', licBothNow: 'dogmatikon:week' } },
+    hours: { page: 63, troparia: each(['feast']), kontakion: each('feast') },
+    liturgy: { page: 63,
+      beatitudes: [['menaion', 0, 4], ['menaion', 4, 8]],
+      entrance: {
+        lord: ['temple_troparion', 'feast_troparion', 'G:temple_kontakion', 'N:feast_kontakion'],
+        theotokos: ['feast_troparion', 'GN:feast_kontakion'],
+        saint: ['feast_troparion', 'temple_troparion', 'G:temple_kontakion', 'N:feast_kontakion'] },
+      prokeimenon: ['feast'], alleluia: ['feast'], communion: ['feast'],
+      epistle: ['day', 'feast'], gospel: ['day', 'feast'],
+      saturday: { epistle: ['feast', 'day'], gospel: ['feast', 'day'] } },
   },
 };
 

@@ -253,7 +253,8 @@ export function liturgyPlan(c, base) {
     const cit = r.citation; const ref = String(cit.verses).includes(':') ? `${cit.book} ${cit.verses}` : `${cit.book} ${cit.chapter}:${cit.verses}`;
     return { ref, pericope: cit.pericope_number ?? null, heading: r.heading ?? null, basis: r.citation_basis ?? 'printed',
       // Whose reading: the page's own heading over it ("FOR THE FEAST:"), as the capture records it.
-      feast: ofFeast(r) || /for the (fore)?feast/i.test(`${r.note ?? ''} ${r.src?.locus ?? ''}`),
+      // On the feast's own page (kind 'feast') every reading is the feast's, as every hymn is.
+      feast: ofFeast(r) || c.kind === 'feast' || /for the (fore)?feast/i.test(`${r.note ?? ''} ${r.src?.locus ?? ''}`),
       // "Book c:v (§n)" is the form the lectionary helpers read.
       display: ref + (cit.pericope_number != null ? ` (§${cit.pericope_number})` : '') };
   });

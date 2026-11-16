@@ -50,7 +50,7 @@ const octo = {
 // WEEK is a tone of the week no hymn of these services is in, so "tone of the week" is unambiguous.
 const WEEK = 5;
 function checkVespers(id, o, c, base, eveDow, label, report) {
-  const V = { ...o.vespers, ...(eveDow === 5 ? o.vespers.friday ?? {} : {}) }; const a = { c, base, eveDow, tone: WEEK, octo }; const order = { id, ...o };
+  const V = { ...o.vespers, ...(eveDow === 5 ? o.vespers.friday ?? {} : {}) }; const order = { id, ...o }; const a = { c, base, eveDow, tone: WEEK, octo, order };
   const bad = (what, got, want) => fail(`${id} Vespers (${label}) ${what}: tool ${got}; the order ${want}`);
   const tn = (x) => (x === 'week' ? WEEK : Number(x));
   // a hymn against a name: 'feast', 'saint', 'saint:Name', 'doxasticon:6', 'dogmatikon:week', 'theotokion:2'
