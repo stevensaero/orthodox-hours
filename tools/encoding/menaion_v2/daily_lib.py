@@ -106,7 +106,7 @@ class Src:
 
     def specmel(self, n, b=None):
         t = self.raw(n, b)
-        m = re.match(r'^Spec\.\s*Mel\.:?\W*[“"](.+)[”"]\s*:?\s*$', t)
+        m = re.match(r'^Spec\.?\s*Mel\.?:?\W*[“"](.+)[”"]\s*:?\s*$', t)
         assert m, 'not a Spec. Mel. line %d: %r' % (n, t)
         return m.group(1)          # verbatim between the printed quotation marks
 

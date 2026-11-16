@@ -5,6 +5,22 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── DECEMBER 10-12 (16 Nov 2026). Each confirmed against a second extraction
+  // (pdftotext -layout) before being registered. ───────────────────────────────
+  { path: '12-10.c0.vespers.lic[0]', file: '12-10.pdf', locus: 'p1 LIC 1',
+    verbatim: 'thine eyes putout', note: '"putout" for "put out".' },
+  { path: '12-10.c0.matins.canons[0].odes.9.items[0]', file: '12-10.pdf', locus: 'p7 Ode 9 troparion 1',
+    verbatim: 'sanctity there-from', note: 'Hyphen printed in mid-line.' },
+  { path: '12-10.c1.matins.psalm50_sticheron', file: '12-10A.pdf', locus: 'p9 sticheron after the Gospel',
+    verbatim: 'thy chief shepherd-ship, us who', note: 'Hyphen printed in mid-line. The label of this sticheron is printed "in Tone VI-", a hyphen for the colon.' },
+  { path: '12-10.c1.matins.canons[0].odes.6.items[3]', file: '12-10A.pdf', locus: 'p12 Ode 6 troparion 4',
+    verbatim: 'an un-acquisitive monk', note: 'Hyphen printed in mid-line.' },
+  { path: '12-11.c1.matins.canons[0].odes.4.irmos', file: '12-11A.pdf', locus: 'p4 Ode 4 irmos',
+    verbatim: 'forth O Christ’', note: 'The irmos closes a quotation it does not open, and has no final stop.' },
+  { path: '12-11.c1.matins.canons[0].odes.9.items[1]', file: '12-11A.pdf', locus: 'p6 Ode 9 troparion 2',
+    verbatim: 'O Savior of the-world', note: 'Stray hyphen: "the-world". The ODE VIII heading of this file is printed "OODE VIII".' },
+  { path: '12-12.c1.great_vespers.lic[7]', file: '12-12C.pdf', locus: 'p4 LIC 8',
+    verbatim: '** wherefore, teach us', note: 'The sticheron BREAKS OFF in print after these words: no close, no final stop; the Glory follows on the next line.' },
   // ── DECEMBER 7-9 (16 Nov 2026). Each confirmed against a second extraction
   // (pdftotext -layout) before being registered. ───────────────────────────────
   { path: '12-07.c0.matins.canons[0].odes.1.items[3]', file: '12-07.pdf', locus: 'p3 Ode 1 troparion 4',

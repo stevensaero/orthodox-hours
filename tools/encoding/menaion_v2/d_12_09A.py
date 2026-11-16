@@ -90,12 +90,13 @@ def build():
     }
 
     mr, mt = s.split_inline(168, 170, 'magnification rubric', 'Magnification')
-    # The label of the Polyeleos sessional hymn ends "in Tone Il-" in both extractions:
-    # the tone is not legible from the text layer, and none is stored.
+    # The label of the Polyeleos sessional hymn is PRINTED "in Tone Il-" (both extractions
+    # and the page image, p6): a misprint for "in Tone II:" (Bill, 16 Nov 2026). The label
+    # is stored as printed; the tone is set by hand.
     assert s.raw(174) == 'After the Polyeleos, the Sessional Hymn, in Tone Il-', s.raw(174)
-    poly = t(175, 181, 'Polyeleos sessional', sl=174, label='plain')
-    poly['provenance_note'] = ('The label is printed "in Tone Il-" in both extractions (p6): the tone cannot be read '
-                               'from the text layer and is not stored. To be read off the page image.')
+    poly = t(175, 181, 'Polyeleos sessional', sl=174, label='plain', tone=2)
+    poly['provenance_note'] = ('The label is printed "in Tone Il-" (p6; both extractions and the page image): a '
+                               'misprint for "in Tone II:" (Bill, 16 Nov 2026). Tone II is set by hand.')
     matins = {
         'order': ['god_is_lord_rubric', 'troparion', 'sessional_1', 'sessional_2',
                   'megalynarion_rubric', 'megalynarion', 'megalynarion_verse_rubric', 'megalynarion_verse',
@@ -212,7 +213,7 @@ def build():
                  'no title line, no tone and no acrostic printed ("Canon I", "Canon II"), "Katavasia: Christ is born" '
                  'after Ode I only; Great Doxology, after which the troparion is printed again. One hymn, "All the '
                  'noetic ranks", is the Glory at Lord I have cried, the sticheron after Psalm 50 and the Glory at the '
-                 'Praises; the Vespers printing differs from the other two in two places. The label of the Polyeleos sessional hymn is printed "in Tone Il-": no tone stored.'),
+                 'Praises; the Vespers printing differs from the other two in two places. The label of the Polyeleos sessional hymn is printed "in Tone Il-", a misprint for Tone II (Bill, 16 Nov 2026).'),
         'troparion': troparion, 'kontakion': kontakion, 'ikos': ikos,
         'little_vespers': little_vespers, 'great_vespers': great_vespers, 'matins': matins, 'liturgy': liturgy,
     }

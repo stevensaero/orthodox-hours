@@ -210,6 +210,7 @@ export const DAILY_PAGE_COUNTS = {
   '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16, '11-27.pdf': 14, '11-27A.pdf': 16, '11-28.pdf': 14, '11-29.pdf': 12, '11-30.pdf': 27,
   '12-01.pdf': 5, '12-01A.pdf': 7, '12-02.pdf': 7, '12-02A.pdf': 8, '12-03.pdf': 6, '12-04.pdf': 13, '12-05.pdf': 21, '12-06.pdf': 25,
   '12-07.pdf': 7, '12-08.pdf': 7, '12-09.pdf': 13, '12-09A.pdf': 17,
+  '12-10.pdf': 9, '12-10A.pdf': 19, '12-11.pdf': 8, '12-11A.pdf': 7, '12-12.pdf': 10, '12-12C.pdf': 17,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -592,6 +593,7 @@ export const FIELD_MANIFEST = [
   { path: '<c>.little_vespers.lic_closer',        kind: 'closer',      service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV LIC closer — typed (§5.8)' },
   { path: '<c>.little_vespers.aposticha_rubric',  kind: 'rubric',      service: 'little_vespers', required: false, tag: 'A-attested', label: '"On the Aposticha, these Stichera" (5 instances)' },
   { path: '<c>.little_vespers.aposticha',         kind: 'aposticha',   service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV aposticha' },
+  { path: '<c>.little_vespers.aposticha_glory',         kind: 'text',        service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV aposticha Glory, where a Both now is printed apart (12-10A)' },
   { path: '<c>.little_vespers.aposticha_closer',  kind: 'closer',      service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV aposticha closer — typed' },
   { path: '<c>.little_vespers.dismissal_troparion', kind: 'text',      service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV dismissal troparion' },
   { path: '<c>.little_vespers.closing_rubric',    kind: 'rubric',      service: 'little_vespers', required: false, tag: 'unattested', label: 'LV closing rubric' },
@@ -717,6 +719,7 @@ export const DAILY_KEYS = {
     ['virgin_theotokos_rubric', 'rubric', '"Virgin Theotokos, rejoice" rubric'],
     ['troparion_alternate_rubric', 'rubric', '"Or this Troparion" rubric'],
     ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],
+    ['troparion_alternate_closer', 'closer', 'Theotokion printed after the alternate troparion (12-10A)'],
     ['no_vigil_rubric', 'rubric', '"But if a vigil is not served" rubric'],
     ['troparion_closer', 'closer', 'Theotokion after the troparion'],
     ['lic_closer_rubric', 'rubric', 'Both now rubric at Lord I have cried (Theotokion named, not printed)'],
@@ -759,6 +762,7 @@ export const DAILY_KEYS = {
     ['exapostilarion_closer_rubric', 'rubric', 'Exapostilarion: "Glory, Both now, the foregoing is repeated"'],
     ['doxology_theotokion', 'text', 'Theotokion printed after the Great Doxology troparion (11-26A)'],
     ['after_ode6_rubric', 'rubric', 'Rubric after Ode VI where no kontakion is printed (11-29)'],
+    ['usage_rubric', 'rubric', 'N.B. on another usage, printed within the service (12-12: Greek usage, Doxology rank)'],
     ['praises_rubric', 'rubric', 'Praises rubric'],
     ['praises_closer_rubric', 'rubric', 'Praises Both now rubric ("Theotokion, or this Stavrotheotokion")'],
     ['praises_stavrotheotokion', 'text', 'Praises Stavrotheotokion'],
