@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.59.4** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.60.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,30 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.60.0 — REVIEW MARKS IN THE VIEWERS: what is open about the page on screen (15 Nov 2026)
+
+Bill: "show questions specific to a chosen date, day, tone etc. in these viewers".
+
+- **One shared module, `src/components/review-marks.jsx`.** It reads the two registers
+  and stores nothing: a question's `path` IS the id of the element it is about; the review
+  index goes from a hymn's text key to the OCA hymns waiting on it.
+- **Marks.** `ReviewMark` stands at a rubric, at a hymn, and at the head of a
+  commemoration (for a question about the whole service or about `rank`, `fekula_section`,
+  `name`, `title`, `kind`, which have no line of their own). A question filed against a
+  list is marked on the list's first item. A mark links to `/questions?q=Q-00NN` or to
+  `/oca-matches?ids=…&on=…&of=…`.
+- **Lines.** Menaion viewer: counted from the data of the date on the page, as the Hours
+  tool counts it. Octoechos viewer: `ScreenReviewLine` counts the marks actually drawn,
+  because that viewer shows one service of one day of a tone and a tone-wide count would
+  be 20 to 35 items.
+- **Review pages.** `/questions` takes `?q=` (one id or a list); `/oca-matches` takes
+  `?of=` (the page's name in words) beside `?day=`.
+- **For a future Octoechos question:** file it with `source: 'octoechos'` and a `path`
+  equal to the element's id in the viewer (`tone6.vespers_weekday…`); the mark appears
+  with no further work. None is filed today.
+- **Verified:** the mount gate (Menaion 12-04 and 11-15, Octoechos Tone 2) and a headless
+  Chrome pass following a mark to each review page. Not looked at on the live site.
 
 ### v0.59.4 — 12-04, 12-05, 12-06 encoded: the first VIGIL-rank services (15 Nov 2026)
 

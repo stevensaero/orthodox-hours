@@ -8580,6 +8580,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.60.0",
+    date: "November 2026",
+    summary: "The Menaion and Octoechos viewers show what is open about the page you are reading",
+    items: [
+      "In the Menaion viewer, a line under the toggles now says how many items are open for the day " +
+      "on the page: OCA matches waiting for a decision, and open questions. It is the same line the " +
+      "Hours tool shows, and it links to the same review pages, showing only those items.",
+      "A small mark now stands at the very place a question is about: at the rubric, at the hymn, or " +
+      "beside the rank when the question is about the service as a whole. A hymn with an OCA match " +
+      "waiting carries a mark too. Each mark opens that one question or that one match.",
+      "The Octoechos viewer has the same marks and line, counted for the page that is on screen.",
+      "The review pages say where you came from: a day, a page of the Menaion, or a tone.",
+    ],
+  },
+  {
     version: "v0.59.4",
     date: "November 2026",
     summary: "The Menaion for 4 to 6 December: St. Barbara and St. John of Damascus, St. Sabbas, St. Nicholas",
