@@ -111,6 +111,20 @@ const CASES = [
   ['2026-12-02', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
   ['2026-12-03', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Zephaniah'], ['not yet encoded']],   // Thursday
   ['2026-12-03', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'When at the dreadful tribunal', 'O all-wise father John'], ['not yet encoded']],   // Thursday evening opens 4 December: 3 of St. Barbara, 3 of St. John
+  // ── December 13-15 (encoded 16 Nov 2026). 13 December 2026 is a Sunday: the Sunday of
+  // the Forefathers is NOT encoded (12-11B held, Q-0019), so the day shows the martyrs.
+  ['2026-12-13', '3rd_hour', ['O come, let us worship', 'In their sufferings, Thy martyrs'], ['not yet encoded'], { prefer_oca: '0' }],   // Sunday, Eustratius and those with him, polyeleos
+  ['2026-12-13', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Sunday, the holy martyrs, polyeleos
+  ['2026-12-13', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Sunday, the holy martyrs, polyeleos
+  ['2026-12-14', '3rd_hour', ['O come, let us worship', 'We beseech Thee'], ['not yet encoded'], { prefer_oca: '0' }],   // Monday, Thyrsus and those with him: no troparion printed, General Menaion
+  ['2026-12-14', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Monday, simple
+  ['2026-12-14', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Monday, simple
+  ['2026-12-15', '3rd_hour', ['O come, let us worship', 'As thou didst share in the ways of the apostles'], ['not yet encoded'], { prefer_oca: '0' }],   // Tuesday, Eleutherius and Paul of Latros, double
+  ['2026-12-15', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Tuesday, double
+  ['2026-12-15', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Tuesday, double
+  ['2026-12-12', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'Like the sun, in splendor'], ['not yet encoded'], { prefer_oca: '0' }],   // Saturday evening opens Sunday 13 December
+  ['2026-12-13', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'The wondrous Thyrsus'], ['not yet encoded'], { prefer_oca: '0' }],   // Sunday evening opens 14 December
+  ['2026-12-14', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'Thou didst become a most sacred vessel'], ['not yet encoded'], { prefer_oca: '0' }],   // Monday evening opens 15 December
   // ── December 10-12 (encoded 16 Nov 2026).
   ['2026-12-10', '3rd_hour', ['O come, let us worship', 'Having mortified the fiery movements'], ['not yet encoded'], { prefer_oca: '0' }],   // Thursday, Menas, Hermogenes and Eugraphus, simple
   ['2026-12-10', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Thursday, the holy martyrs, simple

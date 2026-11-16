@@ -388,7 +388,7 @@ export default [
       oca: 'oca.org, Lives of all saints commemorated on December 13: "Repose of Venerable Herman of Alaska, Wonderworker of All America" (search result read 16 Nov 2026; the page itself could not be opened from this session). The OCA page for 12 December was not read.',
       web: 'Not searched beyond oca.org.',
     },
-    provisional: 'Captured where it is printed: the second commemoration (c1) of 12 December, not oca_primary, so the tool shows St. Spyridon by default on the 12th and offers St. Herman as a choice. Nothing is shown for him on the 13th, which is not yet encoded. No by-date substitution is made.',
+    provisional: 'Captured where it is printed: the second commemoration (c1) of 12 December, not oca_primary, so the tool shows St. Spyridon by default on the 12th and offers St. Herman as a choice. Nothing is shown for him on the 13th, which is not yet encoded. No by-date substitution is made. 13 December was encoded later the same day (12-13.pdf: Eustratius, Auxentius, Eugene, Mardarius and Orestes, polyeleos, with the Martyr Lucia named in the title): on the 13th the tool shows those martyrs and nothing of St. Herman.',
     impact: 'On which day an OCA parish gets the vigil of St. Herman, one of the chief feasts of the OCA year; and the service of 13 December when it is encoded. It bears on the project rule that OCA practice becomes a rule of the tool, never a by-date substitution.',
   },
   {
@@ -402,7 +402,7 @@ export default [
       oca: 'Not consulted for this point.',
       web: 'Not searched.',
     },
-    provisional: 'Nothing is written. The file is held out of the 10-12 December pass until the shape is ruled. Recommended: a movable entry keyed by its span, as vol. III keys it (for instance "12-11x12-17.sun"), kept in the December file, and resolved by a rule in the resolvers (the Sunday falling in the span), with the fixed saints of that day combined by the vol. III orders.',
+    provisional: 'Nothing is written. The file is held out of the 10-12 December pass until the shape is ruled. Recommended: a movable entry keyed by its span, as vol. III keys it (for instance "12-11x12-17.sun"), kept in the December file, and resolved by a rule in the resolvers (the Sunday falling in the span), with the fixed saints of that day combined by the vol. III orders. IN 2026 THIS SUNDAY IS 13 DECEMBER: until the file is encoded the tool gives that Sunday as an ordinary Sunday with the polyeleos service of the Martyr Eustratius and those with him (12-13), and nothing of the Forefathers.',
     impact: 'The Sunday of the Forefathers every year, and the same decision for the Sunday of the Holy Fathers and the Sundays about the Nativity and Theophany. It changes the SHAPE of a capture, so it goes to Bill before any data is written.',
   },
   {
