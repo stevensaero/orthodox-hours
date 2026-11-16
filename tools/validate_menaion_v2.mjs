@@ -659,6 +659,18 @@ function checkPageCoverage(where, entry, counts, tableName) {
         bad.push(`${src.file} · ${src.locus}`);
       }
     }
+    // A canonical hymn printed at several sites stores its text once and records
+    // every site in `verified_sites` (R-1). Each is a citation of its page: a last
+    // page that prints only the Liturgy troparion and kontakion again (12-02A p8)
+    // is cited by them and by nothing else.
+    if (isPlainObj(src) && typeof src.file === 'string' && Array.isArray(n.verified_sites)) {
+      for (const vs of n.verified_sites) {
+        const m = /^p(\d+)(?:-p(\d+))?\b/.exec(vs?.locus ?? '');
+        if (!m) { bad.push(`${src.file} · verified site ${vs?.locus}`); continue; }
+        if (!cited.has(src.file)) cited.set(src.file, new Set());
+        for (let pg = Number(m[1]); pg <= Number(m[2] ?? m[1]); pg++) cited.get(src.file).add(pg);
+      }
+    }
     for (const v of Object.values(n)) visit(v);
   };
   visit(entry);
