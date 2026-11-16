@@ -8580,6 +8580,22 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.59.4",
+    date: "November 2026",
+    summary: "The Menaion for 4 to 6 December: St. Barbara and St. John of Damascus, St. Sabbas, St. Nicholas",
+    items: [
+      "Three more days of the Menaion: the Great-martyr Barbara and St. John of Damascus (4 December, one " +
+      "service for two saints), St. Sabbas the Sanctified (5 December) and St. Nicholas of Myra (6 December). " +
+      "The last two are the first services of vigil rank in the tool: Little Vespers, Great Vespers with " +
+      "'Blessed is the man', three lessons, the Litiya and the blessing of the loaves.",
+      "The OCA service texts for these three days are compared with what the tool assembles. One difference " +
+      "is recorded as an open question: on 4 December the OCA also keeps the Hieromartyr Alexander " +
+      "Hotovitzky, whom our Menaion does not have on that day.",
+      "On St. Nicholas' day the Menaion already sings of the coming Nativity: three hymns of the forefeast " +
+      "at Vespers, and a canon set on the irmoi of the Nativity canon.",
+    ],
+  },
+  {
     version: "v0.59.3",
     date: "November 2026",
     summary: "The Menaion for 1 to 3 December",

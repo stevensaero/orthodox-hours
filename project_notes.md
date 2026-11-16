@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.59.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.59.4** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,39 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.59.4 — 12-04, 12-05, 12-06 encoded: the first VIGIL-rank services (15 Nov 2026)
+
+- **12-04** Great-martyr Barbara and St. John of Damascus: ONE printed service for two
+  saints, one entry with `saint` tags, `simple`, Fekula 2B (waterfall step 6: 3 + 3). Two
+  canons on the same irmoi. The page prints Praises stichera AND a Matins aposticha, with
+  no Great Doxology named.
+- **12-05** St. Sabbas the Sanctified and **12-06** St. Nicholas of Myra: the Menaion
+  prints a LITTLE VESPERS for each, so `vigil`, Fekula 2F (waterfall step 2). These are the
+  first `vigil` services in the data; the resolvers already treated `vigil` with
+  `polyeleos` and `doxology`, and the mount test now covers both days. ODS vol. III has NO
+  entry for 4, 5 or 6 December.
+- **12-06 and the forefeast.** Two Both now hymns are labelled "of the forefeast" and a
+  third (labelled only by its composer) is of the same matter: stored as 11-20 does, type
+  `of_the_feast` with `saint: 'forefeast'`. Canon II of St. Nicholas is set on the Nativity
+  irmoi, each printed again as the katavasia.
+- **A displaced glyph (new case).** On 12-05 p9 a comma printed slightly below the line
+  came out of the extraction as a line of its own. The map asserts the artefact and puts
+  the comma back where it is printed (checked on a render of the page and against
+  pdftotext), with a `provenance_note`. Nothing else is touched. This is the only kind of
+  repair a map may make, and only with the assertion and both checks.
+- **OCA intake.** Slots added for 12-04, 12-05, 12-06. What the comparisons found:
+  (1) 12-04: the OCA adds a troparion and kontakion of the Hieromartyr Alexander
+  Hotovitzky, whom the St. Sergius Menaion lacks: **Q-0015 opened**, listed as a known
+  difference. (2) Two faults in the comparison's own readers, fixed in the logic: a weekday
+  aposticha headed "from the Octoechos" was read as the Menaion's; a lesson the OCA heads
+  "Composite 2" alone was dropped. (3) The OCA text heads the third forefeast hymn "for
+  the Forefeast", which agrees with how it is now typed from its content.
+- **Schema.** `<c>.little_vespers.lic_glory` added to the manifest. A canon carries no
+  `saint` key: its title names it.
+- **NOT DONE, known.** Nothing was looked at on the live site. The three lessons of 12-06
+  print no reference: the citations are identifications, on the validator's worklist.
+  Matins is not assembled by the tool, so the new canons are in the viewer only.
 
 ### v0.59.3 — DECEMBER BEGUN: 12-01, 12-01A, 12-02, 12-02A, 12-03 encoded (15 Nov 2026)
 

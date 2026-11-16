@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.59.3 and after)
+# Next-session kickoff — encoding the Menaion (v0.59.4 and after)
 
-State at handoff: **v0.59.3**. December is begun: 12-01 to 12-03 are encoded (five files); 12-04 onward are not. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.59.4**. December is begun: 12-01 to 12-06 are encoded (eight files); 12-07 onward are not. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
