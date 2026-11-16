@@ -208,7 +208,7 @@ export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
   '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16, '11-27.pdf': 14, '11-27A.pdf': 16, '11-28.pdf': 14, '11-29.pdf': 12, '11-30.pdf': 27,
-  '12-01.pdf': 5, '12-01A.pdf': 7, '12-02.pdf': 7, '12-02A.pdf': 8, '12-03.pdf': 6,
+  '12-01.pdf': 5, '12-01A.pdf': 7, '12-02.pdf': 7, '12-02A.pdf': 8, '12-03.pdf': 6, '12-04.pdf': 13, '12-05.pdf': 21, '12-06.pdf': 25,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -587,6 +587,7 @@ export const FIELD_MANIFEST = [
   { path: '<c>.little_vespers.rubric',            kind: 'rubric',      service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV rubric' },
   { path: '<c>.little_vespers.lic',               kind: 'labeled_items', service: 'little_vespers', required: true,  tag: 'A-attested', label: 'LV Lord-I-have-cried stichera' },
   { path: '<c>.little_vespers.lic_verses',        kind: 'text_array',  service: 'little_vespers', required: false, tag: 'unattested', label: 'LV LIC verses' },
+  { path: '<c>.little_vespers.lic_glory',         kind: 'text',        service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV LIC Glory, where a Both now Theotokion follows separately (12-05, 12-06)' },
   { path: '<c>.little_vespers.lic_closer',        kind: 'closer',      service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV LIC closer — typed (§5.8)' },
   { path: '<c>.little_vespers.aposticha_rubric',  kind: 'rubric',      service: 'little_vespers', required: false, tag: 'A-attested', label: '"On the Aposticha, these Stichera" (5 instances)' },
   { path: '<c>.little_vespers.aposticha',         kind: 'aposticha',   service: 'little_vespers', required: false, tag: 'A-attested', label: 'LV aposticha' },

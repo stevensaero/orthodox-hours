@@ -49,6 +49,11 @@ reading a tone number out of a printed label.
   troparion and kontakion again) is cited by their `verified_sites`; the gate counts them.
 - "in the same melody" under a set of stichera: the hymn takes their tone, set by hand
   (`tone=4`) with a comment saying so (12-02, 12-03).
+- A hymn "of the forefeast" is typed as 11-20 does: `type='of_the_feast', saint='forefeast'`.
+- A glyph the extraction DISPLACES (12-05 p9: a low comma set down as a line of its own)
+  may be put back where it is printed, and only so: the map asserts the artefact, the
+  print is checked on a render of the page and in the second extraction, and the node
+  carries a `provenance_note`. Never reword, never tidy.
 - A NEW MONTH: add its block to `DATES`; its loader line in `src/data/menaion_v2/index.js`;
   `<MONTH>_DATES` in the schema, enumerated from the folder listing, and into
   `SOURCE_FILES`; and the month in the month lists of `tools/test_menaion_v2_vespers.mjs`

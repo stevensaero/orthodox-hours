@@ -5,6 +5,30 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── DECEMBER 4-6 (15 Nov 2026). Each confirmed against a second extraction
+  // (pdftotext -layout) before being registered. ───────────────────────────────
+  { path: '12-04.c0.vespers.lic[4]', file: '12-04.pdf', locus: 'p1 LIC 5',
+    verbatim: 'having forsaken, the tumultuous turmoil', note: 'Stray comma.' },
+  { path: '12-04.c0.vespers.aposticha_stavrotheotokion', file: '12-04.pdf', locus: 'p2 Aposticha Stavrotheotokion',
+    verbatim: 'O my Son How is it that Thou diest?, * suspended', note: 'No stop after "O my Son", and a question mark followed by a comma.' },
+  { path: '12-04.c0.matins.canons[1].odes.1.items[2]', file: '12-04.pdf', locus: 'p4 Ode 1 Theotokion',
+    verbatim: 'thou gayest birth', note: '"gayest" for "gavest": printed so in both extractions.' },
+  { path: '12-04.c0.matins.kontakia_ode3[1]', file: '12-04.pdf', locus: 'p4 Ikos of the venerable one',
+    verbatim: 'shining forth in too world', note: '"too" for "the".' },
+  { path: '12-04.c0.matins.canons[0].odes.4.items[0]', file: '12-04.pdf', locus: 'p5 Ode 4 troparion 1',
+    verbatim: 'arrogance to shame', note: 'No final full stop.' },
+  { path: '12-04.c0.matins.canons[0].odes.9.irmos', file: '12-04.pdf', locus: 'p9 Ode 9 irmos',
+    verbatim: 'Theotokos do we magnify', note: 'No final full stop; so too the same irmos of the second canon on this page.' },
+  { path: '12-04.c0.matins.aposticha_glory', file: '12-04.pdf', locus: 'p11 Matins Aposticha Glory',
+    verbatim: 'multitude of monks , honor thee', note: 'Space before the comma.' },
+  { path: '12-05.c0.great_vespers.lic[1]', file: '12-05.pdf', locus: 'p3 LIC 2',
+    verbatim: 'fruit of the saved. O venerable one. Entreat', note: 'A stray "O venerable one." between the sticheron and its refrain.' },
+  { path: '12-05.c0.matins.canons[1].odes.7.katavasia', file: '12-05.pdf', locus: 'p16 Ode 7 katavasia',
+    verbatim: 'throughout the ages', note: 'No final full stop.' },
+  { path: '12-06.c0.matins.canons[2].odes.3.items[0]', file: '12-06.pdf', locus: 'p12 Ode 3 troparion 1',
+    verbatim: 'sweetness’s greater than', note: '"sweetness’s" for "sweetness".' },
+  { path: '12-06.c0.matins.canons[1].odes.9.irmos', file: '12-06.pdf', locus: 'p21 Ode 9 irmos',
+    verbatim: 'Theotokos do we magnify', note: 'No final full stop.' },
   // ── DECEMBER 1-3 (15 Nov 2026). Each confirmed against a second extraction
   // (pdftotext -layout) before being registered. ───────────────────────────────
   { path: '12-01.c1.vespers.lic_stavrotheotokion', file: '12-01A.pdf', locus: 'p1 LIC Stavrotheotokion',

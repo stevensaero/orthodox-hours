@@ -110,7 +110,19 @@ const CASES = [
   ['2026-12-02', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
   ['2026-12-02', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
   ['2026-12-03', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Zephaniah'], ['not yet encoded']],   // Thursday
-  ['2026-12-03', 'vespers', ['Now lettest Thou Thy servant depart in peace'], []],   // Thursday evening opens 4 December, not yet encoded
+  ['2026-12-03', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'When at the dreadful tribunal', 'O all-wise father John'], ['not yet encoded']],   // Thursday evening opens 4 December: 3 of St. Barbara, 3 of St. John
+  // ── December 4-6 (encoded 15 Nov 2026).
+  ['2026-12-04', '3rd_hour', ['O come, let us worship', 'Let us honor the holy Barbara'], ['not yet encoded'], { prefer_oca: '0' }],   // Friday, one service for two saints (Barbara, John of Damascus)
+  ['2026-12-04', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Friday, one service for two saints (Barbara, John of Damascus)
+  ['2026-12-04', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Friday, one service for two saints (Barbara, John of Damascus)
+  ['2026-12-05', '3rd_hour', ['O come, let us worship', 'With the streams of thy tears'], ['not yet encoded']],   // Saturday, Sabbas the Sanctified, vigil rank
+  ['2026-12-05', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Saturday, Sabbas the Sanctified, vigil rank
+  ['2026-12-05', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Saturday, Sabbas the Sanctified, vigil rank
+  ['2026-12-06', '3rd_hour', ['O come, let us worship', 'The truth of things revealed thee'], ['not yet encoded'], { prefer_oca: '0' }],   // Sunday, Nicholas of Myra, vigil rank
+  ['2026-12-06', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Sunday, Nicholas of Myra, vigil rank
+  ['2026-12-06', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Sunday, Nicholas of Myra, vigil rank
+  ['2026-12-04', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'O divinely wise Sabbas'], ['not yet encoded']],   // Friday evening opens 5 December: Great Vespers of St. Sabbas
+  ['2026-12-05', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'Dwelling bodily in Myra'], ['not yet encoded']],   // Saturday evening opens Sunday 6 December: St. Nicholas
   ['2026-11-30', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'The grace of the Holy Spirit dwelt within thee'], ['not yet encoded']],   // Monday evening opens 1 December: the prophet Nahum's stichera
   ['2026-12-03', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Thursday
   ['2026-12-03', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Thursday
