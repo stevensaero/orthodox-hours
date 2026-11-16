@@ -8580,6 +8580,22 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.60.3",
+    date: "November 2026",
+    summary: "The Menaion for 13 to 15 December: the Martyr Eustratius and those with him, the Martyrs Thyrsus, Lucius and Philemon, the Hieromartyr Eleutherius",
+    items: [
+      "Three more days of the Menaion: the holy Martyrs Eustratius, Auxentius, Eugene, Mardarius and " +
+      "Orestes (13 December, a Polyeleos service), the holy Martyrs Thyrsus, Lucius, Philemon and those " +
+      "with them (14 December), and the Hieromartyr Eleutherius with the Venerable Paul of Latros " +
+      "(15 December).",
+      "The Menaion prints no troparion for the martyrs of 14 December; the tool takes the troparion " +
+      "of several martyrs from the General Menaion and says so.",
+      "Not yet in the tool: the Sunday of the Holy Forefathers, which in 2026 falls on 13 December, and " +
+      "St. Herman of Alaska on that day. Both are open questions; until they are settled the tool shows " +
+      "13 December as a Sunday with the service of the Martyr Eustratius.",
+    ],
+  },
+  {
     version: "v0.60.2",
     date: "November 2026",
     summary: "The Menaion for 10 to 12 December: the Martyrs Menas, Hermogenes and Eugraphus, St. Daniel the Stylite, St. Spyridon",

@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.60.2** | **Tone Trainer: v0.26.0** | Last synced: November 16, 2026
+**Tool version: v0.60.3** | **Tone Trainer: v0.26.0** | Last synced: November 16, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,30 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.60.3 — 12-13, 12-14, 12-15 encoded (16 Nov 2026)
+
+- **12-13** Eustratius, Auxentius, Eugene, Mardarius and Orestes (the title also names the
+  Martyr Lucia; no hymn of hers is printed apart): `polyeleos`, 2E. Lessons identified,
+  not printed (worklist). Two canons of the martyrs. TWO kontakia (Tone II after Ode III,
+  Tone III with the ikos after Ode VI); both are printed at Liturgy, stored as
+  `liturgy.kontakia`; the adapter's standing rule sings the Ode VI one there.
+- **12-14** Thyrsus, Lucius, Philemon and those with them: `simple`, 2A. A short file:
+  NO troparion, no aposticha rubric, no ikos, no exapostilarion, nothing for the Liturgy.
+  `troparion: ABS(...)` with `general_fallback: { type: 'Martyrs' }`, as 11-29 did for one
+  martyr. What the OCA sings for them was NOT checked.
+- **12-15** Eleutherius: the title names him alone, the service is for him and "the
+  venerable one", Paul ("pride of Mount Latros": identified from the hymns, named in no
+  heading). One entry, `saint` tags, `simple`, 2B.
+- **THE DAY ITSELF IS WRONG IN 2026 UNTIL BILL RULES.** 13 December 2026 is a Sunday: it is
+  the Sunday of the Forefathers (12-11B, held, Q-0019) and, for the OCA, St. Herman
+  (12-12C, Q-0018). The tool shows a Sunday with the polyeleos of St. Eustratius and
+  neither of those. Both questions carry this note.
+- Recurrence rows by sweep (67). Five sic rows, each confirmed by a second extraction.
+  Three doubled ODE headings asserted in the maps.
+- **OCA intake:** run; no OCA text exists for 13, 14 or 15 December.
+- **NOT DONE, known.** Nothing looked at on the live site. No fixed vol. III entry for
+  these dates (index checked); the 11 to 17 December Sunday entries were not read.
 
 ### v0.60.2 — 12-10, 12-10A, 12-11, 12-11A, 12-12, 12-12C encoded; 12-11B HELD (16 Nov 2026)
 

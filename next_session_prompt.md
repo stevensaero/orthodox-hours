@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.60.2 and after)
+# Next-session kickoff — encoding the Menaion (v0.60.3 and after)
 
-State at handoff: **v0.60.2**. December is begun: 12-01 to 12-12 are encoded (eighteen files); 12-11B (the movable Sunday of the Forefathers) is HELD for Bill's ruling on Q-0019; 12-13 onward are not. Bill's cadence: three calendar days at a time, pausing between. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.60.3**. December is begun: 12-01 to 12-15 are encoded (twenty-one files); 12-11B (the movable Sunday of the Forefathers, 13 December in 2026) is HELD for Bill's ruling on Q-0019, and St. Herman's day is Q-0018; 12-16 onward are not. Bill's cadence: three calendar days at a time, pausing between. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
