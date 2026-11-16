@@ -211,6 +211,7 @@ export const DAILY_PAGE_COUNTS = {
   '12-01.pdf': 5, '12-01A.pdf': 7, '12-02.pdf': 7, '12-02A.pdf': 8, '12-03.pdf': 6, '12-04.pdf': 13, '12-05.pdf': 21, '12-06.pdf': 25,
   '12-07.pdf': 7, '12-08.pdf': 7, '12-09.pdf': 13, '12-09A.pdf': 17,
   '12-10.pdf': 9, '12-10A.pdf': 19, '12-11.pdf': 8, '12-11A.pdf': 7, '12-12.pdf': 10, '12-12C.pdf': 17,
+  '12-13.pdf': 17, '12-14.pdf': 6, '12-15.pdf': 12,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:

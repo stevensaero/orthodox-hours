@@ -5,6 +5,18 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── DECEMBER 13-15 (16 Nov 2026). Each confirmed against a second extraction
+  // (pdftotext -layout) before being registered. ───────────────────────────────
+  { path: '12-13.c0.matins.canons[0].odes.1.items[1]', file: '12-13.pdf', locus: 'p7 Canon I Ode 1 troparion 2',
+    verbatim: 'which emmiteth the', note: '"emmiteth" for "emitteth".' },
+  { path: '12-13.c0.matins.praises_glory', file: '12-13.pdf', locus: 'p15 Praises Glory',
+    verbatim: 'God-bearing martyrs-the five-stringed harp', note: 'A hyphen stands for a dash: "martyrs-the".' },
+  { path: '12-13.c0.liturgy.prokeimenon', file: '12-13.pdf', locus: 'p17 Liturgy prokeimenon',
+    verbatim: 'all His desires in them', note: 'No final stop is printed.' },
+  { path: '12-15.c0.matins.canons[0].odes.7.items[3]', file: '12-15.pdf', locus: 'p9 hieromartyr Ode 7 Theotokion',
+    verbatim: 'The most pure Word, of God,', note: 'Stray comma after "Word". The same theotokion prints "puriying" for "purifying".' },
+  { path: '12-15.c0.matins.canons[1].odes.6.items[2]', file: '12-15.pdf', locus: 'p8 venerable one Ode 6 troparion 3',
+    verbatim: 'Wherefore; loose thou', note: 'Semicolon where a comma is meant.' },
   // ── DECEMBER 10-12 (16 Nov 2026). Each confirmed against a second extraction
   // (pdftotext -layout) before being registered. ───────────────────────────────
   { path: '12-10.c0.vespers.lic[0]', file: '12-10.pdf', locus: 'p1 LIC 1',
