@@ -5,6 +5,20 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── DECEMBER 7-9 (16 Nov 2026). Each confirmed against a second extraction
+  // (pdftotext -layout) before being registered. ───────────────────────────────
+  { path: '12-07.c0.matins.canons[0].odes.1.items[3]', file: '12-07.pdf', locus: 'p3 Ode 1 troparion 4',
+    verbatim: 'of like mind with Arias', note: '"Arias" for "Arius" (printed "Arius" in Ode IV and the kontakion).' },
+  { path: '12-07.c0.matins.canons[0].odes.7.items[0]', file: '12-07.pdf', locus: 'p5 Ode 7 troparion 1',
+    verbatim: 'shoning forth as light', note: '"shoning" for "shining".' },
+  { path: '12-08.c0.matins.canons[0].odes.9.irmos', file: '12-08.pdf', locus: 'p6 Ode 9 irmos',
+    verbatim: 'Theotokos do we magnify', note: 'No final full stop.' },
+  { path: '12-09.c0.matins.canons[0].odes.7.irmos', file: '12-09.pdf', locus: 'p8 Ode 7 irmos',
+    verbatim: 'nor troubled by The fire', note: 'Capital "The" in mid-sentence; the irmos also opens no quotation it closes ("Blessed art Thou.\'").' },
+  { path: '12-09.c0.ikos', file: '12-09.pdf', locus: 'p8 Ikos',
+    verbatim: 'Ye will bring to Thy temple as a; sacred gift', note: '"Ye" for "we", and a stray semicolon.' },
+  { path: '12-09.c1.matins.canons[0].odes.3.items[2]', file: '12-09A.pdf', locus: 'p8 Ode 3 troparion 3',
+    verbatim: 'Who was born of thee and hast the', note: '"hast" for "hath"; printed so again at the Beatitudes (p16).' },
   // ── DECEMBER 4-6 (15 Nov 2026). Each confirmed against a second extraction
   // (pdftotext -layout) before being registered. ───────────────────────────────
   { path: '12-04.c0.vespers.lic[4]', file: '12-04.pdf', locus: 'p1 LIC 5',

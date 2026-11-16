@@ -111,6 +111,18 @@ const CASES = [
   ['2026-12-02', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
   ['2026-12-03', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Zephaniah'], ['not yet encoded']],   // Thursday
   ['2026-12-03', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'When at the dreadful tribunal', 'O all-wise father John'], ['not yet encoded']],   // Thursday evening opens 4 December: 3 of St. Barbara, 3 of St. John
+  // ── December 7-9 (encoded 16 Nov 2026).
+  ['2026-12-07', '3rd_hour', ['O come, let us worship', 'O hierarch Ambrose our father'], ['not yet encoded'], { prefer_oca: '0' }],   // Monday, St. Ambrose, simple
+  ['2026-12-07', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Monday, St. Ambrose, simple
+  ['2026-12-07', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Monday, St. Ambrose, simple
+  ['2026-12-08', '3rd_hour', ['O come, let us worship', 'O venerable Patapius'], ['not yet encoded'], { prefer_oca: '0' }],   // Tuesday, St. Patapius, simple
+  ['2026-12-08', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Tuesday, St. Patapius, simple
+  ['2026-12-08', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Tuesday, St. Patapius, simple
+  ['2026-12-09', '3rd_hour', ['O come, let us worship', 'Today, the bonds of barrenness are loosed'], ['not yet encoded'], { prefer_oca: '0' }],   // Wednesday, the Conception of the Theotokos, doxology; vol. III order ods3-1209-wkd
+  ['2026-12-09', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Wednesday, the Conception of the Theotokos, doxology; vol. III order ods3-1209-wkd
+  ['2026-12-09', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Wednesday, the Conception of the Theotokos, doxology; vol. III order ods3-1209-wkd
+  ['2026-12-06', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'Adorning the seat of government'], ['not yet encoded'], { prefer_oca: '0' }],   // Sunday evening opens 7 December: St. Ambrose
+  ['2026-12-08', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'The barren woman who', 'Today, the bonds of barrenness are loosed'], ['not yet encoded'], { prefer_oca: '0' }],   // Tuesday evening opens 9 December: six of the feast; the troparion alone, by the vol. III order
   // ── December 4-6 (encoded 15 Nov 2026).
   ['2026-12-04', '3rd_hour', ['O come, let us worship', 'Let us honor the holy Barbara'], ['not yet encoded'], { prefer_oca: '0' }],   // Friday, one service for two saints (Barbara, John of Damascus)
   ['2026-12-04', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Friday, one service for two saints (Barbara, John of Damascus)
