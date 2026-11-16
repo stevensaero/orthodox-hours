@@ -59,3 +59,13 @@ reading a tone number out of a printed label.
   `SOURCE_FILES`; and the month in the month lists of `tools/test_menaion_v2_vespers.mjs`
   and `tools/test_menaion_v2_liturgy.mjs`. Add the dates to `tools/test_hours_mount.mjs`.
 - The month `.js` is generated. Change the map and rebuild.
+
+### Notes from 10-12 December
+
+- A Stavrotheotokion that follows "Both now ..., Theotokion, or this Stavrotheotokion:"
+  and has no inline "Stavrotheotokion:" of its own takes that rubric line as its label:
+  `sourceLabel=s.raw(n).rstrip(':')`. The line is still stored as the rubric.
+- Check a suspected variant with an assertion that names the difference, not with a
+  `sed | cut` of the extract: a cut line hid a word and produced a false variant row.
+- A movable Sunday printed in the Menaion (12-11B) is not encoded under a fixed date.
+  See Q-0019.

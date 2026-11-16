@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.60.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.60.2** | **Tone Trainer: v0.26.0** | Last synced: November 16, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -41,6 +41,47 @@ branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to th
 matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
 through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
 viewer the toggle and badge.
+
+### v0.60.2 — 12-10, 12-10A, 12-11, 12-11A, 12-12, 12-12C encoded; 12-11B HELD (16 Nov 2026)
+
+- **12-10** Menas, Hermogenes and Eugraphus: `simple`, 2A. Two kontakia (Tone I after
+  Ode III, Tone IV with the ikos after Ode VI; the second is the one at Liturgy). No
+  stichera of the Theotokos printed.
+- **12-10A** Joasaph of Belgorod: second file, Little Vespers printed, so `vigil`, 2F,
+  under Q-0002. Two troparia ("Or this Troparion, in Tone II", with its own Theotokion at
+  Little Vespers: new key `troparion_alternate_closer`). The Paraklisis is appointed and
+  not printed. Both now at Lord I have cried is "of the forefeast". Lessons identified,
+  not printed (worklist); the second is the long composite and its span is NOT settled.
+- **12-11** Daniel the Stylite: `simple`, 2A. Headed "Alleluia, or God is the Lord"
+  (`preface_rubric`); both forms at Lord I have cried are printed and stored.
+- **12-11A** the Martyr Myrax: second file, `simple`, 2A.
+- **12-12** St. Spyridon: `six_stichera`, 2C. The page's own N.B. says Greek usage keeps
+  him at Doxology rank and prints Praises stichera for it: stored (`matins.usage_rubric`,
+  new key, and the `praises*` keys), placed by no service. **Q-0020 OPENED.**
+- **12-12C** St. Herman of Alaska: second file, Little Vespers, `vigil`, 2F. **The OCA
+  keeps him on 13 December** (oca.org search result; the page could not be opened from the
+  session). Captured where printed, as 12-12 c1. **Q-0018 OPENED**: no by-date move made.
+- **12-11B HELD, NOT ENCODED: the Sunday of the Holy Forefathers**, a movable Sunday
+  (11 to 17 December) printed among the files of 11 December. The spec has no key for a
+  movable Sunday in the Menaion; vol. III keys its orders by the span
+  (`ods3-1211x1217-sun`, `-sun-combined`, pp. 64-69, not read). **Q-0019 OPENED; a shape
+  question, Bill rules before any data is written.** In 2026 this Sunday is 13 December.
+- **12-09A, RULED BY BILL (16 Nov): the label "in Tone Il-" is a misprint.** Tone II is
+  now stored by hand with a provenance note; the label stays as printed.
+- **Variants seen in print** (rows in `known_recurrences.js`): 12-10A theotokion, one
+  pointing mark; 12-12 Glory "all-praised" / "most praised"; 12-12C the Glory after
+  Psalm 50 opens with its phrases in the other order. **Sic rows:** seven, each confirmed
+  by a second extraction; 12-12C's last sticheron at Lord I have cried BREAKS OFF in print.
+- **Conventions.** A Stavrotheotokion printed under "Both now ..., Theotokion, or this
+  Stavrotheotokion" with no inline label takes that rubric line as its `sourceLabel` (the
+  line is also stored as the rubric). `specmel` now reads "Spec. Mel:" and "Spec Mel.:".
+  New manifest rows: `little_vespers.aposticha_glory`, `troparion_alternate_closer`,
+  `matins.usage_rubric`.
+- **OCA intake:** run; there is no OCA text for 10, 11 or 12 December, so no slots and no
+  new differences.
+- **NOT DONE, known.** Nothing looked at on the live site. No vol. III entry exists for
+  these three fixed dates (index checked). The OCA calendar pages for 10 to 12 December
+  were not read: `oca_primary` follows the first file on each day.
 
 ### v0.60.1 — 12-07, 12-08, 12-09, 12-09A encoded; the first vol. III order of December (16 Nov 2026)
 

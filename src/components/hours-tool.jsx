@@ -8580,6 +8580,24 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.60.2",
+    date: "November 2026",
+    summary: "The Menaion for 10 to 12 December: the Martyrs Menas, Hermogenes and Eugraphus, St. Daniel the Stylite, St. Spyridon",
+    items: [
+      "Three more days of the Menaion: the holy Martyrs Menas, Hermogenes and Eugraphus (10 December), " +
+      "St. Daniel the Stylite (11 December) and St. Spyridon of Tremithus (12 December).",
+      "The Menaion's second services of those days are offered as a choice: St. Joasaph of Belgorod " +
+      "(10 December), the Martyr Myrax (11 December) and St. Herman of Alaska.",
+      "St. Herman of Alaska is printed in this Menaion under 12 December; the OCA keeps his repose on " +
+      "13 December. The service is captured where it is printed and the question of its day is open.",
+      "The Menaion notes that in Greek usage St. Spyridon has the Great Doxology, and prints stichera " +
+      "on the Praises for that usage. They are shown in the Menaion viewer; the service is given as the " +
+      "Slavonic Menaion has it.",
+      "Three new open questions: the day of St. Herman, the rank of St. Spyridon, and how the Sunday of " +
+      "the Holy Forefathers, which the Menaion prints among the services of 11 December, is to be kept.",
+    ],
+  },
+  {
     version: "v0.60.1",
     date: "November 2026",
     summary: "The Menaion for 7 to 9 December: St. Ambrose, St. Patapius, the Conception of the Theotokos",
