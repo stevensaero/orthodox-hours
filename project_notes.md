@@ -78,7 +78,9 @@ The first December pass, run to try the whole intake pipeline on a new month.
   shown in the viewer but Vespers does not place them: that is the Alleluia service of the
   lesser fasts, still to be built (Q-0014; ODS 2nd ed. Appendix A-II). (2) Which of two
   simple services is served on 1 and 2 December, or whether both: added to Q-0002. The tool
-  reads the first file and offers the second as a choice. (3) The mount test covers these
+  reads the first file and offers the second as a choice. **RULED BY BILL, 15 Nov: "they are
+  separate services."** 12-01A and 12-02A stand as their own services, never combined with
+  the prophet's; that is how they are stored. Which one an OCA parish serves stays open in Q-0002. (3) The mount test covers these
   dates in jsdom; nothing was looked at on the live site.
 
 ### STANDING: GOOGLE DRIVE IS RETIRED (Bill, 15 Nov 2026)
