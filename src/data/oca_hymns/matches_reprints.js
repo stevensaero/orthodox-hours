@@ -8,6 +8,7 @@ export const OCA_MATE_REPRINTS = {
   m0a660de5d33bdc: ["m0f723dd4f62ff3"],
   m0aeef38f8265fe: ["m010e9e4fff9a7a"],
   m0e81f9a749505c: ["m0cb4644e8b377a"],
+  m0e844f3ab665d8: ["m1d6413e19e621f"],
   m0eee34a8cfbcd5: ["m136d069c57dbdc"],
   m0fab4021902911: ["m01a9e83635edf9"],
   m1485106cecb4e8: ["m0ab0a487ac2878","m1866ef9c5e6095","m1eda519facd5ec"],

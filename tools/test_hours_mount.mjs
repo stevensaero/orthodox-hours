@@ -111,6 +111,19 @@ const CASES = [
   ['2026-12-02', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Wednesday, two services printed (Habbakuk, the four fathers of Egypt)
   ['2026-12-03', '3rd_hour', ['O come, let us worship', 'Celebrating the memory of Thy prophet Zephaniah'], ['not yet encoded']],   // Thursday
   ['2026-12-03', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'When at the dreadful tribunal', 'O all-wise father John'], ['not yet encoded']],   // Thursday evening opens 4 December: 3 of St. Barbara, 3 of St. John
+  // ── December 10-12 (encoded 16 Nov 2026).
+  ['2026-12-10', '3rd_hour', ['O come, let us worship', 'Having mortified the fiery movements'], ['not yet encoded'], { prefer_oca: '0' }],   // Thursday, Menas, Hermogenes and Eugraphus, simple
+  ['2026-12-10', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Thursday, the holy martyrs, simple
+  ['2026-12-10', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Thursday, the holy martyrs, simple
+  ['2026-12-11', '3rd_hour', ['O come, let us worship', 'Thou wast a pillar of patience'], ['not yet encoded'], { prefer_oca: '0' }],   // Friday, Daniel the Stylite, simple
+  ['2026-12-11', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Friday, Daniel the Stylite, simple
+  ['2026-12-11', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Friday, Daniel the Stylite, simple
+  ['2026-12-12', '3rd_hour', ['O come, let us worship', 'The truth of things revealed thee'], ['not yet encoded'], { prefer_oca: '0' }],   // Saturday, St. Spyridon, six stichera
+  ['2026-12-12', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Saturday, St. Spyridon, six stichera
+  ['2026-12-12', 'typica', ['Bless the Lord, O my soul'], ['not yet encoded']],   // Saturday, St. Spyridon, six stichera
+  ['2026-12-09', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'O most glorious martyr Menas'], ['not yet encoded'], { prefer_oca: '0' }],   // Wednesday evening opens 10 December
+  ['2026-12-10', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'What shall we proclaim thee to be, O Dan'], ['not yet encoded'], { prefer_oca: '0' }],   // Thursday evening opens 11 December
+  ['2026-12-11', 'vespers', ['Now lettest Thou Thy servant depart in peace', 'Rejoice, thou rule of hierarchs'], ['not yet encoded'], { prefer_oca: '0' }],   // Friday evening opens 12 December: six of St. Spyridon
   // ── December 7-9 (encoded 16 Nov 2026).
   ['2026-12-07', '3rd_hour', ['O come, let us worship', 'O hierarch Ambrose our father'], ['not yet encoded'], { prefer_oca: '0' }],   // Monday, St. Ambrose, simple
   ['2026-12-07', 'liturgy', ['Blessed is the Kingdom'], ['not yet encoded']],   // Monday, St. Ambrose, simple
