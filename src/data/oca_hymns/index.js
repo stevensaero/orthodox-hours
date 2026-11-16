@@ -59,7 +59,8 @@ export function ocaTexts(doc) {
 }
 
 // The readings an OCA document appoints at Vespers: the references it heads them
-// with, in order ("Genesis 28:10-17"; "Composite 17 (Exod. 40:1–5, 9, 10, 16, 34–35)").
+// with, in order ("Genesis 28:10-17"; "Composite 17 (Exod. 40:1–5, 9, 10, 16, 34–35)";
+// a bare "Composite 2").
 // Dashes are made plain hyphens; nothing else is changed.
 export function ocaVespersReadings(doc) {
   const out = []; let on = false;
@@ -70,6 +71,9 @@ export function ocaVespersReadings(doc) {
     const m = t.replace(/[–—]/g, '-').replace(/^Composite \d+ \((.*)\)$/, '$1')
       .match(/^(?:\(\d+\)\s*)?((?:[1-4] )?[A-Z][A-Za-z.]+(?: [a-z]+ [A-Z][a-z]+)? \d+:\d[\d:,;\- ]*)/);
     if (b.k === 'heading' && m) { out.push({ ref: m[1].trim(), head: t, file: doc.file, locus: `paragraph ${b.p[0]}` }); continue; }
+    // A composite lesson headed by its number alone ("Composite 2", 6 Dec): it is a lesson
+    // all the same, with no verses to read off the heading.
+    if (b.k === 'heading' && /^Composite \d+$/.test(t)) { out.push({ ref: t, head: t, file: doc.file, locus: `paragraph ${b.p[0]}` }); continue; }
     if (b.k === 'heading' && /^(Litya|Aposticha|Tone \d)/.test(t)) break;
   }
   return out;

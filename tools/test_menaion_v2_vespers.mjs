@@ -95,7 +95,7 @@ function ocaAposticha(doc) {
     if (/Troparion|Kontakion/i.test(h[2])) break;
     const kind = /Theotokion/i.test(h[2]) ? 'theotokion' : /Feast|Forefeast/i.test(h[2]) ? 'feast' : 'doxasticon';
     const slot = { tone: Number(h[1]), kind, head: t };
-    if (!after) { if (!out.first) out.first = { tone: slot.tone, source: /Resurrection/i.test(h[2]) ? 'octoechos' : 'menaion' }; }
+    if (!after) { if (!out.first) out.first = { tone: slot.tone, source: /Resurrection|Octoechos/i.test(h[2]) ? 'octoechos' : 'menaion' }; }   // "(Prosomia of the Cross, from the Octoechos)" on a weekday
     else if (after === 'glory') out.glory = slot; else { out.bothNow = slot; out.combined = after === 'both'; }
     after = null;
   }
@@ -195,7 +195,10 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
   // The entrance and the readings.
   { const wr = ocaReadings(doc); const rd = resolveVespersReadings({ c: svc.c, base: svc.path, eveDow });  // the tool's own: the Menaion's (nothing is taken from the OCA text by its date)
     if (rd.readings.length || wr.length) { checked++; const id = `${key} readings`;
-      const mineR = rd.readings.map((x) => refKey(x.ref)).join(' ; '); const theirsR = wr.map(refKey).join(' ; ');
+      // A lesson the OCA heads "Composite N" alone gives no verses to compare: that place
+      // agrees with whatever lesson we have there, and the count and the rest are compared.
+      const bare = (i) => /^Composite \d+$/.test(wr[i] ?? '');
+      const mineR = rd.readings.map((x, i) => (bare(i) ? '(composite)' : refKey(x.ref))).join(' ; '); const theirsR = wr.map((x, i) => (bare(i) ? '(composite)' : refKey(x))).join(' ; ');
       if (mineR !== theirsR && !KNOWN[id]) fail(`${id}: tool ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | OCA ${wr.join(' ; ') || 'none'}`);
       rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Readings | ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | ${wr.join(' ; ') || 'none'} | ${mineR === theirsR ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
     if (rd.readings.length && !rd.entrance) fail(`${key}: readings without an entrance`); }
